@@ -26,7 +26,10 @@ mpfr_ver=4.0.2
 musl_ver=1.2.0
 
 #
-# Package URLs (The usage of ftpmirror for GNU packages is preferred.)
+# Package URLs
+#
+# The usage of ftpmirror for GNU packages is preferred. We also try to use the
+# smallest available tarballs from upstream (so .lz > .xz > .bzip2 > .gz).
 #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
 gcc_url=https://ftpmirror.gnu.org/gcc/gcc-$gcc_ver/gcc-$gcc_ver.tar.xz
@@ -178,7 +181,7 @@ fi
 #
 # Build Directories
 #
-# Please don't change $MSYSROOT to `$CURDIR/toolchain/$XARCH` like CLFS and
+# Please don't change $MSYSROOT to `$CURDIR/toolchain/$XTARGET` like CLFS and
 # other implementations because it'll break here (even if binutils insists
 # on installing stuff to that directory) (firasuke).
 #
@@ -188,14 +191,14 @@ MSYSROOT="$CURDIR/sysroot"
 #
 # Available Architectures
 #
-XARCH=x86_64-linux-musl
+XTARGET=x86_64-linux-musl
 
 #
 # Uncomment this, and comment the above architecture if you want to target
 # powerpc64. Please do note that powerpc64 support is experimental at the
 # moment.
 #
-#XARCH=powerpc64-linux-musl
+#XTARGET=powerpc64-linux-musl
 
 #
 # FLAGS
@@ -213,7 +216,7 @@ printf -- \n
 #
 # Step 1: musl headers
 #
-printf -- "=> Preparing musl...\n"
+printf -- "${GREENC}=>${NORMALC} Preparing musl...\n"
 cd $BLDDIR
 mkdir musl
 cd musl
@@ -230,14 +233,14 @@ cd musl
 #
 # We also disable `--disable-static` since we want a shared version.
 #
-printf -- "=> Configuring musl...\n"
+printf -- "${BLUEC}=>${NORMALC} Configuring musl...\n"
 ARCH=x86_64 \
 CC=gcc \
 CFLAGS='-O2 -ffast-math' \
-CROSS_COMPILE=$XARCH- \
+CROSS_COMPILE=$XTARGET- \
 LIBCC=' ' \
 $SRCDIR/musl/musl-$musl_ver/configure \
-  --host=$XARCH \
+  --host=$XTARGET \
   --prefix=/usr \
   --disable-static
 
@@ -246,7 +249,7 @@ $SRCDIR/musl/musl-$musl_ver/configure \
 # almost always should use a DESTDIR (that also should 99% be equal to gcc's
 # and binutils `--with-sysroot` value... (firasuke)
 #
-printf -- "=> Installing musl headers...\n"
+printf -- "${BLUEC}=>${NORMALC} Installing musl headers...\n"
 make \
   DESTDIR=$MSYSROOT \
   install-headers
@@ -256,7 +259,7 @@ printf -- \n
 #
 # Step 2: cross-binutils
 #
-printf -- "=> Preparing cross-binutils...\n"
+printf -- "${GREENC}=>${NORMALC} Preparing cross-binutils...\n"
 cd $BLDDIR
 mkdir cross-binutils
 cd cross-binutils
@@ -280,21 +283,21 @@ cd cross-binutils
 # the passed value as the root directory of our target system in which it'll
 # search for target headers and libraries.
 #
-printf -- "=> Configuring cross-binutils...\n"
+printf -- "${BLUEC}=>${NORMALC} Configuring cross-binutils...\n"
 CFLAGS=-O2 \
 $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --prefix=$MPREFIX \
-  --target=$XARCH \
+  --target=$XTARGET \
   --with-sysroot=$MSYSROOT \
   --disable-werror
 
-printf -- "=> Building cross-binutils...\n"
+printf -- "${BLUEC}=>${NORMALC} Building cross-binutils...\n"
 make \
   all-binutils \
   all-gas \
   all-ld
 
-printf -- "=> Installing cross-binutils...\n"
+printf -- "${BLUEC}=>${NORMALC} Installing cross-binutils...\n"
 make \
   install-strip-binutils \
   install-strip-gas \
@@ -308,15 +311,12 @@ printf -- \n
 # We track GCC's prerequisites manually instead of using
 # `contrib/download_prerequisites` in gcc's sources.
 #
-printf -- "=> Preparing GCC prerequisites...\n"
+printf -- "=${GREENC}>${NORMALC} Preparing cross-gcc...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
 cp -ar $SRCDIR/mpc/mpc-$mpc_ver $SRCDIR/gcc/gcc-$gcc_ver/mpc
 cp -ar $SRCDIR/isl/isl-$isl_ver $SRCDIR/gcc/gcc-$gcc_ver/isl
 
-printf -- \n
-
-printf -- "=> Preparing cross-gcc...\n"
 cd $BLDDIR
 mkdir cross-gcc
 cd cross-gcc
@@ -331,23 +331,23 @@ cd cross-gcc
 # make sure you have zstd (or zstd-devel or whatever it's called) installed on
 # your host.
 #
-printf -- "=> Configuring cross-gcc...\n"
+printf -- "${BLUEC}=>${NORMALC} Configuring cross-gcc...\n"
 CFLAGS=-O2 \
 CXXFLAGS=-O2 \
 $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --prefix=$MPREFIX \
-  --target=$XARCH \
+  --target=$XTARGET \
   --with-sysroot=$MSYSROOT \
   --enable-languages=c,c++ \
   --disable-multilib \
   --enable-initfini-array
 
-printf -- "=> Building cross-gcc compiler...\n"
+printf -- "${BLUEC}=>${NORMALC} Building cross-gcc compiler...\n"
 mkdir -p $MSYSROOT/usr/include
 make \
   all-gcc
 
-printf -- "=> Installing cross-gcc compiler...\n"
+printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc compiler...\n"
 make \
   install-strip-gcc
 
@@ -360,16 +360,16 @@ printf -- \n
 # to our cross compiler. (firasuke)
 #
 cd $BLDDIR/musl
-sed "s/CC = gcc/CC = $XARCH-gcc/" -i config.mak
+sed "s/CC = gcc/CC = $XTARGET-gcc/" -i config.mak
 
-printf -- "=> Building musl...\n"
+printf -- "${BLUEC}=>${NORMALC} Building musl...\n"
 make
 
 #
 # Notice how we're only installing musl's libs and tools here as the headers
 # were previously installed separately.
 #
-printf -- "=> Installing musl...\n"
+printf -- "${BLUEC}=>${NORMALC} Installing musl...\n"
 make \
   DESTDIR=$MSYSROOT \
   install-libs \
@@ -387,14 +387,14 @@ printf -- \n
 #
 # Step 5: cross-gcc (libgcc)
 #
-printf -- "=> Preparing cross-gcc libgcc...\n"
+printf -- "${GREENC}=>${NORMALC} Preparing cross-gcc libgcc...\n"
 cd $BLDDIR/cross-gcc
 
-printf -- "=> Building cross-gcc libgcc...\n"
+printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgcc...\n"
 make \
   all-target-libgcc
 
-printf -- -"=> Installing cross-gcc libgcc...\n"
+printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgcc...\n"
 make \
   install-strip-target-libgcc
 
@@ -405,11 +405,11 @@ printf -- \n
 #
 # C++ support is enabled by default.
 #
-printf -- "=> Building cross-gcc libstdc++-v3...\n"
+printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libstdc++-v3...\n"
 make \
   all-target-libstdc++-v3
 
-printf -- "=> Installing cross-gcc libstdc++-v3...\n"
+printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libstdc++-v3...\n"
 make \
   install-strip-target-libstdc++-v3
 
@@ -420,12 +420,12 @@ printf -- \n
 #
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
-#printf -- "=> Building cross-gcc libgomp...\n"
+#printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgomp...\n"
 #make \
 #  all-target-libgomp
 
-#printf -- "=> Installing cross-gcc libgomp...\n"
+#printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgomp...\n"
 #make \
 #  install-strip-target-libgomp
 
-printf -- "=> Done! Enjoy your new cross compiler targeting musl libc!\n"
+printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new cross compiler targeting musl libc!\n"
