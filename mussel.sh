@@ -155,7 +155,7 @@ printf -- "${BLUEC}=>${NORMALC} Applying gcc Enable-CET-in-cross-compiler-if-pos
 cd $SRCDIR/gcc/gcc-$gcc_ver
 patch -p1 -i $PCHDIR/gcc/Enable-CET-in-cross-compiler-if-possible.patch
 
-printf -- \n
+printf -- '\n'
 
 #
 # Don't change anything from here on, unless you know what you're doing.
@@ -211,7 +211,7 @@ CXXFLAGS=-O2
 #
 PATH=$MPREFIX/bin:/usr/bin:/bin
 
-printf -- \n
+printf -- '\n'
 
 #
 # Step 1: musl headers
@@ -254,7 +254,7 @@ make \
   DESTDIR=$MSYSROOT \
   install-headers
 
-printf -- \n
+printf -- '\n'
 
 #
 # Step 2: cross-binutils
@@ -303,7 +303,7 @@ make \
   install-strip-gas \
   install-strip-ld
 
-printf -- \n
+printf -- '\n'
 
 #
 # Step 3: cross-gcc (compiler)
@@ -351,7 +351,7 @@ printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc compiler...\n"
 make \
   install-strip-gcc
 
-printf -- \n
+printf -- '\n'
 
 #
 # Step 4: musl
@@ -382,7 +382,7 @@ make \
 rm -f $MSYSROOT/lib/ld-musl-x86_64.so.1
 cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-x86_64.so.1
 
-printf -- \n
+printf -- '\n'
 
 #
 # Step 5: cross-gcc (libgcc)
@@ -398,7 +398,7 @@ printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgcc...\n"
 make \
   install-strip-target-libgcc
 
-printf -- \n
+printf -- '\n'
 
 #
 # [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3)
@@ -413,7 +413,7 @@ printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libstdc++-v3...\n"
 make \
   install-strip-target-libstdc++-v3
 
-printf -- \n
+printf -- '\n'
 
 #
 # [Optional For OpenMP Support] Step 7: cross-gcc (libgomp)
