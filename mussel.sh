@@ -207,6 +207,15 @@ CFLAGS=-O2
 CXXFLAGS=-O2
 
 #
+# Make command
+#
+# This ensures that no documentation is being built, and it prevents binutils
+# from requiring texinfo (binutils looks for makeinfo, and it fails if it
+# doesn't find it, and the build stops) (musl-cross-make)
+#
+MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
+
+#
 # PATH (Use host tools, then switch to ours when they're available)
 #
 PATH=$MPREFIX/bin:/usr/bin:/bin
@@ -250,7 +259,7 @@ $SRCDIR/musl/musl-$musl_ver/configure \
 # and binutils `--with-sysroot` value... (firasuke)
 #
 printf -- "${BLUEC}=>${NORMALC} Installing musl headers...\n"
-make \
+$MAKE \
   DESTDIR=$MSYSROOT \
   install-headers
 
@@ -292,13 +301,13 @@ $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --disable-werror
 
 printf -- "${BLUEC}=>${NORMALC} Building cross-binutils...\n"
-make \
+$MAKE \
   all-binutils \
   all-gas \
   all-ld
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-binutils...\n"
-make \
+$MAKE \
   install-strip-binutils \
   install-strip-gas \
   install-strip-ld
@@ -344,11 +353,11 @@ $SRCDIR/gcc/gcc-$gcc_ver/configure \
 
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc compiler...\n"
 mkdir -p $MSYSROOT/usr/include
-make \
+$MAKE \
   all-gcc
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc compiler...\n"
-make \
+$MAKE \
   install-strip-gcc
 
 printf -- '\n'
@@ -363,14 +372,14 @@ cd $BLDDIR/musl
 sed "s/CC = gcc/CC = $XTARGET-gcc/" -i config.mak
 
 printf -- "${BLUEC}=>${NORMALC} Building musl...\n"
-make
+$MAKE
 
 #
 # Notice how we're only installing musl's libs and tools here as the headers
 # were previously installed separately.
 #
 printf -- "${BLUEC}=>${NORMALC} Installing musl...\n"
-make \
+$MAKE \
   DESTDIR=$MSYSROOT \
   install-libs \
   install-tools
@@ -391,11 +400,11 @@ printf -- "${GREENC}=>${NORMALC} Preparing cross-gcc libgcc...\n"
 cd $BLDDIR/cross-gcc
 
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgcc...\n"
-make \
+$MAKE \
   all-target-libgcc
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgcc...\n"
-make \
+$MAKE \
   install-strip-target-libgcc
 
 printf -- '\n'
@@ -406,11 +415,11 @@ printf -- '\n'
 # C++ support is enabled by default.
 #
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libstdc++-v3...\n"
-make \
+$MAKE \
   all-target-libstdc++-v3
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libstdc++-v3...\n"
-make \
+$MAKE \
   install-strip-target-libstdc++-v3
 
 printf -- '\n'
@@ -421,11 +430,11 @@ printf -- '\n'
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
 #printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgomp...\n"
-#make \
+#$MAKE \
 #  all-target-libgomp
 
 #printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgomp...\n"
-#make \
+#$MAKE \
 #  install-strip-target-libgomp
 
 printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new cross compiler targeting musl libc!\n"

@@ -8,9 +8,9 @@ addons:
     - bzip2
     - lzip
     - zstd
-    - texinfo
 before_install:
   - sudo git clone https://github.com/firasuke/mussel
   - cd mussel
 install:
-  - sudo dash mussel.sh > /dev/null
+  - sudo dash mussel.sh > temp.log
+  - sudo sed 500q temp.log
