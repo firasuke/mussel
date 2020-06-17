@@ -12,8 +12,8 @@ compilers that target musl libc.
 4. **Small**: all installation steps use `install-strip` when applicable
 5. **Simple**: easy to read, modify and extend
 6. **POSIX Compliant**: written entirely in POSIX DASH
-7. **Well Documented**: the script has comments (that are state of the art
-   information) all over the place explaining what is being done
+7. **Well Documented**: the script has comments (that are considered state of
+   the art information) all over the place explaining what is being done and why
 
 ## Supported Architectures
 * x86-64
