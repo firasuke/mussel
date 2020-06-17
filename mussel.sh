@@ -211,9 +211,11 @@ CXXFLAGS=-O2
 #
 # This ensures that no documentation is being built, and it prevents binutils
 # from requiring texinfo (binutils looks for makeinfo, and it fails if it
-# doesn't find it, and the build stops) (musl-cross-make)
+# doesn't find it, and the build stops). (musl-cross-make)
 #
-MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=false"
+# Also please don't use `MAKEINFO=false', because binutils will still fail.
+#
+MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
 
 #
 # PATH (Use host tools, then switch to ours when they're available)
