@@ -213,7 +213,7 @@ CXXFLAGS=-O2
 # from requiring texinfo (binutils looks for makeinfo, and it fails if it
 # doesn't find it, and the build stops) (musl-cross-make)
 #
-MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
+MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=false"
 
 #
 # PATH (Use host tools, then switch to ours when they're available)
