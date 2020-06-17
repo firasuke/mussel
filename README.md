@@ -48,7 +48,7 @@ information) all over the place explaining what is being done.
 * Build, and install `libstdc++-v3` (Enabled by default for C++ support)
 * Build, and install `libgomp` (For OpenMP support, disabled by default)
 
-## Inspiration
+## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian, [qword](https://github.com/qword-os), [The
 Managram Project](https://github.com/managarm), and [glaucus](https://www.glaucuslinux.org/) (where it's actually implemented).
 
