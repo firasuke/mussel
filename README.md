@@ -49,8 +49,8 @@ information) all over the place explaining what is being done.
 * Build, and install `libgomp` (For OpenMP support, disabled by default)
 
 ## Inspiration
-mussel is possible thanks to the awesome work done by Aurelian, qword, The
-Managram Project, and glaucus[] (where it's actually implemented).
+mussel is possible thanks to the awesome work done by Aurelian, [qword](https://github.com/qword-os), [The
+Managram Project](https://github.com/managarm), and [glaucus](https://www.glaucuslinux.org/) (where it's actually implemented).
 
 ## Supported Architectures
 * x86-64
