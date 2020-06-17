@@ -303,10 +303,10 @@ make \
 printf -- \n
 
 #
-# Step 3: GCC Prerequisites
+# Step 3: cross-gcc (compiler)
 # 
-# We track them manually instead of using `contrib/download_prerequisites` in
-# gcc's sources.
+# We track GCC's prerequisites manually instead of using
+# `contrib/download_prerequisites` in gcc's sources.
 #
 printf -- "=> Preparing GCC prerequisites...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
@@ -316,9 +316,6 @@ cp -ar $SRCDIR/isl/isl-$isl_ver $SRCDIR/gcc/gcc-$gcc_ver/isl
 
 printf -- \n
 
-#
-# Step 4: cross-gcc (compiler)
-#
 printf -- "=> Preparing cross-gcc...\n"
 cd $BLDDIR
 mkdir cross-gcc
@@ -357,7 +354,7 @@ make \
 printf -- \n
 
 #
-# Step 5: musl
+# Step 4: musl
 #
 # Notice how we use sed to modify the config.mak file to build it with `CC` set
 # to our cross compiler. (firasuke)
@@ -388,7 +385,7 @@ cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-x86_64.so.1
 printf -- \n
 
 #
-# Step 6: cross-gcc (libgcc)
+# Step 5: cross-gcc (libgcc)
 #
 printf -- "=> Preparing cross-gcc libgcc...\n"
 cd $BLDDIR/cross-gcc
@@ -404,7 +401,7 @@ make \
 printf -- \n
 
 #
-# [Optional For C++ Support] Step 7: cross-gcc (libstdc++-v3)
+# [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3)
 #
 # C++ support is enabled by default.
 #
@@ -419,7 +416,7 @@ make \
 printf -- \n
 
 #
-# [Optional For OpenMP Support] Step 8: cross-gcc (libgomp)
+# [Optional For OpenMP Support] Step 7: cross-gcc (libgomp)
 #
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
