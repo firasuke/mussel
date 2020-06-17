@@ -13,4 +13,4 @@ before_install:
   - sudo git clone https://github.com/firasuke/mussel
   - cd mussel
 install:
-  - sudo dash mussel.sh
+  - sudo dash mussel.sh > /dev/null
