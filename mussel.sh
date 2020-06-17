@@ -3,10 +3,6 @@
 # Copyright (c) 2020, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
-#
-# Credits to Aurelian, qword and managram for making this possible
-#
-
 set -e
 umask 022
 
