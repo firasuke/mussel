@@ -11,6 +11,5 @@ addons:
 before_install:
   - sudo git clone https://github.com/firasuke/mussel
   - cd mussel
-  - sudo ln -fnsv /bin/dash /usr/bin/dash
 install:
-  - ./mussel.sh
+  - sudo dash mussel.sh
