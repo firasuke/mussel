@@ -128,9 +128,9 @@ XTARGET=$XARCH-linux-musl
 #
 if [ "$XARCH" = "x86_64" ]; then
   XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-else if [ "$XARCH" = "powerpc64" ]; then
+elif [ "$XARCH" = "powerpc64" ]; then
   XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
-else if [ "$XARCH" = "powerpc64le" ]; then
+elif [ "$XARCH" = "powerpc64le" ]; then
   XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
 fi
 
