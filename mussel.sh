@@ -139,19 +139,19 @@ fi
 #
 mpatch() {
   cd $PCHDIR
-  [ ! -d "$1" ] && mkdir "$1"
-  cd "$1"
+  [ ! -d "$2" ] && mkdir "$2"
+  cd "$2"
 
-  if [ ! -f "$3".patch ]; then
-    printf -- "${GREENC}=>${NORMALC} Fetching $1 ${3}.patch from $4...\n"
-    wget https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/$1/patches/$4/${3}.patch
+  if [ ! -f "$4".patch ]; then
+    printf -- "${GREENC}=>${NORMALC} Fetching $2 ${4}.patch from $5...\n"
+    wget https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/$2/patches/$5/${4}.patch
   else
-    printf -- "${REDC}=>${NORMALC} ${3}.patch already exists, skipping...\n"
+    printf -- "${REDC}=>${NORMALC} ${4}.patch already exists, skipping...\n"
   fi
 
-  printf -- "${BLUEC}=>${NORMALC} Applying $1 ${3}.patch from $4...\n"
-  cd $SRCDIR/$1/$1-$2
-  patch -p0 -i $PCHDIR/$1/${3}.patch
+  printf -- "${BLUEC}=>${NORMALC} Applying $2 ${4}.patch from $5...\n"
+  cd $SRCDIR/$2/$2-$3
+  patch -p$1 -i $PCHDIR/$2/${4}.patch
 }
 
 #
@@ -164,7 +164,7 @@ mpatch() {
 # patched (simply by passing `--ffast-math` to prevent it from relying on
 # libgcc). (Aurelian & firasuke)
 #
-mpatch musl "$musl_ver" 0002-enable-fast-math qword 
+mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword 
 
 #
 # The following patches from glaucus for powerpc64 and powerpc64le remove
@@ -176,15 +176,15 @@ mpatch musl "$musl_ver" 0002-enable-fast-math qword
 # because they work just fine without it.
 #
 if [ "$XTARGET" = "powerpc64-linux-musl" || "$XTARGET" = "powerpc64le-linux-musl" ]; then 
-  mpatch musl "$musl_ver" 0001-powerpc-support glaucus
-  mpatch musl "$musl_ver" 0001-powerpc64-support glaucus
+  mpatch 0 musl "$musl_ver" 0001-powerpc-support glaucus
+  mpatch 0 musl "$musl_ver" 0001-powerpc64-support glaucus
 fi
 
 #
 # The gcc patch is for a bug that forces CET when cross compiling in both lto-plugin
 # and libiberty.
 #
-mpatch gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
+mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
 
 printf -- '\n'
 
