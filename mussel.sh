@@ -63,18 +63,18 @@ PCHDIR="$CURDIR/patches"
 [ ! -d $PCHDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
 
 #
-# Preparation Function - gtpackage()
+# Preparation Function - mpackage()
 #
-gtpackage() {
+mpackage() {
   cd $SRCDIR
 
-  if [ ! -d $1 ]; then
-    mkdir $1
+  if [ ! -d "$1" ]; then
+    mkdir "$1"
   else
     printf -- "${REDC}=>${NORMALC} $1 source directory already exists, skipping...\n"
   fi
 
-  cd $1
+  cd "$1"
 
   HOLDER="$(basename $2)"
 
@@ -99,17 +99,60 @@ gtpackage() {
   printf -- \n
 }
 
-gtpackage binutils "$binutils_url" $binutils_sum $binutils_ver
-gtpackage gcc "$gcc_url" $gcc_sum $gcc_ver
-gtpackage gmp "$gmp_url" $gmp_sum $gmp_ver
-gtpackage isl "$isl_url" $isl_sum $isl_ver
-gtpackage mpc "$mpc_url" $mpc_sum $mpc_ver
-gtpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
-gtpackage musl "$musl_url" $musl_sum $musl_ver
+mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
+mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
+mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
+mpackage isl "$isl_url" $isl_sum $isl_ver
+mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
+mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
+mpackage musl "$musl_url" $musl_sum $musl_ver
+
+#
+# Available Architectures
+#
+# Onle one architecture should be uncommented! Also please note that support for
+# powerpc64 and power64le is currently experimental.
+#
+XARCH=x86_64
+#XARCH=powerpc64
+#XARCH=powerpc64le
+
+XTARGET=$XARCH-linux-musl
+
+#
+# It's also common to see `--enable-secureplt' added to cross gcc args when the
+# target is powerpc*, but that's only the case to get musl to support 32-bit
+# powerpc (as instructed by musl's wiki, along with --with-long-double-64). For
+# 64-bit powerpc like powerpc64 and powerpc64le, there's no need to explicitly
+# specify it. (needs more investigation, but works without it)
+#
+if [ "$XARCH" = "x86_64" ]; then
+  XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+else if [ "$XARCH" = "powerpc64" ]; then
+  XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
+else if [ "$XARCH" = "powerpc64le" ]; then
+  XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
+fi
 
 #
 # Patching
 #
+mpatch() {
+  cd $PCHDIR
+  [ ! -d "$1" ] && mkdir "$1"
+  cd "$1"
+
+  if [ ! -f "$3".patch ]; then
+    printf -- "${GREENC}=>${NORMALC} Fetching $1 ${3}.patch from $4...\n"
+    wget https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/$1/patches/$4/${3}.patch
+  else
+    printf -- "${REDC}=>${NORMALC} ${3}.patch already exists, skipping...\n"
+  fi
+
+  printf -- "${BLUEC}=>${NORMALC} Applying $1 ${3}.patch from $4...\n"
+  cd $SRCDIR/$1/$1-$2
+  patch -p0 -i $PCHDIR/$1/${3}.patch
+}
 
 #
 # The musl patch allows us to pass `-ffast-math` in CFLAGS when building musl
@@ -121,62 +164,44 @@ gtpackage musl "$musl_url" $musl_sum $musl_ver
 # patched (simply by passing `--ffast-math` to prevent it from relying on
 # libgcc). (Aurelian & firasuke)
 #
-cd $PCHDIR
-[ ! -d musl ] && mkdir musl
-cd musl
+mpatch musl "$musl_ver" 0002-enable-fast-math qword 
 
-if [ ! -f 0002-enable-fast-math.patch ]; then
-  printf -- "${GREENC}=>${NORMALC} Fetching musl 0002-enable-fast-math.patch from qword...\n"
-  wget https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/musl/patches/qword/0002-enable-fast-math.patch
-else
-  printf -- "${REDC}=>${NORMALC} 0002-enable-fast-math.patch already exists, skipping...\n"
+#
+# The following patches from glaucus for powerpc64 and powerpc64le remove
+# certain checks for cross gcc/libgcc in musl's configure script to allow musl
+# to configure and install its headers at first before cross gcc and libgcc are
+# built.
+#
+# They also remove musl's libgcc dependency for powerpc64 and powerpc64le
+# because it works fine without them.
+#
+if [ "$XTARGET" = "powerpc64-linux-musl" || "$XTARGET" = "powerpc64le-linux-musl" ]; then 
+  mpatch musl "$musl_ver" 0001-powerpc-support glaucus
+  mpatch musl "$musl_ver" 0001-powerpc64-support glaucus
 fi
-
-printf -- "${BLUEC}=>${NORMALC} Applying musl 0002-enable-fast-math.patch from qword...\n"
-cd $SRCDIR/musl/musl-$musl_ver
-patch -p0 -i $PCHDIR/musl/0002-enable-fast-math.patch
 
 #
 # The gcc patch is for a bug that forces CET when cross compiling in both lto-plugin
 # and libiberty.
 #
-cd $PCHDIR
-[ ! -d gcc ] && mkdir gcc
-cd gcc
-
-if [ ! -f Enable-CET-in-cross-compiler-if-possible.patch ]; then
-  printf -- "${GREENC}=>${NORMALC} Fetching gcc Enable-CET-in-cross-compiler-if-possible.patch from upstream...\n"
-  wget https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch
-else
-  printf -- "${REDC}=>${NORMALC} Enable-CET-in-cross-compiler-if-possible.patch already exists, skipping...\n"
-fi
-
-printf -- "${BLUEC}=>${NORMALC} Applying gcc Enable-CET-in-cross-compiler-if-possible.patch from upstream...\n"
-cd $SRCDIR/gcc/gcc-$gcc_ver
-patch -p1 -i $PCHDIR/gcc/Enable-CET-in-cross-compiler-if-possible.patch
+mpatch gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
 
 printf -- '\n'
 
 #
 # Don't change anything from here on, unless you know what you're doing.
 #
-if [ -d "$CURDIR/builds" ]; then
-  printf -- "${GREENC}=>${NORMALC} Cleaning builds directory...\n"
-  rm -fr "$CURDIR/builds"
-  mkdir "$CURDIR/builds"
-fi
+mclean() {
+  if [ -d "$CURDIR/$1" ]; then
+    printf -- "${GREENC}=>${NORMALC} Cleaning $1 directory...\n"
+    rm -fr "$CURDIR/$1"
+    mkdir "$CURDIR/$1"
+  fi
+}
 
-if [ -d "$CURDIR/toolchain" ]; then
-  printf -- "${GREENC}=>${NORMALC} Cleaning toolchain directory...\n"
-  rm -fr "$CURDIR/toolchain"
-  mkdir "$CURDIR/toolchain"
-fi
-
-if [ -d "$CURDIR/sysroot" ]; then
-  printf -- "${GREENC}=>${NORMALC} Cleaning sysroot directory...\n"
-  rm -fr "$CURDIR/sysroot"
-  mkdir "$CURDIR/sysroot"
-fi
+mclean builds
+mclean toolchain
+mclean sysroot
 
 #
 # Build Directories
@@ -187,18 +212,6 @@ fi
 #
 MPREFIX="$CURDIR/toolchain"
 MSYSROOT="$CURDIR/sysroot"
-
-#
-# Available Architectures
-#
-XTARGET=x86_64-linux-musl
-
-#
-# Uncomment this, and comment the above architecture if you want to target
-# powerpc64. Please do note that powerpc64 support is experimental at the
-# moment.
-#
-#XTARGET=powerpc64-linux-musl
 
 #
 # FLAGS
@@ -245,7 +258,7 @@ cd musl
 # We also disable `--disable-static` since we want a shared version.
 #
 printf -- "${BLUEC}=>${NORMALC} Configuring musl...\n"
-ARCH=x86_64 \
+ARCH=$XARCH \
 CC=gcc \
 CFLAGS='-O2 -ffast-math' \
 CROSS_COMPILE=$XTARGET- \
@@ -351,7 +364,7 @@ $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --with-sysroot=$MSYSROOT \
   --enable-languages=c,c++ \
   --disable-multilib \
-  --enable-initfini-array
+  --enable-initfini-array $XGCCARGS
 
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc compiler...\n"
 mkdir -p $MSYSROOT/usr/include
@@ -390,8 +403,8 @@ $MAKE \
 # Almost all implementations of musl based toolchains would want to change the
 # symlink between LDSO and the libc.so because it'll be wrong almost always...
 #
-rm -f $MSYSROOT/lib/ld-musl-x86_64.so.1
-cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-x86_64.so.1
+rm -f $MSYSROOT/lib/ld-musl-$XARCH.so.1
+cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
 
 printf -- '\n'
 
