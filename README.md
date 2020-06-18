@@ -18,6 +18,7 @@ compilers that target musl libc.
 ## Supported Architectures
 * x86-64
 * powerpc64
+* powerpc64le
 
 ## Packages
 1. `binutils`: 2.34
