@@ -116,7 +116,7 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 # The following architectures don't require a static libgcc to be built before
 # musl.
 #
-XARCH=x86_64
+#XARCH=x86_64
 #XARCH=powerpc64
 #XARCH=powerpc64le
 
@@ -128,7 +128,7 @@ XARCH=x86_64
 # They're mostly 32-bit architectures like the i686 (which is the only one
 # supported atm), powerpc, aarch64 (64-bit ARM) and riscv64 (64-bit RISC-V).
 #
-#XARCH=i686
+XARCH=i686
 
 XTARGET=$XARCH-linux-musl
 
