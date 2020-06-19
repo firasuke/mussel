@@ -472,7 +472,7 @@ fi
 #
 cd $BLDDIR/musl
 sed -e "s/CC = gcc/CC = $XTARGET-gcc/" \
-  -e "LIBCC =  /LIBCC = $MLIBCC/" \
+  -e "s/LIBCC =  /LIBCC = $MLIBCC/" \
   -i config.mak
 
 printf -- "${BLUEC}=>${NORMALC} Building musl...\n"
