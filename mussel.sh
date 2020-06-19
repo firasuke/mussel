@@ -110,8 +110,8 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 #
 # Available Architectures
 #
-# Onle one architecture should be uncommented! Also please note that support for
-# powerpc64 and power64le is currently experimental.
+# Onle one architecture should be uncommented! All listed archs were tested and 
+# are fully working!
 #
 XARCH=x86_64
 #XARCH=powerpc64
