@@ -139,7 +139,7 @@ XTARGET=$XARCH-linux-musl
 # 64-bit powerpc like powerpc64 and powerpc64le, there's no need to explicitly
 # specify it. (needs more investigation, but works without it)
 #
-case "XARCH" in
+case "$XARCH" in
   x86_64)
     XGCCARGS="--with-arch=x86-64 --with-tune=generic"
     MLIBCC=
@@ -454,7 +454,7 @@ if [ "$MLIBCC" = "-lgcc" ]; then
   $MAKE \
     all-target-libgcc
 
-  printf -- "${BLUEC}=>${NORMALC} Installing libgcc-static compiler...\n"
+  printf -- "${BLUEC}=>${NORMALC} Installing libgcc-static...\n"
   $MAKE \
     install-strip-target-libgcc
 
