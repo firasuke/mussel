@@ -144,7 +144,7 @@ mpatch() {
 
   if [ ! -f "$4".patch ]; then
     printf -- "${GREENC}=>${NORMALC} Fetching $2 ${4}.patch from $5...\n"
-    wget https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/$2/patches/$5/${4}.patch
+    wget https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
   else
     printf -- "${REDC}=>${NORMALC} ${4}.patch already exists, skipping...\n"
   fi
