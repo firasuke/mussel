@@ -283,6 +283,9 @@ cd musl
 #
 # Also notice how `CROSS_COMPILE` isn't empty here, and it should end with `-`.
 #
+# Notice how "LIBCC=' '", don't change this to "LIBC=" or "LIBC= " as it won't
+# work.
+#
 # We also disable `--disable-static` since we want a shared version.
 #
 printf -- "${BLUEC}=>${NORMALC} Configuring musl...\n"
