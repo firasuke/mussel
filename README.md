@@ -16,9 +16,10 @@ compilers that target musl libc.
    the art information) all over the place explaining what is being done and why
 
 ## Supported Architectures
-* x86-64
+* i686 (requires `libgcc-static`, see **Additional Steps** below)
 * powerpc64
 * powerpc64le
+* x86-64
 
 ## Packages
 1. `binutils`: 2.34
@@ -54,6 +55,8 @@ compilers that target musl libc.
 ## Additional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
+* Configure, build and install `libgcc-static` (Automatically done for
+  architectures that require it)
 
 ## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian,
