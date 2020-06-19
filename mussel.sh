@@ -96,7 +96,7 @@ mpackage() {
   printf -- "${GREENC}=>${NORMALC} Unpacking $HOLDER...\n"
   tar xf $HOLDER -C .
 
-  printf -- \n
+  printf -- '\n'
 }
 
 mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
@@ -175,7 +175,7 @@ mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword
 # They also remove musl's libgcc dependency for powerpc64 and powerpc64le
 # because they work just fine without it.
 #
-if [ "$XTARGET" = "powerpc64-linux-musl" || "$XTARGET" = "powerpc64le-linux-musl" ]; then 
+if [ "$XTARGET" = "powerpc64-linux-musl" ] || [ "$XTARGET" = "powerpc64le-linux-musl" ]; then 
   mpatch 0 musl "$musl_ver" 0001-powerpc-support glaucus
   mpatch 0 musl "$musl_ver" 0001-powerpc64-support glaucus
 fi
