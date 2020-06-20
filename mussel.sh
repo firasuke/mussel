@@ -268,7 +268,6 @@ printf -- "+===========================================+\n"
 printf -- "| mussel.sh - musl-libc Toolchain Generator |\n"
 printf -- "+-------------------------------------------+\n"
 printf -- "|  Licensed under ISC. Created by Firasuke  |\n"
-printf -- "|  With help from AwlsomeAlex and Aurelian  |\n"
 printf -- "+===========================================+\n"
 printf -- "Targeted Architecture: $XARCH\n\n"
 
