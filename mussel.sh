@@ -6,17 +6,22 @@
 set -e
 umask 022
 
-#
-# Colors
-#
+#---------------------------------#
+# ---------- Variables ---------- #
+#---------------------------------#
+
+# ----- Arguments ----- #
+EXEC=$0
+XARCH=$1
+FLAG=$2
+
+# ----- Colors ----- #
 BLUEC='\033[1;34m'
 REDC='\033[1;31m'
 GREENC='\033[1;32m'
 NORMALC='\033[0m'
 
-#
-# Package Versions
-#
+# ----- Package Versions ----- #
 binutils_ver=2.34
 gcc_ver=10.1.0
 gmp_ver=6.2.0
@@ -25,9 +30,7 @@ mpc_ver=1.1.0
 mpfr_ver=4.0.2
 musl_ver=1.2.0
 
-#
-# Package URLs
-#
+# ----- Package URLs ----- #
 # The usage of ftpmirror for GNU packages is preferred. We also try to use the
 # smallest available tarballs from upstream (so .lz > .xz > .bzip2 > .gz).
 #
@@ -39,9 +42,7 @@ mpc_url=https://ftpmirror.gnu.org/mpc/mpc-$mpc_ver.tar.gz
 mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 
-#
-# Package Checksums (sha512sum)
-#
+# ----- Package Checksums (sha512sum) ----- #
 binutils_sum=f4aadea1afa85d9ceb7be377afab9270a42ab0fd1fae86a7c69510b80de1aaac76f15cfb8730f9d233466a89fd020ab7e6e705e754c6b40f5fe2d16a5214562e
 gcc_sum=0cb2a74c793face751f42bc580960b00e2bfea785872a0a2155f1f1dbfaa248f9591b67f4322db0f096f8844aca9243bc02732bda106c3b6e43b02bb67eb3096
 gmp_sum=9975e8766e62a1d48c0b6d7bbdd2fccb5b22243819102ca6c8d91f0edd2d3a1cef21c526d647c2159bb29dd2a7dcbd0d621391b2e4b48662cf63a8e6749561cd
@@ -50,21 +51,142 @@ mpc_sum=72d657958b07c7812dc9c7cbae093118ce0e454c68a585bfb0e2fa559f1bf7c5f49b9390
 mpfr_sum=d583555d08863bf36c89b289ae26bae353d9a31f08ee3894520992d2c26e5683c4c9c193d7ad139632f71c0a476d85ea76182702a98bf08dde7b6f65a54f8b88
 musl_sum=58bd88189a6002356728cea1c6f6605a893fe54f7687595879add4eab283c8692c3b031eb9457ad00d1edd082cfe62fcc0eb5eb1d3bf4f1d749c0efa2a95fec1
 
-#
-# Development Directories
-#
+# ----- Development Directories ----- #
 CURDIR="$PWD"
 SRCDIR="$CURDIR/sources"
 BLDDIR="$CURDIR/builds"
 PCHDIR="$CURDIR/patches"
+# Please don't change $MSYSROOT to `$CURDIR/toolchain/$XTARGET` like CLFS and
+# other implementations because it'll break here (even if binutils insists
+# on installing stuff to that directory) (firasuke).
+#
+MPREFIX="$CURDIR/toolchain"
+MSYSROOT="$CURDIR/sysroot"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
 [ ! -d $PCHDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
 
+# ----- Available Architectures ----- #
+# Only one architecture should be uncommented! All listed archs were tested and 
+# are fully working!
 #
-# Preparation Function - mpackage()
+# The following architectures don't require a static libgcc to be built before
+# musl.
 #
+# x86_64
+# powerpc64
+# powerpc64le
+
+#
+# The following architectures require a static libgcc to be built before musl.
+# This static libgcc won't be linked against any C library, and will suffice to
+# to build musl for these architectures.
+#
+# They're mostly 32-bit architectures like the i686 (which is the only one
+# supported atm), powerpc, aarch64 (64-bit ARM) and riscv64 (64-bit RISC-V).
+#
+# i686
+
+
+# ----- Compilation Arguments ----- #
+# It's also common to see `--enable-secureplt' added to cross gcc args when the
+# target is powerpc*, but that's only the case to get musl to support 32-bit
+# powerpc (as instructed by musl's wiki, along with --with-long-double-64). For
+# 64-bit powerpc like powerpc64 and powerpc64le, there's no need to explicitly
+# specify it. (needs more investigation, but works without it)
+#
+case "$XARCH" in
+  "")
+    printf -- "${REDC}=>${NORMALC} No Architecture Specified!\n"
+    printf -- "Refer to '$EXEC -h' for help.\n"
+    exit 1
+    ;;
+  x86_64)
+    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    MLIBCC=
+    ;;
+  powerpc64)
+    XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
+    MLIBCC=
+    ;;
+  powerpc64le)
+    XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
+    MLIBCC=
+    ;;
+  i686)
+    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    MLIBCC=-lgcc
+    ;;
+  clean)
+    printf -- "${GREENC}=>${NORMALC} Cleaning mussel...\n" 
+    rm -rf $SRCDIR
+    rm -rf $BLDDIR
+    rm -rf $MPREFIX
+    rm -rf $MSYSROOT
+    printf -- "${GREENC}=>${NORMALC} Cleaned mussel.\n"
+    exit
+    ;;
+  -h | --help)
+    printf -- "mussel - A musl-libc cross compiler toolchain generator\n"
+    printf -- "usage: $EXEC: [architecture]/[command] (flag)\n"
+    printf -- "\nSupported Architectures:\n"
+    printf -- "\tNo Static libgcc:\tx86_64, powerpc64, powerpc64le\n"
+    printf -- "\tStatic libgcc:\t\ti686"
+    printf -- "\nCommand:\n"
+    printf -- "\tclean:\tCleans mussel environment\n"
+    printf -- "\nFlags:\n"
+    printf -- "\t--fast:\tCompiles musl toolchain using all available cores (-j flag).\n"
+    exit 1
+    ;;
+  *)
+    printf -- "${REDC}=>${NORMALC} Unsupported architecture: $XARCH\n"
+    exit 1
+    ;;
+esac
+
+# ----- Target ----- #
+XTARGET=$XARCH-linux-musl
+
+# ----- PATH ----- # 
+# Use host tools, then switch to ours when they're available
+#
+PATH=$MPREFIX/bin:/usr/bin:/bin
+
+# ----- Compiler Flags ----- #
+CFLAGS=-O2
+CXXFLAGS=-O2
+
+# ----- Make Flags ----- #
+# This ensures that no documentation is being built, and it prevents binutils
+# from requiring texinfo (binutils looks for makeinfo, and it fails if it
+# doesn't find it, and the build stops). (musl-cross-make)
+#
+# Also please don't use `MAKEINFO=false', because binutils will still fail.
+#
+# The --fast flag will use all available cores to compile mussel by using the -j make flag
+#
+if [ $FLAG = "--fast" ]; then
+  JOBS="$(expr $(nproc) + 1)"
+  MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true -j$JOBS"
+else
+  MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
+fi
+
+
+
+################################################
+# !!!!! DON'T CHANGE ANYTHING UNDER HERE !!!!! #
+# !!!!! UNLESS YOU KNOW WHAT YOURE DOING !!!!! #
+################################################
+
+
+
+#---------------------------------#
+# ---------- Functions ---------- #
+#---------------------------------#
+
+# ----- mpackage(): Preparation Function ----- #
 mpackage() {
   cd $SRCDIR
 
@@ -80,7 +202,7 @@ mpackage() {
 
   if [ ! -f "$HOLDER" ]; then
     printf -- "${GREENC}=>${NORMALC} Fetching "$HOLDER"...\n"
-    wget "$2"
+    wget -q --show-progress "$2"
   else
     printf -- "${REDC}=>${NORMALC} "$HOLDER" already exists, skipping...\n"
   fi
@@ -99,72 +221,7 @@ mpackage() {
   printf -- '\n'
 }
 
-mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
-mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
-mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
-mpackage isl "$isl_url" $isl_sum $isl_ver
-mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
-mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
-mpackage musl "$musl_url" $musl_sum $musl_ver
-
-#
-# Available Architectures
-#
-# Onle one architecture should be uncommented! All listed archs were tested and 
-# are fully working!
-#
-# The following architectures don't require a static libgcc to be built before
-# musl.
-#
-#XARCH=x86_64
-#XARCH=powerpc64
-#XARCH=powerpc64le
-
-#
-# The following architectures require a static libgcc to be built before musl.
-# This static libgcc won't be linked against any C library, and will suffice to
-# to build musl for these architectures.
-#
-# They're mostly 32-bit architectures like the i686 (which is the only one
-# supported atm), powerpc, aarch64 (64-bit ARM) and riscv64 (64-bit RISC-V).
-#
-XARCH=i686
-
-XTARGET=$XARCH-linux-musl
-
-#
-# It's also common to see `--enable-secureplt' added to cross gcc args when the
-# target is powerpc*, but that's only the case to get musl to support 32-bit
-# powerpc (as instructed by musl's wiki, along with --with-long-double-64). For
-# 64-bit powerpc like powerpc64 and powerpc64le, there's no need to explicitly
-# specify it. (needs more investigation, but works without it)
-#
-case "$XARCH" in
-  x86_64)
-    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-    MLIBCC=
-    ;;
-  powerpc64)
-    XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
-    MLIBCC=
-    ;;
-  powerpc64le)
-    XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
-    MLIBCC=
-    ;;
-  i686)
-    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-    MLIBCC=-lgcc
-    ;;
-  *)
-    printf -- "${REDC}=>${NORMALC} Unsupported architecture!\n"
-    exit 1
-    ;;
-esac
-
-#
-# Patching
-#
+# ----- mpatch(): Patching ----- #
 mpatch() {
   cd $PCHDIR
   [ ! -d "$2" ] && mkdir "$2"
@@ -182,7 +239,31 @@ mpatch() {
   patch -p$1 -i $PCHDIR/$2/${4}.patch
 }
 
-#
+# ----- mclean(): Clean Directories ----- #
+mclean() {
+  if [ -d "$CURDIR/$1" ]; then
+    printf -- "${GREENC}=>${NORMALC} Cleaning $1 directory...\n"
+    rm -fr "$CURDIR/$1"
+    mkdir "$CURDIR/$1"
+  fi
+}
+
+
+
+#--------------------------------------#
+# ---------- Execution Area ---------- #
+#--------------------------------------#
+
+# ----- Prepare Packages ----- #
+mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
+mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
+mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
+mpackage isl "$isl_url" $isl_sum $isl_ver
+mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
+mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
+mpackage musl "$musl_url" $musl_sum $musl_ver
+
+# ----- Patch Packages ----- #
 # The musl patch allows us to pass `-ffast-math` in CFLAGS when building musl
 # since musl requires libgcc and libgcc requires musl, so the build script needs
 # patching so that you can pass -ffast-math to CFLAGS. (Aurelian)
@@ -216,58 +297,14 @@ mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
 
 printf -- '\n'
 
-#
-# Don't change anything from here on, unless you know what you're doing.
-#
-mclean() {
-  if [ -d "$CURDIR/$1" ]; then
-    printf -- "${GREENC}=>${NORMALC} Cleaning $1 directory...\n"
-    rm -fr "$CURDIR/$1"
-    mkdir "$CURDIR/$1"
-  fi
-}
-
+# ----- Clean Directories ----- #
 mclean builds
 mclean toolchain
 mclean sysroot
 
-#
-# Build Directories
-#
-# Please don't change $MSYSROOT to `$CURDIR/toolchain/$XTARGET` like CLFS and
-# other implementations because it'll break here (even if binutils insists
-# on installing stuff to that directory) (firasuke).
-#
-MPREFIX="$CURDIR/toolchain"
-MSYSROOT="$CURDIR/sysroot"
-
-#
-# FLAGS
-#
-CFLAGS=-O2
-CXXFLAGS=-O2
-
-#
-# Make command
-#
-# This ensures that no documentation is being built, and it prevents binutils
-# from requiring texinfo (binutils looks for makeinfo, and it fails if it
-# doesn't find it, and the build stops). (musl-cross-make)
-#
-# Also please don't use `MAKEINFO=false', because binutils will still fail.
-#
-MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
-
-#
-# PATH (Use host tools, then switch to ours when they're available)
-#
-PATH=$MPREFIX/bin:/usr/bin:/bin
-
 printf -- '\n'
 
-#
-# Step 1: musl headers
-#
+# ----- Step 1: musl headers ----- #
 printf -- "${GREENC}=>${NORMALC} Preparing musl...\n"
 cd $BLDDIR
 mkdir musl
@@ -311,9 +348,7 @@ $MAKE \
 
 printf -- '\n'
 
-#
-# Step 2: cross-binutils
-#
+# ----- Step 2: cross-binutils ----- #
 printf -- "${GREENC}=>${NORMALC} Preparing cross-binutils...\n"
 cd $BLDDIR
 mkdir cross-binutils
@@ -360,9 +395,7 @@ $MAKE \
 
 printf -- '\n'
 
-#
-# Step 3: cross-gcc (compiler)
-# 
+# ----- Step 3: cross-gcc (compiler) ----- #
 # We track GCC's prerequisites manually instead of using
 # `contrib/download_prerequisites` in gcc's sources.
 #
@@ -464,9 +497,7 @@ if [ "$MLIBCC" = "-lgcc" ]; then
   printf -- '\n'
 fi
 
-#
-# Step 4: musl
-#
+# ----- Step 4: musl ----- #
 # Notice how we use sed to modify the config.mak file to build it with `CC` set
 # to our cross compiler. (firasuke)
 #
@@ -497,9 +528,7 @@ cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
 
 printf -- '\n'
 
-#
-# Step 5: cross-gcc (libgcc)
-#
+# ----- Step 5: cross-gcc (libgcc) ----- #
 printf -- "${GREENC}=>${NORMALC} Preparing cross-gcc libgcc...\n"
 cd $BLDDIR/cross-gcc
 
@@ -513,9 +542,7 @@ $MAKE \
 
 printf -- '\n'
 
-#
-# [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3)
-#
+# ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
 #
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libstdc++-v3...\n"
@@ -528,9 +555,7 @@ $MAKE \
 
 printf -- '\n'
 
-#
-# [Optional For OpenMP Support] Step 7: cross-gcc (libgomp)
-#
+# ----- [Optional For OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
 #printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgomp...\n"
@@ -541,4 +566,4 @@ printf -- '\n'
 #$MAKE \
 #  install-strip-target-libgomp
 
-printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new cross compiler targeting musl libc!\n"
+printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
