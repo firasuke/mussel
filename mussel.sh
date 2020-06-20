@@ -8,9 +8,9 @@
 set -e
 umask 022
 
-#---------------------------------#
-# ---------- Variables ---------- #
-#---------------------------------#
+#----------------------------------------#
+# ---------- Helper Variables ---------- #
+#----------------------------------------#
 
 # ----- Arguments ----- #
 EXEC=$0
@@ -70,11 +70,11 @@ MSYSROOT="$CURDIR/sysroot"
 MLOG="$CURDIR/log.txt"
 
 # ----- Available Architectures ----- #
-# Only one architecture should be uncommented! All listed archs were tested and 
-# are fully working!
+# All listed archs were tested and are fully working!
 #
 # The following architectures don't require a static libgcc to be built before
-# musl.
+# musl. They basically make use of the shortest way that mussel uses to build a
+# cross compiler targetting musl libc.
 #
 # x86_64
 # powerpc64
@@ -85,11 +85,10 @@ MLOG="$CURDIR/log.txt"
 # This static libgcc won't be linked against any C library, and will suffice to
 # to build musl for these architectures.
 #
-# They're mostly 32-bit architectures like the i686 (which is the only one
-# supported atm), powerpc, aarch64 (64-bit ARM) and riscv64 (64-bit RISC-V).
-#
 # i686
-# aarch64 (ARMv8-A)
+# aarch64
+# powerpc
+# riscv64
 
 # ----- Compilation Arguments ----- #
 # It's also common to see `--enable-secureplt' added to cross gcc args when the
@@ -117,35 +116,50 @@ case "$XARCH" in
     MLIBCC=
     ;;
   i686)
-    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    XGCCARGS="--with-arch=i686 --with-tune=generic"
     MLIBCC=-lgcc
     ;;
   aarch64)
-    XGCCARGS="--with-arch=armv8-a --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
+    XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
     MLIBCC=-lgcc
     ;;
-  clean)
+  powerpc)
+    XGCCARGS="--with-cpu=powerpc --enable-secureplt --with-long-double-64"
+    MLIBCC=-lgcc
+    ;;
+  riscv64)
+    XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
+    MLIBCC=-lgcc
+    ;;
+  c | -c | --clean)
     printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
-    rm -rf $SRCDIR
-    rm -rf $BLDDIR
-    rm -rf $MPREFIX
-    rm -rf $MSYSROOT
-    rm -rf $MLOG
+    rm -fr $SRCDIR
+    rm -fr $BLDDIR
+    rm -fr $MPREFIX
+    rm -fr $MSYSROOT
+    rm -fr $MLOG
     printf -- "${GREENC}=>${NORMALC} Cleaned mussel.\n"
     exit
     ;;
-  -h | --help)
-    printf -- "mussel - A musl-libc cross compiler toolchain generator\n"
-    printf -- "usage: $EXEC: [architecture]/[command] (flag)\n"
-    printf -- "\nSupported Architectures:\n"
-    printf -- "\tNo Static libgcc:\tx86_64, powerpc64, powerpc64le\n"
-    printf -- "\tStatic libgcc:\t\ti686, aarch64 (ARMv8-A)"
-    printf -- "\nCommand:\n"
-    printf -- "\tclean:\tCleans mussel environment\n"
-    printf -- "\nFlags:\n"
-    printf -- "\t--fast:\tCompiles musl toolchain using all available cores (-j flag).\n"
-    printf -- "Licensed under ISC. Created by Firas Khalil Khana.\n"
-    printf -- "No penguins were harmed in the making of this script :)\n\n"
+  h | -h | --help)
+    printf -- 'Copyright (c) 2020, Firas Khalil Khana\n'
+    printf -- 'Distributed under the terms of the ISC License\n'
+    printf -- '\n'
+    printf -- 'mussel - The fastest musl-libc cross compiler toolchain generator\n'
+    printf -- '\n'
+    printf -- "usage: $EXEC: [architecture]|[command] (flag)\n"
+    printf -- '\n'
+    printf -- '\nSupported Architectures:\n'
+    printf -- '\t- libgcc-static: x86_64, powerpc64, powerpc64le\n'
+    printf -- '\t+ libgcc-static: i686, aarch64, powerpc, riscv64\n'
+    printf -- '\n'
+    printf -- '\nCommands:\n'
+    printf -- '\tc | -c | --clean:\tCleans mussel environment\n'
+    printf -- '\n'
+    printf -- '\nFlags:\n'
+    printf -- '\tp | -p | --parallel:\tUses all available cores on the system\n'
+    printf -- '\n'
+    printf -- 'No penguins were harmed in the making of this script!\n\n'
     exit 1
     ;;
   *)
@@ -174,23 +188,24 @@ CXXFLAGS=-O2
 #
 # Also please don't use `MAKEINFO=false', because binutils will still fail.
 #
-# The --fast flag will use all available cores to compile mussel by using the -j make flag
+# The --parallel flag will use all available cores on the host system (3 * nproc
+# is being used instead of the traditional '2 * nproc + 1', since it ensures
+# parallelism).
 #
-if [ "$FLAG" = "--fast" ]; then
-  JOBS="$(expr $(nproc) + 1)"
-  MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true -j$JOBS"
-else
-  MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
-fi
-
-
+case "$FLAG" in
+  p | -p | --parallel)
+    JOBS="$(expr 3 \* $(nproc))"
+    MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true -j$JOBS"
+    ;;
+  *)
+    MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
+    ;;
+esac
 
 ################################################
 # !!!!! DON'T CHANGE ANYTHING UNDER HERE !!!!! #
 # !!!!! UNLESS YOU KNOW WHAT YOURE DOING !!!!! #
 ################################################
-
-
 
 #---------------------------------#
 # ---------- Functions ---------- #
@@ -258,23 +273,22 @@ mclean() {
   fi
 }
 
-
-
 #--------------------------------------#
 # ---------- Execution Area ---------- #
 #--------------------------------------#
 
-printf -- "+===========================================+\n"
-printf -- "| mussel.sh - musl-libc Toolchain Generator |\n"
-printf -- "+-------------------------------------------+\n"
-printf -- "|  Licensed under ISC. Created by Firasuke  |\n"
-printf -- "+===========================================+\n"
-printf -- "Targeted Architecture: $XARCH\n\n"
+printf -- "+=======================================================+\n"
+printf -- "| mussel.sh - The fastest musl-libc Toolchain Generator |\n"
+printf -- "+-------------------------------------------------------+\n"
+printf -- '|        Copyright (c) 2020, Firas Khalil Khana         |\n'
+printf -- '|     Distributed under the terms of the ISC License    |\n'
+printf -- "+=======================================================+\n"
+printf -- "Chosen target architecture: $XARCH\n\n"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
 [ ! -d $PCHDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
-rm -rf $MLOG
+rm -fr $MLOG
 
 # ----- Print Variables to Log ----- #
 # This is important as debugging will be easier knowing what the 
