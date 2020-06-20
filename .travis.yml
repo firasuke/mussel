@@ -9,4 +9,4 @@ addons:
     - lzip
     - zstd
 script:
-  - dash mussel.sh x86-64 > /dev/null
+  - dash mussel.sh x86-64
