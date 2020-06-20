@@ -63,6 +63,9 @@ PCHDIR="$CURDIR/patches"
 MPREFIX="$CURDIR/toolchain"
 MSYSROOT="$CURDIR/sysroot"
 
+# ----- mussel Log File ---- #
+MLOG="$CURDIR/log.txt"
+
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
 [ ! -d $PCHDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
@@ -87,7 +90,6 @@ MSYSROOT="$CURDIR/sysroot"
 # supported atm), powerpc, aarch64 (64-bit ARM) and riscv64 (64-bit RISC-V).
 #
 # i686
-
 
 # ----- Compilation Arguments ----- #
 # It's also common to see `--enable-secureplt' added to cross gcc args when the
@@ -124,6 +126,7 @@ case "$XARCH" in
     rm -rf $BLDDIR
     rm -rf $MPREFIX
     rm -rf $MSYSROOT
+    rm $MLOG
     printf -- "${GREENC}=>${NORMALC} Cleaned mussel.\n"
     exit
     ;;
@@ -141,6 +144,7 @@ case "$XARCH" in
     ;;
   *)
     printf -- "${REDC}=>${NORMALC} Unsupported architecture: $XARCH\n"
+    printf -- "Refer to '$EXEC -h' for help.\n"
     exit 1
     ;;
 esac
@@ -166,7 +170,7 @@ CXXFLAGS=-O2
 #
 # The --fast flag will use all available cores to compile mussel by using the -j make flag
 #
-if [ $FLAG = "--fast" ]; then
+if [ "$FLAG" = "--fast" ]; then
   JOBS="$(expr $(nproc) + 1)"
   MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true -j$JOBS"
 else
@@ -236,10 +240,10 @@ mpatch() {
 
   printf -- "${BLUEC}=>${NORMALC} Applying $2 ${4}.patch from $5...\n"
   cd $SRCDIR/$2/$2-$3
-  patch -p$1 -i $PCHDIR/$2/${4}.patch
+  patch -p$1 -i $PCHDIR/$2/${4}.patch >> $MLOG 2>&1 
 }
 
-# ----- mclean(): Clean Directories ----- #
+# ----- mclean(): Clean Directory ----- #
 mclean() {
   if [ -d "$CURDIR/$1" ]; then
     printf -- "${GREENC}=>${NORMALC} Cleaning $1 directory...\n"
@@ -253,6 +257,19 @@ mclean() {
 #--------------------------------------#
 # ---------- Execution Area ---------- #
 #--------------------------------------#
+
+rm $MLOG
+# ----- Print Variables to Log ----- #
+# This is important as debugging will be easier knowing what the 
+# environmental variables are, and instead of assuming, the 
+# system can tell us by printing each of them to the log
+#
+printf -- "mussel.sh - Toolchain Compiler\n\n" >> $MLOG 2>&1
+printf -- "XARCH: $XARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
+printf -- "XGCCARGS: $XGCCARGS\nMLIBCC: $MLIBCC\n" >> $MLOG 2>&1
+printf -- "CFLAGS: $CFLAGS\nCXXFLAGS: $CXXFLAGS\n" >> $MLOG 2>&1
+printf -- "PATH: $PATH\nMAKE: $MAKE\n" >> $MLOG 2>&1
+printf -- "\nStart Time: $(date)\n" >> $MLOG 2>&1
 
 # ----- Prepare Packages ----- #
 mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
@@ -273,7 +290,7 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 # patched (simply by passing `--ffast-math` to prevent it from relying on
 # libgcc). (Aurelian & firasuke)
 #
-mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword 
+mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword
 
 #
 # The following patches from glaucus for powerpc64 and powerpc64le remove
@@ -334,7 +351,7 @@ LIBCC=' ' \
 $SRCDIR/musl/musl-$musl_ver/configure \
   --host=$XTARGET \
   --prefix=/usr \
-  --disable-static
+  --disable-static >> $MLOG 2>&1
 
 #
 # We only want the headers to configure gcc... Also with musl installs, you
@@ -344,7 +361,7 @@ $SRCDIR/musl/musl-$musl_ver/configure \
 printf -- "${BLUEC}=>${NORMALC} Installing musl headers...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
-  install-headers
+  install-headers >> $MLOG 2>&1 
 
 printf -- '\n'
 
@@ -379,19 +396,19 @@ $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --prefix=$MPREFIX \
   --target=$XTARGET \
   --with-sysroot=$MSYSROOT \
-  --disable-werror
+  --disable-werror >> $MLOG 2>&1
 
 printf -- "${BLUEC}=>${NORMALC} Building cross-binutils...\n"
 $MAKE \
   all-binutils \
   all-gas \
-  all-ld
+  all-ld >> $MLOG 2>&1
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-binutils...\n"
 $MAKE \
   install-strip-binutils \
   install-strip-gas \
-  install-strip-ld
+  install-strip-ld >> $MLOG 2>&1
 
 printf -- '\n'
 
@@ -438,16 +455,16 @@ $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --with-sysroot=$MSYSROOT \
   --enable-languages=c,c++ \
   --disable-multilib \
-  --enable-initfini-array $XGCCARGS
+  --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
 
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc compiler...\n"
 mkdir -p $MSYSROOT/usr/include
 $MAKE \
-  all-gcc
+  all-gcc >> $MLOG 2>&1
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc compiler...\n"
 $MAKE \
-  install-strip-gcc
+  install-strip-gcc >> $MLOG 2>&1
 
 printf -- '\n'
 
@@ -484,15 +501,15 @@ if [ "$MLIBCC" = "-lgcc" ]; then
     --disable-libatomic \
     --disable-libstdcxx \
     --disable-threads \
-    --enable-initfini-array $XGCCARGS
+    --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
 
   printf -- "${BLUEC}=>${NORMALC} Building libgcc-static...\n"
   $MAKE \
-    all-target-libgcc
+    all-target-libgcc >> $MLOG 2>&1
 
   printf -- "${BLUEC}=>${NORMALC} Installing libgcc-static...\n"
   $MAKE \
-    install-strip-target-libgcc
+    install-strip-target-libgcc >> $MLOG 2>&1
 
   printf -- '\n'
 fi
@@ -507,7 +524,7 @@ sed -e "s/CC = gcc/CC = $XTARGET-gcc/" \
   -i config.mak
 
 printf -- "${BLUEC}=>${NORMALC} Building musl...\n"
-$MAKE
+$MAKE >> $MLOG 2>&1
 
 #
 # Notice how we're only installing musl's libs and tools here as the headers
@@ -517,7 +534,7 @@ printf -- "${BLUEC}=>${NORMALC} Installing musl...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
   install-libs \
-  install-tools
+  install-tools >> MLOG 2>&1
 
 #
 # Almost all implementations of musl based toolchains would want to change the
@@ -534,11 +551,11 @@ cd $BLDDIR/cross-gcc
 
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgcc...\n"
 $MAKE \
-  all-target-libgcc
+  all-target-libgcc >> $MLOG 2>&1
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgcc...\n"
 $MAKE \
-  install-strip-target-libgcc
+  install-strip-target-libgcc >> $MLOG 2>&1
 
 printf -- '\n'
 
@@ -547,11 +564,11 @@ printf -- '\n'
 #
 printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libstdc++-v3...\n"
 $MAKE \
-  all-target-libstdc++-v3
+  all-target-libstdc++-v3 >> $MLOG 2>&1
 
 printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libstdc++-v3...\n"
 $MAKE \
-  install-strip-target-libstdc++-v3
+  install-strip-target-libstdc++-v3 >> $MLOG 2>&1
 
 printf -- '\n'
 
@@ -560,10 +577,10 @@ printf -- '\n'
 #
 #printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgomp...\n"
 #$MAKE \
-#  all-target-libgomp
+#  all-target-libgomp &>> MLOG
 
 #printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgomp...\n"
 #$MAKE \
-#  install-strip-target-libgomp
+#  install-strip-target-libgomp >> $MLOG 2>&1
 
 printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
