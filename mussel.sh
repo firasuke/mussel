@@ -3,6 +3,8 @@
 # Copyright (c) 2020, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
+# Contributors: Alexander Barris (AwlsomeAlex)
+
 set -e
 umask 022
 
@@ -16,9 +18,10 @@ XARCH=$1
 FLAG=$2
 
 # ----- Colors ----- #
-BLUEC='\033[1;34m'
 REDC='\033[1;31m'
 GREENC='\033[1;32m'
+YELLOWC='\033[1;33m'
+BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
@@ -66,7 +69,6 @@ MSYSROOT="$CURDIR/sysroot"
 # ----- mussel Log File ---- #
 MLOG="$CURDIR/log.txt"
 
-
 # ----- Available Architectures ----- #
 # Only one architecture should be uncommented! All listed archs were tested and 
 # are fully working!
@@ -97,7 +99,7 @@ MLOG="$CURDIR/log.txt"
 #
 case "$XARCH" in
   "")
-    printf -- "${REDC}=>${NORMALC} No Architecture Specified!\n"
+    printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
     printf -- "Refer to '$EXEC -h' for help.\n"
     exit 1
     ;;
@@ -122,7 +124,7 @@ case "$XARCH" in
     MLIBCC=-lgcc
     ;;
   clean)
-    printf -- "${GREENC}=>${NORMALC} Cleaning mussel...\n" 
+    printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
     rm -rf $SRCDIR
     rm -rf $BLDDIR
     rm -rf $MPREFIX
@@ -144,7 +146,7 @@ case "$XARCH" in
     exit 1
     ;;
   *)
-    printf -- "${REDC}=>${NORMALC} Unsupported architecture: $XARCH\n"
+    printf -- "${REDC}!!${NORMALC} Unsupported architecture: $XARCH\n"
     printf -- "Refer to '$EXEC -h' for help.\n"
     exit 1
     ;;
@@ -198,7 +200,7 @@ mpackage() {
   if [ ! -d "$1" ]; then
     mkdir "$1"
   else
-    printf -- "${REDC}=>${NORMALC} $1 source directory already exists, skipping...\n"
+    printf -- "${YELLOWC}!.${NORMALC} $1 source directory already exists, skipping...\n"
   fi
 
   cd "$1"
@@ -206,21 +208,21 @@ mpackage() {
   HOLDER="$(basename $2)"
 
   if [ ! -f "$HOLDER" ]; then
-    printf -- "${GREENC}=>${NORMALC} Fetching "$HOLDER"...\n"
+    printf -- "${BLUEC}..${NORMALC} Fetching "$HOLDER"...\n"
     wget -q --show-progress "$2"
   else
-    printf -- "${REDC}=>${NORMALC} "$HOLDER" already exists, skipping...\n"
+    printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" already exists, skipping...\n"
   fi
 
-  printf -- "${GREENC}=>${NORMALC} Verifying "$HOLDER"...\n"
+  printf -- "${BLUEC}..${NORMALC} Verifying "$HOLDER"...\n"
   printf -- "$3 $HOLDER" | sha512sum -c || {
-    printf -- "${REDC}=>${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
+    printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
     rm "$HOLDER" &&
-    wget "$2";
+    wget -q --show-progress "$2";
   }
 
   rm -fr $1-$4
-  printf -- "${GREENC}=>${NORMALC} Unpacking $HOLDER...\n"
+  printf -- "${BLUEC}..${NORMALC} Unpacking $HOLDER...\n"
   tar xf $HOLDER -C .
 
   printf -- '\n'
@@ -233,13 +235,13 @@ mpatch() {
   cd "$2"
 
   if [ ! -f "$4".patch ]; then
-    printf -- "${GREENC}=>${NORMALC} Fetching $2 ${4}.patch from $5...\n"
-    wget https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
+    printf -- "${BLUEC}..${NORMALC} Fetching $2 ${4}.patch from $5...\n"
+    wget -q --show-progress https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
   else
-    printf -- "${REDC}=>${NORMALC} ${4}.patch already exists, skipping...\n"
+    printf -- "${YELLOWC}!.${NORMALC} ${4}.patch already exists, skipping...\n"
   fi
 
-  printf -- "${BLUEC}=>${NORMALC} Applying $2 ${4}.patch from $5...\n"
+  printf -- "${BLUEC}..${NORMALC} Applying $2 ${4}.patch from $5...\n"
   cd $SRCDIR/$2/$2-$3
   patch -p$1 -i $PCHDIR/$2/${4}.patch >> $MLOG 2>&1 
 }
@@ -247,7 +249,7 @@ mpatch() {
 # ----- mclean(): Clean Directory ----- #
 mclean() {
   if [ -d "$CURDIR/$1" ]; then
-    printf -- "${GREENC}=>${NORMALC} Cleaning $1 directory...\n"
+    printf -- "${BLUEC}..${NORMALC} Cleaning $1 directory...\n"
     rm -fr "$CURDIR/$1"
     mkdir "$CURDIR/$1"
   fi
@@ -259,9 +261,17 @@ mclean() {
 # ---------- Execution Area ---------- #
 #--------------------------------------#
 
-[ ! -d $SRCDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
-[ ! -d $BLDDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
-[ ! -d $PCHDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
+printf -- "+===========================================+\n"
+printf -- "| mussel.sh - musl-libc Toolchain Generator |\n"
+printf -- "+-------------------------------------------+\n"
+printf -- "|  Licensed under ISC. Created by Firasuke  |\n"
+printf -- "|  With help from AwlsomeAlex and Aurelian  |\n"
+printf -- "+===========================================+\n"
+printf -- "Targeted Architecture: $XARCH\n\n"
+
+[ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
+[ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
+[ ! -d $PCHDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
 rm -rf $MLOG
 
 # ----- Print Variables to Log ----- #
@@ -327,7 +337,7 @@ mclean sysroot
 printf -- '\n'
 
 # ----- Step 1: musl headers ----- #
-printf -- "${GREENC}=>${NORMALC} Preparing musl...\n"
+printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
 cd $BLDDIR
 mkdir musl
 cd musl
@@ -347,7 +357,7 @@ cd musl
 #
 # We also disable `--disable-static` since we want a shared version.
 #
-printf -- "${BLUEC}=>${NORMALC} Configuring musl...\n"
+printf -- "${BLUEC}..${NORMALC} Configuring musl...\n"
 ARCH=$XARCH \
 CC=gcc \
 CFLAGS='-O2 -ffast-math' \
@@ -363,15 +373,15 @@ $SRCDIR/musl/musl-$musl_ver/configure \
 # almost always should use a DESTDIR (that also should 99% be equal to gcc's
 # and binutils `--with-sysroot` value... (firasuke)
 #
-printf -- "${BLUEC}=>${NORMALC} Installing musl headers...\n"
+printf -- "${BLUEC}..${NORMALC} Installing musl headers...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
   install-headers >> $MLOG 2>&1 
 
-printf -- '\n'
+printf -- "${GREENC}=>${NORMALC} musl headers finished.\n\n"
 
 # ----- Step 2: cross-binutils ----- #
-printf -- "${GREENC}=>${NORMALC} Preparing cross-binutils...\n"
+printf -- "${BLUEC}..${NORMALC} Preparing cross-binutils...\n"
 cd $BLDDIR
 mkdir cross-binutils
 cd cross-binutils
@@ -395,7 +405,7 @@ cd cross-binutils
 # the passed value as the root directory of our target system in which it'll
 # search for target headers and libraries.
 #
-printf -- "${BLUEC}=>${NORMALC} Configuring cross-binutils...\n"
+printf -- "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
 CFLAGS=-O2 \
 $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --prefix=$MPREFIX \
@@ -403,25 +413,25 @@ $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --with-sysroot=$MSYSROOT \
   --disable-werror >> $MLOG 2>&1
 
-printf -- "${BLUEC}=>${NORMALC} Building cross-binutils...\n"
+printf -- "${BLUEC}..${NORMALC} Building cross-binutils...\n"
 $MAKE \
   all-binutils \
   all-gas \
   all-ld >> $MLOG 2>&1
 
-printf -- "${BLUEC}=>${NORMALC} Installing cross-binutils...\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-binutils...\n"
 $MAKE \
   install-strip-binutils \
   install-strip-gas \
   install-strip-ld >> $MLOG 2>&1
 
-printf -- '\n'
+printf -- "${GREENC}=>${NORMALC} cross-binutils finished.\n\n"
 
 # ----- Step 3: cross-gcc (compiler) ----- #
 # We track GCC's prerequisites manually instead of using
 # `contrib/download_prerequisites` in gcc's sources.
 #
-printf -- "=${GREENC}>${NORMALC} Preparing cross-gcc...\n"
+printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
 cp -ar $SRCDIR/mpc/mpc-$mpc_ver $SRCDIR/gcc/gcc-$gcc_ver/mpc
@@ -451,7 +461,7 @@ cd cross-gcc
 # make sure you have zstd (or zstd-devel or whatever it's called) installed on
 # your host.
 #
-printf -- "${BLUEC}=>${NORMALC} Configuring cross-gcc...\n"
+printf -- "${BLUEC}..${NORMALC} Configuring cross-gcc...\n"
 CFLAGS=-O2 \
 CXXFLAGS=-O2 \
 $SRCDIR/gcc/gcc-$gcc_ver/configure \
@@ -462,16 +472,16 @@ $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --disable-multilib \
   --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
 
-printf -- "${BLUEC}=>${NORMALC} Building cross-gcc compiler...\n"
+printf -- "${BLUEC}..${NORMALC} Building cross-gcc compiler...\n"
 mkdir -p $MSYSROOT/usr/include
 $MAKE \
   all-gcc >> $MLOG 2>&1
 
-printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc compiler...\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc compiler...\n"
 $MAKE \
   install-strip-gcc >> $MLOG 2>&1
 
-printf -- '\n'
+printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
 
 # This step is not needed for x86-64, powerpc64 and powerpc64le. It's only
 # needed if the chosen architecture requires libgcc, and the only supported
@@ -481,12 +491,12 @@ printf -- '\n'
 # musl, and configure, build and install it if required.
 #
 if [ "$MLIBCC" = "-lgcc" ]; then
-  printf -- "${GREENC}=>${NORMALC} Preparing libgcc-static...\n"
+  printf -- "${BLUEC}..${NORMALC} Preparing libgcc-static...\n"
   cd $BLDDIR
   mkdir libgcc-static
   cd libgcc-static
 
-  printf -- "${BLUEC}=>${NORMALC} Configuring libgcc-static...\n"
+  printf -- "${BLUEC}..${NORMALC} Configuring libgcc-static...\n"
   $SRCDIR/libgcc-static/libgcc-static-$gcc_ver/configure \
     --prefix=$MPREFIX \
     --target=$XTARGET \
@@ -508,15 +518,15 @@ if [ "$MLIBCC" = "-lgcc" ]; then
     --disable-threads \
     --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
 
-  printf -- "${BLUEC}=>${NORMALC} Building libgcc-static...\n"
+  printf -- "${BLUEC}..${NORMALC} Building libgcc-static...\n"
   $MAKE \
     all-target-libgcc >> $MLOG 2>&1
 
-  printf -- "${BLUEC}=>${NORMALC} Installing libgcc-static...\n"
+  printf -- "${BLUEC}..${NORMALC} Installing libgcc-static...\n"
   $MAKE \
     install-strip-target-libgcc >> $MLOG 2>&1
 
-  printf -- '\n'
+  printf -- "${GREENC}=>${NORMALC} libgcc-static finished.\n\n"
 fi
 
 # ----- Step 4: musl ----- #
@@ -528,14 +538,14 @@ sed -e "s/CC = gcc/CC = $XTARGET-gcc/" \
   -e "s/LIBCC =  /LIBCC = $MLIBCC/" \
   -i config.mak
 
-printf -- "${BLUEC}=>${NORMALC} Building musl...\n"
+printf -- "${BLUEC}..${NORMALC} Building musl...\n"
 $MAKE >> $MLOG 2>&1
 
 #
 # Notice how we're only installing musl's libs and tools here as the headers
 # were previously installed separately.
 #
-printf -- "${BLUEC}=>${NORMALC} Installing musl...\n"
+printf -- "${BLUEC}..${NORMALC} Installing musl...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
   install-libs \
@@ -548,45 +558,47 @@ $MAKE \
 rm -f $MSYSROOT/lib/ld-musl-$XARCH.so.1
 cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
 
-printf -- '\n'
+printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 
 # ----- Step 5: cross-gcc (libgcc) ----- #
-printf -- "${GREENC}=>${NORMALC} Preparing cross-gcc libgcc...\n"
+printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc...\n"
 cd $BLDDIR/cross-gcc
 
-printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgcc...\n"
+printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgcc...\n"
 $MAKE \
   all-target-libgcc >> $MLOG 2>&1
 
-printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgcc...\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc...\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
 
-printf -- '\n'
+printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc finished.\n\n"
 
 # ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
 #
-printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libstdc++-v3...\n"
+printf -- "${BLUEC}..${NORMALC} Building cross-gcc libstdc++-v3...\n"
 $MAKE \
   all-target-libstdc++-v3 >> $MLOG 2>&1
 
-printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libstdc++-v3...\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libstdc++-v3...\n"
 $MAKE \
   install-strip-target-libstdc++-v3 >> $MLOG 2>&1
 
-printf -- '\n'
+printf -- "${GREENC}=>${NORMALC} cross-gcc libstdc++v3 finished.\n\n"
 
 # ----- [Optional For OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
-#printf -- "${BLUEC}=>${NORMALC} Building cross-gcc libgomp...\n"
+#printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgomp...\n"
 #$MAKE \
 #  all-target-libgomp &>> MLOG
 
-#printf -- "${BLUEC}=>${NORMALC} Installing cross-gcc libgomp...\n"
+#printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgomp...\n"
 #$MAKE \
 #  install-strip-target-libgomp >> $MLOG 2>&1
+
+# printf -- "${GREENC}=>${NORMALC} cross-gcc libgomp finished.\n\n"
 
 printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
 printf -- "\nEnd Time: $(date)\n" >> $MLOG 2>&1
