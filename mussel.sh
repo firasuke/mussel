@@ -96,7 +96,7 @@ mpackage() {
   printf -- "${GREENC}=>${NORMALC} Unpacking $HOLDER...\n"
   tar xf $HOLDER -C .
 
-  printf -- \n
+  printf -- '\n'
 }
 
 mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
@@ -110,12 +110,25 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 #
 # Available Architectures
 #
-# Onle one architecture should be uncommented! Also please note that support for
-# powerpc64 and power64le is currently experimental.
+# Onle one architecture should be uncommented! All listed archs were tested and 
+# are fully working!
 #
-XARCH=x86_64
+# The following architectures don't require a static libgcc to be built before
+# musl.
+#
+#XARCH=x86_64
 #XARCH=powerpc64
 #XARCH=powerpc64le
+
+#
+# The following architectures require a static libgcc to be built before musl.
+# This static libgcc won't be linked against any C library, and will suffice to
+# to build musl for these architectures.
+#
+# They're mostly 32-bit architectures like the i686 (which is the only one
+# supported atm), powerpc, aarch64 (64-bit ARM) and riscv64 (64-bit RISC-V).
+#
+XARCH=i686
 
 XTARGET=$XARCH-linux-musl
 
@@ -126,13 +139,28 @@ XTARGET=$XARCH-linux-musl
 # 64-bit powerpc like powerpc64 and powerpc64le, there's no need to explicitly
 # specify it. (needs more investigation, but works without it)
 #
-if [ "$XARCH" = "x86_64" ]; then
-  XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-elif [ "$XARCH" = "powerpc64" ]; then
-  XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
-elif [ "$XARCH" = "powerpc64le" ]; then
-  XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
-fi
+case "$XARCH" in
+  x86_64)
+    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    MLIBCC=
+    ;;
+  powerpc64)
+    XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
+    MLIBCC=
+    ;;
+  powerpc64le)
+    XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
+    MLIBCC=
+    ;;
+  i686)
+    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    MLIBCC=-lgcc
+    ;;
+  *)
+    printf -- "${REDC}=>${NORMALC} Unsupported architecture!\n"
+    exit 1
+    ;;
+esac
 
 #
 # Patching
@@ -144,7 +172,7 @@ mpatch() {
 
   if [ ! -f "$4".patch ]; then
     printf -- "${GREENC}=>${NORMALC} Fetching $2 ${4}.patch from $5...\n"
-    wget https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/$2/patches/$5/${4}.patch
+    wget https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
   else
     printf -- "${REDC}=>${NORMALC} ${4}.patch already exists, skipping...\n"
   fi
@@ -175,7 +203,7 @@ mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword
 # They also remove musl's libgcc dependency for powerpc64 and powerpc64le
 # because they work just fine without it.
 #
-if [ "$XTARGET" = "powerpc64-linux-musl" || "$XTARGET" = "powerpc64le-linux-musl" ]; then 
+if [ "$XTARGET" = "powerpc64-linux-musl" ] || [ "$XTARGET" = "powerpc64le-linux-musl" ]; then 
   mpatch 0 musl "$musl_ver" 0001-powerpc-support glaucus
   mpatch 0 musl "$musl_ver" 0001-powerpc64-support glaucus
 fi
@@ -254,6 +282,9 @@ cd musl
 # `CC` must be equal to the host's C compiler because ours isn't ready yet.
 #
 # Also notice how `CROSS_COMPILE` isn't empty here, and it should end with `-`.
+#
+# Notice how "LIBCC=' '", don't change this to "LIBC=" or "LIBC= " as it won't
+# work.
 #
 # We also disable `--disable-static` since we want a shared version.
 #
@@ -339,6 +370,16 @@ printf -- "=${GREENC}>${NORMALC} Preparing cross-gcc...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
 cp -ar $SRCDIR/mpc/mpc-$mpc_ver $SRCDIR/gcc/gcc-$gcc_ver/mpc
+
+# Check if architecture requires a static libgcc beforehand, if so we duplicate
+# the GCC source tree after patching it and preparing the prerequisites with the
+# exception of ISL since our static libgcc will use a minimal GCC configuration.
+if [ "$MLIBCC" = "-lgcc" ]; then
+  mkdir -p $SRCDIR/libgcc-static
+  cp -ar $SRCDIR/gcc/gcc-$gcc_ver $SRCDIR/libgcc-static/libgcc-static-$gcc_ver
+fi
+
+# Now we continue with the last GCC prerequisite ISL
 cp -ar $SRCDIR/isl/isl-$isl_ver $SRCDIR/gcc/gcc-$gcc_ver/isl
 
 cd $BLDDIR
@@ -377,6 +418,52 @@ $MAKE \
 
 printf -- '\n'
 
+# This step is not needed for x86-64, powerpc64 and powerpc64le. It's only
+# needed if the chosen architecture requires libgcc, and the only supported
+# architecture that does that is the i686.
+#
+# Check if the chosen architecture requires libgcc or not to be built before
+# musl, and configure, build and install it if required.
+#
+if [ "$MLIBCC" = "-lgcc" ]; then
+  printf -- "${GREENC}=>${NORMALC} Preparing libgcc-static...\n"
+  cd $BLDDIR
+  mkdir libgcc-static
+  cd libgcc-static
+
+  printf -- "${BLUEC}=>${NORMALC} Configuring libgcc-static...\n"
+  $SRCDIR/libgcc-static/libgcc-static-$gcc_ver/configure \
+    --prefix=$MPREFIX \
+    --target=$XTARGET \
+    --with-sysroot=$MSYSROOT \
+    --enable-languages=c \
+    --disable-multilib \
+    --disable-nls  \
+    --disable-shared \
+    --without-isl \
+    --without-headers \
+    --with-newlib \
+    --disable-decimal-float \
+    --disable-libsanitizer \
+    --disable-libssp \
+    --disable-libquadmath \
+    --disable-libgomp \
+    --disable-libatomic \
+    --disable-libstdcxx \
+    --disable-threads \
+    --enable-initfini-array $XGCCARGS
+
+  printf -- "${BLUEC}=>${NORMALC} Building libgcc-static...\n"
+  $MAKE \
+    all-target-libgcc
+
+  printf -- "${BLUEC}=>${NORMALC} Installing libgcc-static...\n"
+  $MAKE \
+    install-strip-target-libgcc
+
+  printf -- '\n'
+fi
+
 #
 # Step 4: musl
 #
@@ -384,7 +471,9 @@ printf -- '\n'
 # to our cross compiler. (firasuke)
 #
 cd $BLDDIR/musl
-sed "s/CC = gcc/CC = $XTARGET-gcc/" -i config.mak
+sed -e "s/CC = gcc/CC = $XTARGET-gcc/" \
+  -e "s/LIBCC =  /LIBCC = $MLIBCC/" \
+  -i config.mak
 
 printf -- "${BLUEC}=>${NORMALC} Building musl...\n"
 $MAKE
