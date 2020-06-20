@@ -89,6 +89,7 @@ MLOG="$CURDIR/log.txt"
 # supported atm), powerpc, aarch64 (64-bit ARM) and riscv64 (64-bit RISC-V).
 #
 # i686
+# aarch64 (ARMv8-A)
 
 # ----- Compilation Arguments ----- #
 # It's also common to see `--enable-secureplt' added to cross gcc args when the
@@ -138,11 +139,13 @@ case "$XARCH" in
     printf -- "usage: $EXEC: [architecture]/[command] (flag)\n"
     printf -- "\nSupported Architectures:\n"
     printf -- "\tNo Static libgcc:\tx86_64, powerpc64, powerpc64le\n"
-    printf -- "\tStatic libgcc:\t\ti686"
+    printf -- "\tStatic libgcc:\t\ti686, aarch64 (ARMv8-A)"
     printf -- "\nCommand:\n"
     printf -- "\tclean:\tCleans mussel environment\n"
     printf -- "\nFlags:\n"
     printf -- "\t--fast:\tCompiles musl toolchain using all available cores (-j flag).\n"
+    printf -- "Licensed under ISC. Created by Firas Khalil Khana.\n"
+    printf -- "No penguins were harmed in the making of this script :)\n\n"
     exit 1
     ;;
   *)
