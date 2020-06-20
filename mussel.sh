@@ -66,9 +66,6 @@ MSYSROOT="$CURDIR/sysroot"
 # ----- mussel Log File ---- #
 MLOG="$CURDIR/log.txt"
 
-[ ! -d $SRCDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
-[ ! -d $BLDDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
-[ ! -d $PCHDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
 
 # ----- Available Architectures ----- #
 # Only one architecture should be uncommented! All listed archs were tested and 
@@ -120,13 +117,17 @@ case "$XARCH" in
     XGCCARGS="--with-arch=x86-64 --with-tune=generic"
     MLIBCC=-lgcc
     ;;
+  aarch64)
+    XGCCARGS="--with-arch=armv8-a --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
+    MLIBCC=-lgcc
+    ;;
   clean)
     printf -- "${GREENC}=>${NORMALC} Cleaning mussel...\n" 
     rm -rf $SRCDIR
     rm -rf $BLDDIR
     rm -rf $MPREFIX
     rm -rf $MSYSROOT
-    rm $MLOG
+    rm -rf $MLOG
     printf -- "${GREENC}=>${NORMALC} Cleaned mussel.\n"
     exit
     ;;
@@ -258,7 +259,11 @@ mclean() {
 # ---------- Execution Area ---------- #
 #--------------------------------------#
 
-rm $MLOG
+[ ! -d $SRCDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
+[ ! -d $BLDDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
+[ ! -d $PCHDIR ] && printf -- "${BLUEC}=>${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
+rm -rf $MLOG
+
 # ----- Print Variables to Log ----- #
 # This is important as debugging will be easier knowing what the 
 # environmental variables are, and instead of assuming, the 
@@ -584,3 +589,4 @@ printf -- '\n'
 #  install-strip-target-libgomp >> $MLOG 2>&1
 
 printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
+printf -- "\nEnd Time: $(date)\n" >> $MLOG 2>&1
