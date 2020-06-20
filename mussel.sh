@@ -499,7 +499,7 @@ $MAKE \
 
 printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
 
-# This step is not needed for x86-64, powerpc64 and powerpc64le. It's only
+# This step is not needed for x86_64, powerpc64 and powerpc64le. It's only
 # needed if the chosen architecture requires libgcc, and the only supported
 # architecture that does that is the i686.
 #
