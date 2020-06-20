@@ -21,10 +21,12 @@ compilers that target musl libc.
 <br>(flag): **--fast:** Uses all available cores to build toolchain
 
 ## Supported Architectures
+* aarch64 (requires `libgcc-static`, see **Additional Steps** below)
 * i686 (requires `libgcc-static`, see **Additional Steps** below)
-* aarch64 [ARMv8-A] (requires `libgcc-static`, see **Additional Steps** below)
+* powerpc (requires `libgcc-static`, see **Additional Steps** below)
 * powerpc64
 * powerpc64le
+* riscv64 (requires `libgcc-static`, see **Additional Steps** below)
 * x86-64
 
 ## Packages
@@ -73,6 +75,9 @@ Project](https://github.com/managarm), and
 ## Author
 Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
 mailto:firasuke@glaucuslinux.org)>
+
+## Contributors
+* Alexander Barris (AwlsomeAlex)
 
 ## License
 mussel is licensed under the Internet Systems Consortium (ISC) license.
