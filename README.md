@@ -17,8 +17,8 @@ compilers that target musl libc.
 
 ## Usage
 `./mussel.sh [arch] (flag)`
-<br>[arch]: See **Supported Architectures** below for list of officially supported targets.
-<br>(flag): **--fast:** Uses all available cores to build toolchain
+**[arch]**: See **Supported Architectures** below for list of officially supported targets
+**(flag)**: **--parallel:** Uses all available cores on the host system
 
 ## Supported Architectures
 * aarch64 (requires `libgcc-static`, see **Additional Steps** below)
