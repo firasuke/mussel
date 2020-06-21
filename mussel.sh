@@ -152,10 +152,10 @@ case "$XARCH" in
     printf -- '\t+ x86_64 (default)\n'
     printf -- '\n'
     printf -- 'Commands:\n'
-    printf -- '\tc | -c | --clean:\tCleans mussel environment\n'
+    printf -- "\tc | -c | --clean:\tClean mussel's build environment\n"
     printf -- '\n'
     printf -- 'Flags:\n'
-    printf -- '\tp | -p | --parallel:\tUses all available cores on the system\n'
+    printf -- '\tp | -p | --parallel:\tUse all available cores on the host system\n'
     printf -- '\n'
     printf -- 'No penguins were harmed in the making of this script!\n'
     exit 1
