@@ -29,7 +29,7 @@ compilers that target musl libc.
 * powerpc64
 * powerpc64le
 * riscv64
-* x86-64
+* x86-64 (default)
 
 ## Packages
 1. `binutils`: 2.34
@@ -43,13 +43,6 @@ compilers that target musl libc.
 ## Patches
 1. For `gcc`:
   * [Enable-CET-in-cross-compiler-if-possible.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch) [source: upstream]
-2. For `musl`:
-  * [0002-enable-fast-math.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/musl/patches/qword/0002-enable-fast-math.patch) [source: qword]
-
-## Additional Patches for `powerpc64`
-3. For `musl`:
-  * [0001-powerpc-support.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/musl/patches/glaucus/0001-powerpc-support.patch) [source: glaucus]
-  * [0001-powerpc64-support.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/musl/patches/glaucus/0001-powerpc64-support.patch) [source: glaucus]
 
 ## Usage
 1. Make sure you are in an empty directory
