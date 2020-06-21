@@ -9,4 +9,4 @@ addons:
     - lzip
     - zstd
 script:
-  - travis_wait 30 dash mussel.sh x86_64
+  - travis_wait 60 dash mussel.sh x86_64
