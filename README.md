@@ -21,12 +21,12 @@ compilers that target musl libc.
 **(flag)**: **--parallel:** Uses all available cores on the host system
 
 ## Supported Architectures
-* aarch64 (requires `libgcc-static`, see **Additional Steps** below)
-* i686 (requires `libgcc-static`, see **Additional Steps** below)
-* powerpc (requires `libgcc-static`, see **Additional Steps** below)
+* aarch64
+* i686
+* powerpc
 * powerpc64
 * powerpc64le
-* riscv64 (requires `libgcc-static`, see **Additional Steps** below)
+* riscv64
 * x86-64
 
 ## Packages
@@ -57,14 +57,13 @@ compilers that target musl libc.
 1. Configure `musl`, and only install its `headers`
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (without `libgcc`)
-4. Build `musl`, and only install its `libs` and `tools`
-5. Build, and install `libgcc`
+4. Configure, build and install `libgcc-static`
+5. Reconfigure, build and install `musl`
+6. Build, and install `libgcc`
 
 ## Additional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
-* Configure, build and install `libgcc-static` (Automatically done for
-  architectures that require it)
 
 ## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian,
