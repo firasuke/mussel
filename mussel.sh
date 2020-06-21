@@ -140,19 +140,19 @@ case "$XARCH" in
     printf -- '\n'
     printf -- 'mussel - The fastest musl-libc cross compiler toolchain generator\n'
     printf -- '\n'
-    printf -- "usage: $EXEC: [architecture]|[command] (flag)\n"
+    printf -- "Usage: $EXEC: [architecture]|[command] (flag)\n"
     printf -- '\n'
-    printf -- '\nSupported Architectures:\n'
+    printf -- 'Supported Architectures:\n'
     printf -- '\t- libgcc-static: x86_64, powerpc64, powerpc64le\n'
     printf -- '\t+ libgcc-static: i686, aarch64, powerpc, riscv64\n'
     printf -- '\n'
-    printf -- '\nCommands:\n'
+    printf -- 'Commands:\n'
     printf -- '\tc | -c | --clean:\tCleans mussel environment\n'
     printf -- '\n'
-    printf -- '\nFlags:\n'
+    printf -- 'Flags:\n'
     printf -- '\tp | -p | --parallel:\tUses all available cores on the system\n'
     printf -- '\n'
-    printf -- 'No penguins were harmed in the making of this script!\n\n'
+    printf -- 'No penguins were harmed in the making of this script!\n'
     exit 1
     ;;
   *)
