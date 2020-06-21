@@ -105,24 +105,31 @@ case "$XARCH" in
     ;;
   x86_64)
     XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    MLIBCC=
     ;;
   powerpc64)
     XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
+    MLIBCC=
     ;;
   powerpc64le)
     XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
+    MLIBCC=
     ;;
   i686)
     XGCCARGS="--with-arch=i686 --with-tune=generic"
+    MLIBCC=-lgcc
     ;;
   aarch64)
     XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
+    MLIBCC=-lgcc
     ;;
   powerpc)
     XGCCARGS="--with-cpu=powerpc --enable-secureplt --with-long-double-64"
+    MLIBCC=-lgcc
     ;;
   riscv64)
     XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
+    MLIBCC=-lgcc
     ;;
   c | -c | --clean)
     printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
@@ -247,7 +254,7 @@ mpatch() {
 
   if [ ! -f "$4".patch ]; then
     printf -- "${BLUEC}..${NORMALC} Fetching $2 ${4}.patch from $5...\n"
-    wget -q --show-progress https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
+    wget -q --show-progress https://raw.githubusercontent.com/firasuke/mussel/master/broken-abi/patches/$2/$5/${4}.patch
   else
     printf -- "${YELLOWC}!.${NORMALC} ${4}.patch already exists, skipping...\n"
   fi
@@ -290,7 +297,7 @@ rm -fr $MLOG
 #
 printf -- "mussel.sh - Toolchain Compiler\n\n" >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
-printf -- "XGCCARGS: $XGCCARGS\n" >> $MLOG 2>&1
+printf -- "XGCCARGS: $XGCCARGS\nMLIBCC: $MLIBCC\n" >> $MLOG 2>&1
 printf -- "CFLAGS: $CFLAGS\nCXXFLAGS: $CXXFLAGS\n" >> $MLOG 2>&1
 printf -- "PATH: $PATH\nMAKE: $MAKE\n" >> $MLOG 2>&1
 printf -- "\nStart Time: $(date)\n" >> $MLOG 2>&1
@@ -305,6 +312,32 @@ mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
 mpackage musl "$musl_url" $musl_sum $musl_ver
 
 # ----- Patch Packages ----- #
+# The musl patch allows us to pass `-ffast-math` in CFLAGS when building musl
+# since musl requires libgcc and libgcc requires musl, so the build script needs
+# patching so that you can pass -ffast-math to CFLAGS. (Aurelian)
+#
+# Apparently musl only relies on libgcc for the following symbols `__muslsc3`,
+# `__muldc3`, `__muldxc3`, and and `__powidf2` its configure script can be
+# patched (simply by passing `--ffast-math` to prevent it from relying on
+# libgcc). (Aurelian & firasuke)
+#
+mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword
+
+#
+# The following patches from glaucus for powerpc64 and powerpc64le remove
+# certain checks for cross gcc/libgcc in musl's configure script to allow musl
+# to configure and install its headers at first before cross gcc and libgcc are
+# built.
+#
+# They also remove musl's libgcc dependency for powerpc64 and powerpc64le
+# because they work just fine without it.
+#
+if [ "$XTARGET" = "powerpc64-linux-musl" ] || [ "$XTARGET" = "powerpc64le-linux-musl" ]; then 
+  mpatch 0 musl "$musl_ver" 0001-powerpc-support glaucus
+  mpatch 0 musl "$musl_ver" 0001-powerpc64-support glaucus
+fi
+
+#
 # The gcc patch is for a bug that forces CET when cross compiling in both lto-plugin
 # and libiberty.
 #
@@ -319,11 +352,11 @@ mclean sysroot
 
 printf -- '\n'
 
-# ----- Step 1: musl-headers ----- #
-printf -- "${BLUEC}..${NORMALC} Preparing musl-headers...\n"
+# ----- Step 1: musl headers ----- #
+printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
 cd $BLDDIR
-mkdir musl-headers
-cd musl-headers
+mkdir musl
+cd musl
 
 #
 # Note the use of `--host` instead of `--target` (musl-cross-make, Aurelian)
@@ -333,15 +366,19 @@ cd musl-headers
 #
 # `CC` must be equal to the host's C compiler because ours isn't ready yet.
 #
-# Also notice how `CROSS_COMPILE` is empty here.
+# Also notice how `CROSS_COMPILE` isn't empty here, and it should end with `-`.
 #
-# We can do without `--disable-static`, but it doesn't affect the installed
-# headers.
+# Notice how "LIBCC=' '", don't change this to "LIBC=" or "LIBC= " as it won't
+# work.
 #
-printf -- "${BLUEC}..${NORMALC} Configuring musl-headers...\n"
+# We also disable `--disable-static` since we want a shared version.
+#
+printf -- "${BLUEC}..${NORMALC} Configuring musl...\n"
 ARCH=$XARCH \
 CC=gcc \
-CROSS_COMPILE=' ' \
+CFLAGS='-O2 -ffast-math' \
+CROSS_COMPILE=$XTARGET- \
+LIBCC=' ' \
 $SRCDIR/musl/musl-$musl_ver/configure \
   --host=$XTARGET \
   --prefix=/usr \
@@ -352,12 +389,12 @@ $SRCDIR/musl/musl-$musl_ver/configure \
 # almost always should use a DESTDIR (that also should 99% be equal to gcc's
 # and binutils `--with-sysroot` value... (firasuke)
 #
-printf -- "${BLUEC}..${NORMALC} Installing musl-headers...\n"
+printf -- "${BLUEC}..${NORMALC} Installing musl headers...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
   install-headers >> $MLOG 2>&1 
 
-printf -- "${GREENC}=>${NORMALC} musl-headers finished.\n\n"
+printf -- "${GREENC}=>${NORMALC} musl headers finished.\n\n"
 
 # ----- Step 2: cross-binutils ----- #
 printf -- "${BLUEC}..${NORMALC} Preparing cross-binutils...\n"
@@ -415,11 +452,13 @@ cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
 cp -ar $SRCDIR/mpc/mpc-$mpc_ver $SRCDIR/gcc/gcc-$gcc_ver/mpc
 
-# Mussel require a static libgcc to configure musl, so we duplicate the GCC
-# source tree after patching it and preparing the prerequisites with the
+# Check if architecture requires a static libgcc beforehand, if so we duplicate
+# the GCC source tree after patching it and preparing the prerequisites with the
 # exception of ISL since our static libgcc will use a minimal GCC configuration.
-mkdir -p $SRCDIR/libgcc-static
-cp -ar $SRCDIR/gcc/gcc-$gcc_ver $SRCDIR/libgcc-static/libgcc-static-$gcc_ver
+if [ "$MLIBCC" = "-lgcc" ]; then
+  mkdir -p $SRCDIR/libgcc-static
+  cp -ar $SRCDIR/gcc/gcc-$gcc_ver $SRCDIR/libgcc-static/libgcc-static-$gcc_ver
+fi
 
 # Now we continue with the last GCC prerequisite ISL
 cp -ar $SRCDIR/isl/isl-$isl_ver $SRCDIR/gcc/gcc-$gcc_ver/isl
@@ -460,65 +499,60 @@ $MAKE \
 
 printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
 
-# ----- Step 4: libgcc-static ----- #
-# This step is required for all archs, and failure to due it would break the
-# ABI.
+# This step is not needed for x86_64, powerpc64 and powerpc64le. It's only
+# needed if the chosen architecture requires libgcc, and the only supported
+# architecture that does that is the i686.
 #
-printf -- "${BLUEC}..${NORMALC} Preparing libgcc-static...\n"
-cd $BLDDIR
-mkdir libgcc-static
-cd libgcc-static
-
-printf -- "${BLUEC}..${NORMALC} Configuring libgcc-static...\n"
-$SRCDIR/libgcc-static/libgcc-static-$gcc_ver/configure \
-  --prefix=$MPREFIX \
-  --target=$XTARGET \
-  --with-sysroot=$MSYSROOT \
-  --enable-languages=c \
-  --disable-multilib \
-  --disable-nls  \
-  --disable-shared \
-  --without-isl \
-  --without-headers \
-  --with-newlib \
-  --disable-decimal-float \
-  --disable-libsanitizer \
-  --disable-libssp \
-  --disable-libquadmath \
-  --disable-libgomp \
-  --disable-libatomic \
-  --disable-libstdcxx \
-  --disable-threads \
-  --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
-
-printf -- "${BLUEC}..${NORMALC} Building libgcc-static...\n"
-$MAKE \
-  all-target-libgcc >> $MLOG 2>&1
-
-printf -- "${BLUEC}..${NORMALC} Installing libgcc-static...\n"
-$MAKE \
-  install-strip-target-libgcc >> $MLOG 2>&1
-
-printf -- "${GREENC}=>${NORMALC} libgcc-static finished.\n\n"
-
-# ----- Step 5: musl ----- #
-# We need a separate build directory for musl now that we have our cross GCC
-# ready. Using the same directory as musl-headers without reconfiguring musl
-# would break the ABI.
+# Check if the chosen architecture requires libgcc or not to be built before
+# musl, and configure, build and install it if required.
 #
-printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
-cd $BLDDIR
-mkdir musl
-cd musl
+if [ "$MLIBCC" = "-lgcc" ]; then
+  printf -- "${BLUEC}..${NORMALC} Preparing libgcc-static...\n"
+  cd $BLDDIR
+  mkdir libgcc-static
+  cd libgcc-static
 
-printf -- "${BLUEC}..${NORMALC} Configuring musl...\n"
-ARCH=$XARCH \
-CC=$XTARGET-gcc \
-CROSS_COMPILE=$XTARGET- \
-$SRCDIR/musl/musl-$musl_ver/configure \
-  --host=$XTARGET \
-  --prefix=/usr \
-  --disable-static >> $MLOG 2>&1
+  printf -- "${BLUEC}..${NORMALC} Configuring libgcc-static...\n"
+  $SRCDIR/libgcc-static/libgcc-static-$gcc_ver/configure \
+    --prefix=$MPREFIX \
+    --target=$XTARGET \
+    --with-sysroot=$MSYSROOT \
+    --enable-languages=c \
+    --disable-multilib \
+    --disable-nls  \
+    --disable-shared \
+    --without-isl \
+    --without-headers \
+    --with-newlib \
+    --disable-decimal-float \
+    --disable-libsanitizer \
+    --disable-libssp \
+    --disable-libquadmath \
+    --disable-libgomp \
+    --disable-libatomic \
+    --disable-libstdcxx \
+    --disable-threads \
+    --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
+
+  printf -- "${BLUEC}..${NORMALC} Building libgcc-static...\n"
+  $MAKE \
+    all-target-libgcc >> $MLOG 2>&1
+
+  printf -- "${BLUEC}..${NORMALC} Installing libgcc-static...\n"
+  $MAKE \
+    install-strip-target-libgcc >> $MLOG 2>&1
+
+  printf -- "${GREENC}=>${NORMALC} libgcc-static finished.\n\n"
+fi
+
+# ----- Step 4: musl ----- #
+# Notice how we use sed to modify the config.mak file to build it with `CC` set
+# to our cross compiler. (firasuke)
+#
+cd $BLDDIR/musl
+sed -e "s/CC = gcc/CC = $XTARGET-gcc/" \
+  -e "s/LIBCC =  /LIBCC = $MLIBCC/" \
+  -i config.mak
 
 printf -- "${BLUEC}..${NORMALC} Building musl...\n"
 $MAKE >> $MLOG 2>&1
@@ -530,7 +564,8 @@ $MAKE >> $MLOG 2>&1
 printf -- "${BLUEC}..${NORMALC} Installing musl...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
-  install >> MLOG 2>&1
+  install-libs \
+  install-tools >> MLOG 2>&1
 
 #
 # Almost all implementations of musl based toolchains would want to change the
@@ -541,7 +576,7 @@ cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
 
 printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 
-# ----- Step 6: cross-gcc (libgcc) ----- #
+# ----- Step 5: cross-gcc (libgcc) ----- #
 printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc...\n"
 cd $BLDDIR/cross-gcc
 
@@ -555,7 +590,7 @@ $MAKE \
 
 printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc finished.\n\n"
 
-# ----- [Optional For C++ Support] Step 7: cross-gcc (libstdc++-v3) ----- #
+# ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
 #
 printf -- "${BLUEC}..${NORMALC} Building cross-gcc libstdc++-v3...\n"
@@ -568,7 +603,7 @@ $MAKE \
 
 printf -- "${GREENC}=>${NORMALC} cross-gcc libstdc++v3 finished.\n\n"
 
-# ----- [Optional For OpenMP Support] Step 8: cross-gcc (libgomp) ----- #
+# ----- [Optional For OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
 #printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgomp...\n"
