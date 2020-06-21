@@ -16,11 +16,11 @@ compilers that target musl libc.
    the art information) all over the place explaining what is being done and why
 
 ## Usage
-`./mussel.sh [arch] (flag)`
+`./mussel.sh (arch) (flag)`
 
-**[arch]**: See **Supported Architectures** below for list of officially supported targets
+**(arch)**: See **Supported Architectures** below (default is x86_64)
 
-**(flag)**: **--parallel:** Uses all available cores on the host system
+**(flag)**: **--parallel:** Use all available cores on the host system
 
 ## Supported Architectures
 * aarch64
@@ -43,10 +43,6 @@ compilers that target musl libc.
 ## Patches
 1. For `gcc`:
   * [Enable-CET-in-cross-compiler-if-possible.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch) [source: upstream]
-
-## Usage
-1. Make sure you are in an empty directory
-2. Run `./mussel.sh` (yup that's basically it)
 
 ## How is mussel doing it?
 1. Configure `musl`, and only install its `headers`

@@ -421,14 +421,9 @@ printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
 cp -ar $SRCDIR/mpc/mpc-$mpc_ver $SRCDIR/gcc/gcc-$gcc_ver/mpc
-
-# Mussel require a static libgcc to configure musl, so we duplicate the GCC
-# source tree after patching it and preparing the prerequisites with the
-# exception of ISL since our static libgcc will use a minimal GCC configuration.
-mkdir -p $SRCDIR/libgcc-static
-cp -ar $SRCDIR/gcc/gcc-$gcc_ver $SRCDIR/libgcc-static/libgcc-static-$gcc_ver
-
-# Now we continue with the last GCC prerequisite ISL
+# ISL is not needed for libgcc-static but it's better to have it included here
+# than to copy the entire gcc directory for libgcc-static just to ensure it's
+# ISL free.
 cp -ar $SRCDIR/isl/isl-$isl_ver $SRCDIR/gcc/gcc-$gcc_ver/isl
 
 cd $BLDDIR
@@ -476,8 +471,11 @@ cd $BLDDIR
 mkdir libgcc-static
 cd libgcc-static
 
+# We configure libgcc-static using the same configure file from GCC's source
+# directory. We also pass `--without-isl` to ensure that the already copied ISL
+# prerequisite doesn't get picked up here as we don't need it for libgcc-static.
 printf -- "${BLUEC}..${NORMALC} Configuring libgcc-static...\n"
-$SRCDIR/libgcc-static/libgcc-static-$gcc_ver/configure \
+$SRCDIR/gcc/gcc-$gcc_ver/configure \
   --prefix=$MPREFIX \
   --target=$XTARGET \
   --with-sysroot=$MSYSROOT \
