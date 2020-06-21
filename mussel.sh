@@ -1,4 +1,4 @@
-#!/usr/bin/dash -e
+#!/bin/sh -e
 
 # Copyright (c) 2020, Firas Khalil Khana
 # Distributed under the terms of the ISC License
@@ -100,8 +100,8 @@ MLOG="$CURDIR/log.txt"
 case "$XARCH" in
   "")
     printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
-    printf -- "Refer to '$EXEC -h' for help.\n"
-    exit 1
+    printf -- "${REDC}!!${NORMALC} Using the default architecture x86_64!\n"
+    XARCH=x86_64
     ;;
   x86_64)
     XGCCARGS="--with-arch=x86-64 --with-tune=generic"
@@ -138,13 +138,18 @@ case "$XARCH" in
     printf -- 'Copyright (c) 2020, Firas Khalil Khana\n'
     printf -- 'Distributed under the terms of the ISC License\n'
     printf -- '\n'
-    printf -- 'mussel - The fastest musl-libc cross compiler toolchain generator\n'
+    printf -- 'mussel - The fastest musl-libc cross compiler generator\n'
     printf -- '\n'
     printf -- "Usage: $EXEC: [architecture]|[command] (flag)\n"
     printf -- '\n'
     printf -- 'Supported Architectures:\n'
-    printf -- '\t- libgcc-static: x86_64, powerpc64, powerpc64le\n'
-    printf -- '\t+ libgcc-static: i686, aarch64, powerpc, riscv64\n'
+    printf -- '\t+ aarch64\n'
+    printf -- '\t+ i686\n'
+    printf -- '\t+ powerpc\n'
+    printf -- '\t+ powerpc64\n'
+    printf -- '\t+ powerpc64le\n'
+    printf -- '\t+ riscv64\n'
+    printf -- '\t+ x86_64 (default)\n'
     printf -- '\n'
     printf -- 'Commands:\n'
     printf -- '\tc | -c | --clean:\tCleans mussel environment\n'
@@ -270,16 +275,18 @@ mclean() {
 # ---------- Execution Area ---------- #
 #--------------------------------------#
 
-printf -- "+=======================================================+\n"
-printf -- "| mussel.sh - The fastest musl-libc Toolchain Generator |\n"
-printf -- "+-------------------------------------------------------+\n"
+printf -- '\n'
+printf -- '+=======================================================+\n'
+printf -- '| mussel.sh - The fastest musl-libc Toolchain Generator |\n'
+printf -- '+-------------------------------------------------------+\n'
 printf -- '|        Copyright (c) 2020, Firas Khalil Khana         |\n'
 printf -- '|     Distributed under the terms of the ISC License    |\n'
-printf -- "+=======================================================+\n"
+printf -- '+=======================================================+\n'
+printf -- '\n'
 printf -- "Chosen target architecture: $XARCH\n\n"
 
-[ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n\n" && mkdir $SRCDIR
-[ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n\n" && mkdir $BLDDIR
+[ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
+[ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
 [ ! -d $PCHDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
 rm -fr $MLOG
 
@@ -288,7 +295,7 @@ rm -fr $MLOG
 # environmental variables are, and instead of assuming, the 
 # system can tell us by printing each of them to the log
 #
-printf -- "mussel.sh - Toolchain Compiler\n\n" >> $MLOG 2>&1
+printf -- 'mussel.sh - Toolchain Compiler\n\n' >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
 printf -- "XGCCARGS: $XGCCARGS\n" >> $MLOG 2>&1
 printf -- "CFLAGS: $CFLAGS\nCXXFLAGS: $CXXFLAGS\n" >> $MLOG 2>&1
