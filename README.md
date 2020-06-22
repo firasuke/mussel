@@ -56,19 +56,20 @@ To confirm you have all required packages, you can execute `./check.sh`.
 ## How is mussel doing it?
 1. Install `musl` headers
 2. Configure, build and install cross `binutils`
-3. Configure, build and install cross `gcc` (without `libgcc`)
-4. Configure, build and install `libgcc-static`
+3. Configure, build and install cross `gcc` (with `libgcc-static`)
 5. Configure, build and install `musl`
-6. Build, and install `libgcc`
+6. Build, and install shared `libgcc`
 
 ## Additional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
 
 ## Credits and Inspiration
-mussel is possible thanks to the awesome work done by Aurelian,
-[qword](https://github.com/qword-os), [The Managram
-Project](https://github.com/managarm), [glaucus](https://www.glaucuslinux.org/) (where it's actually implemented) and Rich Felker.
+mussel is possible thanks to the awesome work done by Aurelian, Rich Felker,
+[qword](https://github.com/qword-os), [The Managram Project](
+https://github.com/managarm), [glaucus](https://www.glaucuslinux.org/) (where
+it's actually implemented) and [musl-cross-make](
+https://github.com/richfelker/musl-cross-make).
 
 ## Author
 Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](

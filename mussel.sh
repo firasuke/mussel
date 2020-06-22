@@ -61,7 +61,7 @@ BLDDIR="$CURDIR/builds"
 PCHDIR="$CURDIR/patches"
 # Please don't change $MSYSROOT to `$CURDIR/toolchain/$XTARGET` like CLFS and
 # other implementations because it'll break here (even if binutils insists
-# on installing stuff to that directory) (firasuke).
+# on installing stuff to that directory).
 #
 MPREFIX="$CURDIR/toolchain"
 MSYSROOT="$CURDIR/sysroot"
@@ -383,8 +383,11 @@ cd musl
 #
 # We only want the headers to configure gcc... Also with musl installs, you
 # almost always should use a DESTDIR (that also should 99% be equal to gcc's
-# and binutils `--with-sysroot` value... (firasuke)
+# and binutils `--with-sysroot` value...
 #
+# We also need to pass `ARCH=$MARCH` and `prefix=/usr` since we haven't
+# configured musl, to get the right versions of musl headers for the target
+# architecture.
 printf -- "${BLUEC}..${NORMALC} Installing musl headers...\n"
 $MAKE \
   ARCH=$MARCH \
@@ -406,8 +409,6 @@ cd cross-binutils
 # installed, so specifying it will save you the need to add a `DESTDIR` when
 # installing.
 # 
-# One question though, doesn't `--prefix` gets baked into binaries?
-#
 # The `--target` specifies that we're cross compiling, and binutils tools will
 # be prefixed by the value provided to it. There's no need to specify `--build`
 # and `--host` as `config.guess`/`config.sub` are now smart enough to figure
@@ -421,7 +422,6 @@ cd cross-binutils
 # search for target headers and libraries.
 #
 printf -- "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
-CFLAGS=-O2 \
 $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --prefix=$MPREFIX \
   --target=$XTARGET \
@@ -468,8 +468,6 @@ cd cross-gcc
 # your host.
 #
 printf -- "${BLUEC}..${NORMALC} Configuring cross-gcc...\n"
-CFLAGS=-O2 \
-CXXFLAGS=-O2 \
 $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --prefix=$MPREFIX \
   --target=$XTARGET \
@@ -487,7 +485,21 @@ printf -- "${BLUEC}..${NORMALC} Installing cross-gcc compiler...\n"
 $MAKE \
   install-strip-gcc >> $MLOG 2>&1
 
-printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
+#
+# Notice how we're not optimizing libgcc-static by passing -O0 in both CFLAGS
+# and CXXFLAGS as we're only using libgcc-static to build musl, then we rebuild
+# it later on as a full libgcc-shared.
+#
+printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgcc-static...\n"
+CFLAGS='-g0 -O0' \
+CXXFLAGS='-g0 -O0' \
+$MAKE \
+  enable_shared=no \
+  all-target-libgcc >> $MLOG 2>&1
+
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n"
+$MAKE \
+  install-strip-target-libgcc >> $MLOG 2>&1
 
 # ----- Step 4: musl ----- #
 # We need a separate build directory for musl now that we have our cross GCC
@@ -499,10 +511,15 @@ printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
 cd $BLDDIR/musl
 
 #
-# musl can be configured with a nonexistent libgcc-static that must be
-# provided later on before building musl!
+# musl can be configured with a nonexistent libgcc-static which is what
+# musl-cross-make does, but we're able to build libgcc.a before musl so it's
+# considered existent here. (We can configure musl with a nonexistent libgcc.a
+# then go back to $BLDDIR/cross-gcc and build libgcc.a, then come back to
+# $BLDDIR/musl and build musl (which is what musl-cross-make does), but that's a
+# lot of jumping, and we end up rebuilding libgcc later on as a shared version
+# to be able to compile the rest of GCC libs, so why confuse ourselves?)
 #
-printf -- "${BLUEC}..${NORMALC} Configuring musl...\n\n"
+printf -- "${BLUEC}..${NORMALC} Configuring musl...\n"
 ARCH=$MARCH \
 CC=$XTARGET-gcc \
 CROSS_COMPILE=$XTARGET- \
@@ -512,41 +529,15 @@ LIBCC="$MPREFIX/lib/gcc/$XTARGET/$gcc_ver/libgcc.a" \
   --prefix=/usr \
   --disable-static >> $MLOG 2>&1
 
-#
-# Providing libgcc-static for musl
-#
-# ----- Step 5: cross-gcc (libgcc-static) ----- #
-printf -- "\n-----\n*5) cross-gcc (libgcc-static)\n-----\n\n" >> $MLOG
-printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc-static...\n"
-cd $BLDDIR/cross-gcc
-
-#
-# Notice how we're not optimizing libgcc-static by passing -O0 in both CFLAGS
-# and CXXFLAGS as we're only using libgcc-static to build musl, then we rebuild
-# it later on as a full shared libgcc.
-#
-printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgcc...\n"
-CFLAGS='-g0 -O0' \
-CXXFLAGS='-g0 -O0' \
-$MAKE \
-  enable_shared=no \
-  all-target-libgcc >> $MLOG 2>&1
-
-printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc...\n"
-$MAKE \
-  install-strip-target-libgcc >> $MLOG 2>&1
-
-printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc finished.\n\n"
-
 printf -- "${BLUEC}..${NORMALC} Building musl...\n"
-cd $BLDDIR/musl
 $MAKE \
   AR=$XTARGET-ar \
   RANLIB=$XTARGET-ranlib >> $MLOG 2>&1
 
 #
-# Notice how we're only installing musl's libs and tools here as the headers
-# were previously installed separately.
+# We can specify `install-libs install-tools` instead of `install` (since we
+# already have the headers installed (with `install-headers above`)), but
+# apparently `install` skips the headers if it found them already installed?
 #
 printf -- "${BLUEC}..${NORMALC} Installing musl...\n"
 $MAKE \
@@ -555,14 +546,39 @@ $MAKE \
   DESTDIR=$MSYSROOT \
   install >> MLOG 2>&1
 
+# ----- Step 5: cross-gcc libgcc-shared ----- #
+# After having built musl, we need to rebuild libgcc but this time as
+# libgcc-shared to be able to build the following gcc libs (like libstdc++-v3
+# and libgomp which would complain about a missing -lgcc_s and would error out
+# with C compiler doesn't work).
 #
-# Almost all implementations of musl based toolchains would want to change the
-# symlink between LDSO and the libc.so because it'll be wrong almost always...
-#
-rm -f $MSYSROOT/lib/ld-musl-$XARCH.so.1
-cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
+printf -- "\n-----\n*5) cross-gcc libgcc-shared\n-----\n\n" >> $MLOG
+printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc-shared...\n"
+cd $BLDDIR/cross-gcc
+# We need to run `make distclean` and not just `make clean` to make sure the
+# leftovers from the previous static build of libgcc are gone so we can build
+# the shared version without having to restart the entire build just to build
+# libgcc-shared!
+$MAKE \
+  -C $XTARGET/libgcc distclean >> $MLOG 2>&1
 
-printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
+#
+# We specify `enable_shared=yes` here which is certainly not needed but
+# recommended to always get a shared build in this step!
+#
+printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgcc-shared...\n"
+$MAKE \
+  enable_shared=yes \
+  all-target-libgcc >> $MLOG 2>&1
+
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-shared...\n"
+$MAKE \
+  install-strip-target-libgcc >> $MLOG 2>&1
+
+#
+# We only finish cross-gcc once which is here (which is where it truly ends).
+#
+printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
 
 # ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
