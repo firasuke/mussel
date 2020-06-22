@@ -5,18 +5,31 @@ compilers that target musl libc.
 ## Features
 1. **Up-to-date**: uses latest available upstream sources for packages
 2. **Fast**: probably the fastest script around to build a cross compiler
-   targetting musl libc, also it's written entirely in POSIX DASH
+   targetting musl libc, also it's written entirely in POSIX and runs fully
+   under DASH
 3. **Short**: has the least amount of steps (see below) required to build a
    cross compiler targetting musl libc (even less than
    [musl-cross-make](https://github.com/richfelker/musl-cross-make))
 4. **Small**: all installation steps use `install-strip` when applicable
 5. **Simple**: easy to read, modify and extend
-6. **POSIX Compliant**: written entirely in POSIX DASH
+6. **POSIX Compliant**: the entire script is POSIX compliant and runs entirely
+   under DASH
 7. **Well Documented**: the script has comments (that are considered state of
    the art information) all over the place explaining what is being done and why
 
+## Requirements:
+To confirm you have all required packages, you can execute `./check.sh`.
+### For Fedora (32):
+```Sh
+sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils
+diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make patch perl
+rsync sed tar texinfo xz libzstd-devel
+```
+
 ## Usage
-`./mussel.sh (arch) (flag)`
+```Sh
+./mussel.sh (arch) (flag)
+```
 
 **(arch)**: See **Supported Architectures** below (default is x86_64)
 
@@ -44,11 +57,6 @@ Pi Zero)
 6. `mpfr`: 4.0.2
 7. `musl`: 1.2.0
 
-## Requirements:
-To confirm you have all required packages, you can execute `./check.sh`.
-### For Fedora (32):
-`sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make patch perl rsync sed tar texinfo xz libzstd-devel`
-
 ## Patches
 1. For `gcc`:
   * [Enable-CET-in-cross-compiler-if-possible.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch) [source: upstream]
@@ -57,8 +65,8 @@ To confirm you have all required packages, you can execute `./check.sh`.
 1. Install `musl` headers
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (with `libgcc-static`)
-5. Configure, build and install `musl`
-6. Build, and install shared `libgcc`
+4. Configure, build and install `musl`
+5. Build, and install `libgcc-shared` only
 
 ## Additional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
