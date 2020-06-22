@@ -16,16 +16,20 @@ compilers that target musl libc.
    the art information) all over the place explaining what is being done and why
 
 ## Usage
-`./mussel.sh [arch] (flag)`
-<br>[arch]: See **Supported Architectures** below for list of officially supported targets.
-<br>(flag): **--fast:** Uses all available cores to build toolchain
+`./mussel.sh (arch) (flag)`
+
+**(arch)**: See **Supported Architectures** below (default is x86_64)
+
+**(flag)**: **--parallel:** Use all available cores on the host system
 
 ## Supported Architectures
-* i686 (requires `libgcc-static`, see **Additional Steps** below)
-* aarch64 [ARMv8-A] (requires `libgcc-static`, see **Additional Steps** below)
+* aarch64
+* i686
+* powerpc
 * powerpc64
 * powerpc64le
-* x86-64
+* riscv64
+* x86-64 (default)
 
 ## Packages
 1. `binutils`: 2.34
@@ -39,30 +43,18 @@ compilers that target musl libc.
 ## Patches
 1. For `gcc`:
   * [Enable-CET-in-cross-compiler-if-possible.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch) [source: upstream]
-2. For `musl`:
-  * [0002-enable-fast-math.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/musl/patches/qword/0002-enable-fast-math.patch) [source: qword]
-
-## Additional Patches for `powerpc64`
-3. For `musl`:
-  * [0001-powerpc-support.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/musl/patches/glaucus/0001-powerpc-support.patch) [source: glaucus]
-  * [0001-powerpc64-support.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/musl/patches/glaucus/0001-powerpc64-support.patch) [source: glaucus]
-
-## Usage
-1. Make sure you are in an empty directory
-2. Run `./mussel.sh` (yup that's basically it)
 
 ## How is mussel doing it?
-1. Configure `musl`, and only install its `headers`
+1. Install `musl` headers
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (without `libgcc`)
-4. Build `musl`, and only install its `libs` and `tools`
-5. Build, and install `libgcc`
+4. Configure, build and install `libgcc-static`
+5. Configure, build and install `musl`
+6. Build, and install `libgcc`
 
 ## Additional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
-* Configure, build and install `libgcc-static` (Automatically done for
-  architectures that require it)
 
 ## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian,
@@ -73,6 +65,9 @@ Project](https://github.com/managarm), and
 ## Author
 Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
 mailto:firasuke@glaucuslinux.org)>
+
+## Contributors
+* Alexander Barris (AwlsomeAlex)
 
 ## License
 mussel is licensed under the Internet Systems Consortium (ISC) license.
