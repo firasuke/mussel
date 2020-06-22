@@ -23,13 +23,16 @@ compilers that target musl libc.
 **(flag)**: **--parallel:** Use all available cores on the host system
 
 ## Supported Architectures
-* aarch64
+* i586
 * i686
+* x86-64 (default)
 * powerpc
 * powerpc64
 * powerpc64le
+* armv6
+* armv7
+* aarch64
 * riscv64
-* x86-64 (default)
 
 ## Packages
 1. `binutils`: 2.34

@@ -81,6 +81,8 @@ MLOG="$CURDIR/log.txt"
 # powerpc
 # powerpc64
 # powerpc64le
+# armv6
+# armv7
 # aarch64
 # riscv64
 
@@ -96,6 +98,8 @@ case "$XARCH" in
     printf -- "${YELLOWC}!.${NORMALC} No Architecture Specified!\n"
     printf -- "${YELLOWC}!.${NORMALC} Using the default architecture x86_64!\n"
     XARCH=x86_64
+    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    MARCH=x86_64
     ;;
   i586)
     XGCCARGS="--with-arch=i586 --with-tune=generic"
@@ -120,6 +124,14 @@ case "$XARCH" in
   powerpc64le)
     XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
     MARCH=powerpc64
+    ;;
+  armv6)
+    XGCCARGS="--with-arch=armv6 --with-fpu=vfp --with-float=hard"
+    MARCH=arm
+    ;;
+  armv7)
+    XGCCARGS="--with-arch=armv7-a --with-fpu=vfpv3 --with-float=hard"
+    MARCH=arm
     ;;
   aarch64)
     XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
@@ -175,7 +187,16 @@ case "$XARCH" in
 esac
 
 # ----- Target ----- #
-XTARGET=$XARCH-linux-musl
+# GCC has a different format for ARM than it does most archs
+# so they will have a target according to their abi.
+#
+if [ $XARCH = "armv6" ]; then
+    XTARGET=arm-linux-musleabi
+elif [ $XARCH = "armv7" ]; then
+    XTARGET=arm-linux-musleabihf
+else
+    XTARGET=$XARCH-linux-musl
+fi
 
 # ----- PATH ----- # 
 # Use host tools, then switch to ours when they're available
