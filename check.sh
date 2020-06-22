@@ -13,6 +13,9 @@ ld --version | sed 1q | cut -d' ' -f4 &&
 printf 'bison:     ' &&
 bison --version | sed 1q | cut -d' ' -f4 &&
 
+printf 'bsdtar:    ' &&
+bsdtar --version | sed 1q | cut -d' ' -f2 &&
+
 printf 'bzip2:     ' &&
 bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8 | sed s/,// &&
 
@@ -67,14 +70,14 @@ patch --version | sed 1q | cut -d' ' -f3 &&
 printf 'perl:      ' &&
 perl -V:version | cut -d"'" -f2 &&
 
+printf 'pv:        ' &&
+pv -V | grep 'pv ' | cut -d ' ' -f2 &&
+
 printf 'rsync:     ' &&
 rsync --version | sed 1q | cut -d' ' -f4 &&
 
 printf 'sed:       ' &&
 sed --version | sed 1q | cut -d' ' -f4 &&
-
-printf 'tar:       ' &&
-tar --version | sed 1q | cut -d' ' -f4 &&
 
 printf 'texinfo:   ' &&
 makeinfo --version | sed 1q | cut -d' ' -f4 &&
