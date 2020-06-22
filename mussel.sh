@@ -546,6 +546,13 @@ $MAKE \
   DESTDIR=$MSYSROOT \
   install >> MLOG 2>&1
 
+#
+# Almost all implementations of musl based toolchains would want to change the
+# symlink between LDSO and the libc.so because it'll be wrong almost always...
+#
+rm -f $MSYSROOT/lib/ld-musl-$XARCH.so.1
+cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
+
 # ----- Step 5: cross-gcc libgcc-shared ----- #
 # After having built musl, we need to rebuild libgcc but this time as
 # libgcc-shared to be able to build the following gcc libs (like libstdc++-v3
