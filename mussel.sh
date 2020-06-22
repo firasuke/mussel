@@ -135,7 +135,7 @@ case "$XARCH" in
     ;;
   powerpc)
     MARCH=$XARCH
-    XGCCARGS="--with-cpu=$XARCH --enable-secureplt --with-long-double-64"
+    XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128 --with-long-double-64"
     XTARGET=$XARCH-linux-musl
     ;;
   powerpc64)
