@@ -23,13 +23,16 @@ compilers that target musl libc.
 **(flag)**: **--parallel:** Use all available cores on the host system
 
 ## Supported Architectures
-* aarch64
+* i586
 * i686
+* x86-64 (default)
 * powerpc
 * powerpc64
 * powerpc64le
+* armv6
+* armv7
+* aarch64
 * riscv64
-* x86-64 (default)
 
 ## Packages
 1. `binutils`: 2.34
@@ -39,6 +42,11 @@ compilers that target musl libc.
 5. `mpc`: 1.1.0
 6. `mpfr`: 4.0.2
 7. `musl`: 1.2.0
+
+## Requirements:
+To confirm you have all required packages, you can execute `./check.sh`.
+### For Fedora (32):
+`sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make patch perl rsync sed tar texinfo xz libzstd-devel`
 
 ## Patches
 1. For `gcc`:
