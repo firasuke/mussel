@@ -244,17 +244,10 @@ mpatch() {
   [ ! -d "$2" ] && mkdir "$2"
   cd "$2"
 
-  if [ ! -f "$4".patch ]; then
-    printf -- "${BLUEC}..${NORMALC} Fetching $2 ${4}.patch from $5...\n"
-    wget -q --show-progress https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
-  else
-    printf -- "${YELLOWC}!.${NORMALC} ${4}.patch already exists, skipping...\n"
-  fi
-
-  printf -- "${BLUEC}..${NORMALC} Applying $2 ${4}.patch from $5...\n"
+  printf -- "${BLUEC}..${NORMALC} Patching ${4}.patch for $2...\n"
   cd $SRCDIR/$2/$2-$3
   patch -p$1 -i $PCHDIR/$2/${4}.patch >> $MLOG 2>&1 
-  printf -- "${GREENC}=>${NORMALC} $2 patched!\n"
+  printf -- "${GREENC}=>${NORMALC} $2 patched with ${4}!\n"
 }
 
 # ----- mclean(): Clean Directory ----- #
@@ -263,7 +256,7 @@ mclean() {
     printf -- "${BLUEC}..${NORMALC} Cleaning $1 directory...\n"
     rm -fr "$CURDIR/$1"
     mkdir "$CURDIR/$1"
-    printf -- "${GREENC}=>${NORMALC} $1 clean"
+    printf -- "${GREENC}=>${NORMALC} $1 cleaned\n"
     printf -- "Cleaned $1.\n" >> $MLOG
   fi
 }
@@ -284,7 +277,6 @@ printf -- "Chosen target architecture: $XARCH\n\n"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
-[ ! -d $PCHDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
 printf -- '\n'
 rm -fr $MLOG
 
@@ -316,7 +308,7 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 # and libiberty.
 #
 printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
-mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
+mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible gcc
 
 printf -- '\n'
 
