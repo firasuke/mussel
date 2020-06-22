@@ -90,7 +90,8 @@ MLOG="$CURDIR/log.txt"
 # ----- Compilation Arguments ----- #
 # It's also common to see `--enable-secureplt' added to cross gcc args when the
 # target is powerpc*, but that's only the case to get musl to support 32-bit
-# powerpc (as instructed by musl's wiki, along with --with-long-double-64). For
+# powerpc (as instructed by musl's wiki, along with --with-long-double-64, which
+# was replaced by `--without-long-double-128` in recent GCC versions). For
 # 64-bit powerpc like powerpc64 and powerpc64le, there's no need to explicitly
 # specify it. (needs more investigation, but works without it)
 #
@@ -135,7 +136,7 @@ case "$XARCH" in
     ;;
   powerpc)
     MARCH=$XARCH
-    XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128 --with-long-double-64"
+    XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128"
     XTARGET=$XARCH-linux-musl
     ;;
   powerpc64)
