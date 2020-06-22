@@ -75,16 +75,17 @@ MLOG="$CURDIR/log.txt"
 # to build musl for these architectures.
 # All listed archs were tested and are fully working!
 #
-# i586
-# i686
-# x86_64 (default)
-# powerpc
-# powerpc64
-# powerpc64le
-# armv6
-# armv7
-# aarch64
-# riscv64
+# - aarch64
+# - armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry
+# Pi Zero)
+# - armv7
+# - i586
+# - i686
+# - powerpc
+# - powerpc64
+# - powerpc64le
+# - riscv64
+# - x86_64 (default)
 
 # ----- Compilation Arguments ----- #
 # It's also common to see `--enable-secureplt' added to cross gcc args when the
@@ -93,53 +94,69 @@ MLOG="$CURDIR/log.txt"
 # 64-bit powerpc like powerpc64 and powerpc64le, there's no need to explicitly
 # specify it. (needs more investigation, but works without it)
 #
+# To recap:
+# - XARCH is the arch that we are supporting and the user chooses
+# - MARCH is the arch that is supported by musl (found in
+# $SRCDIR/musl/musl-$musl_ver/arch/)
+# - XTARGET is the final target triplet
 case "$XARCH" in
   "")
     printf -- "${YELLOWC}!.${NORMALC} No Architecture Specified!\n"
     printf -- "${YELLOWC}!.${NORMALC} Using the default architecture x86_64!\n"
     XARCH=x86_64
-    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
     MARCH=x86_64
-    ;;
-  i586)
-    XGCCARGS="--with-arch=i586 --with-tune=generic"
-    MARCH=i386
-    ;;
-  i686)
-    XGCCARGS="--with-arch=i686 --with-tune=generic"
-    MARCH=i386
-    ;;
-  x86_64)
     XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-    MARCH=x86_64
-    ;;
-  powerpc)
-    XGCCARGS="--with-cpu=powerpc --enable-secureplt --with-long-double-64"
-    MARCH=powerpc
-    ;;
-  powerpc64)
-    XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
-    MARCH=powerpc64
-    ;;
-  powerpc64le)
-    XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
-    MARCH=powerpc64
-    ;;
-  armv6)
-    XGCCARGS="--with-arch=armv6 --with-fpu=vfp --with-float=hard"
-    MARCH=arm
-    ;;
-  armv7)
-    XGCCARGS="--with-arch=armv7-a --with-fpu=vfpv3 --with-float=hard"
-    MARCH=arm
+    XTARGET=$XARCH-linux-musl
     ;;
   aarch64)
+    MARCH=$XARCH
     XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
-    MARCH=aarch64
+    XTARGET=$XARCH-linux-musl
+    ;;
+  armv6zk)
+    MARCH=arm
+    XGCCARGS="--with-arch=armv6zk --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
+    XTARGET=$MARCH-linux-musleabihf
+    ;;
+  armv7)
+    MARCH=arm
+    XGCCARGS="--with-arch=${MARCH}v7-a --with-fpu=vfpv3 --with-float=hard"
+    XTARGET=$MARCH-linux-musleabihf
+    ;;
+  i586)
+    MARCH=i386
+    XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  i686)
+    MARCH=i386
+    XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  powerpc)
+    MARCH=$XARCH
+    XGCCARGS="--with-cpu=$XARCH --enable-secureplt --with-long-double-64"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  powerpc64)
+    MARCH=$XARCH
+    XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  powerpc64le)
+    MARCH=powerpc64
+    XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+    XTARGET=$XARCH-linux-musl
     ;;
   riscv64)
+    MARCH=$XARCH
     XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
-    MARCH=riscv64
+    XTARGET=$XARCH-linux-musl
+    ;;
+  x86_64)
+    MARCH=$XARCH
+    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    XTARGET=$XARCH-linux-musl
     ;;
   c | -c | --clean)
     printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
@@ -160,14 +177,16 @@ case "$XARCH" in
     printf -- "Usage: $EXEC: [architecture]|[command] (flag)\n"
     printf -- '\n'
     printf -- 'Supported Architectures:\n'
+    printf -- '\t+ aarch64\n'
+    printf -- '\t+ armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry Pi Zero)\n'
+    printf -- '\t+ armv7\n'
     printf -- '\t+ i586\n'
     printf -- '\t+ i686\n'
-    printf -- '\t+ x86_64 (default)\n'
     printf -- '\t+ powerpc\n'
     printf -- '\t+ powerpc64\n'
     printf -- '\t+ powerpc64le\n'
-    printf -- '\t+ aarch64\n'
     printf -- '\t+ riscv64\n'
+    printf -- '\t+ x86_64 (default)\n'
 
     printf -- '\n'
     printf -- 'Commands:\n'
@@ -185,18 +204,6 @@ case "$XARCH" in
     exit 1
     ;;
 esac
-
-# ----- Target ----- #
-# GCC has a different format for ARM than it does most archs
-# so they will have a target according to their abi.
-#
-if [ $XARCH = "armv6" ]; then
-    XTARGET=arm-linux-musleabi
-elif [ $XARCH = "armv7" ]; then
-    XTARGET=arm-linux-musleabihf
-else
-    XTARGET=$XARCH-linux-musl
-fi
 
 # ----- PATH ----- # 
 # Use host tools, then switch to ours when they're available

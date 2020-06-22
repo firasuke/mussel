@@ -3,6 +3,12 @@
 # Copyright (c) 2018-2020, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
+#
+# Repurposed from glaucus's require script for use in mussel. The original
+# script can be found over at:
+# <https://github.com/glaucuslinux/glaucus/blob/master/scripts/require>
+#
+
 printf 'bash:      ' &&
 bash --version | sed 1q | cut -d' ' -f4 &&
 

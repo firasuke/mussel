@@ -23,16 +23,17 @@ compilers that target musl libc.
 **(flag)**: **--parallel:** Use all available cores on the host system
 
 ## Supported Architectures
+* aarch64
+* armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry
+Pi Zero)
+* armv7
 * i586
 * i686
-* x86-64 (default)
 * powerpc
 * powerpc64
 * powerpc64le
-* armv6
-* armv7
-* aarch64
 * riscv64
+* x86_64 (default)
 
 ## Packages
 1. `binutils`: 2.34
@@ -67,8 +68,7 @@ To confirm you have all required packages, you can execute `./check.sh`.
 ## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian,
 [qword](https://github.com/qword-os), [The Managram
-Project](https://github.com/managarm), and
-[glaucus](https://www.glaucuslinux.org/) (where it's actually implemented).
+Project](https://github.com/managarm), [glaucus](https://www.glaucuslinux.org/) (where it's actually implemented) and Rich Felker.
 
 ## Author
 Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
