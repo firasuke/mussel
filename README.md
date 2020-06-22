@@ -45,11 +45,11 @@ compilers that target musl libc.
   * [Enable-CET-in-cross-compiler-if-possible.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch) [source: upstream]
 
 ## How is mussel doing it?
-1. Configure `musl`, and only install its `headers`
+1. Install `musl` headers
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (without `libgcc`)
 4. Configure, build and install `libgcc-static`
-5. Reconfigure, build and install `musl`
+5. Configure, build and install `musl`
 6. Build, and install `libgcc`
 
 ## Additional Steps

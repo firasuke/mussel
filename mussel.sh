@@ -326,45 +326,25 @@ mclean sysroot
 
 printf -- '\n'
 
-# ----- Step 1: musl-headers ----- #
-printf -- "${BLUEC}..${NORMALC} Preparing musl-headers...\n"
+# ----- Step 1: musl headers ----- #
+printf -- "${BLUEC}..${NORMALC} Preparing musl headers...\n"
 cd $BLDDIR
-mkdir musl-headers
-cd musl-headers
-
-#
-# Note the use of `--host` instead of `--target` (musl-cross-make, Aurelian)
-#
-# Additionally, we specify`--prefix=/usr` because this is where we expect musl
-# to be in the final system. (musl wiki)
-#
-# `CC` must be equal to the host's C compiler because ours isn't ready yet.
-#
-# Also notice how `CROSS_COMPILE` is empty here.
-#
-# We can do without `--disable-static`, but it doesn't affect the installed
-# headers.
-#
-printf -- "${BLUEC}..${NORMALC} Configuring musl-headers...\n"
-ARCH=$XARCH \
-CC=gcc \
-CROSS_COMPILE=' ' \
-$SRCDIR/musl/musl-$musl_ver/configure \
-  --host=$XTARGET \
-  --prefix=/usr \
-  --disable-static >> $MLOG 2>&1
+cp -ar $SRCDIR/musl/musl-$musl_ver musl
+cd musl
 
 #
 # We only want the headers to configure gcc... Also with musl installs, you
 # almost always should use a DESTDIR (that also should 99% be equal to gcc's
 # and binutils `--with-sysroot` value... (firasuke)
 #
-printf -- "${BLUEC}..${NORMALC} Installing musl-headers...\n"
+printf -- "${BLUEC}..${NORMALC} Installing musl headers...\n"
 $MAKE \
+  ARCH=$XARCH \
+  prefix=/usr \
   DESTDIR=$MSYSROOT \
   install-headers >> $MLOG 2>&1 
 
-printf -- "${GREENC}=>${NORMALC} musl-headers finished.\n\n"
+printf -- "${GREENC}=>${NORMALC} musl headers finished.\n\n"
 
 # ----- Step 2: cross-binutils ----- #
 printf -- "${BLUEC}..${NORMALC} Preparing cross-binutils...\n"
@@ -508,19 +488,17 @@ printf -- "${GREENC}=>${NORMALC} libgcc-static finished.\n\n"
 
 # ----- Step 5: musl ----- #
 # We need a separate build directory for musl now that we have our cross GCC
-# ready. Using the same directory as musl-headers without reconfiguring musl
+# ready. Using the same directory as musl headers without reconfiguring musl
 # would break the ABI.
 #
 printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
-cd $BLDDIR
-mkdir musl
-cd musl
+cd $BLDDIR/musl
 
 printf -- "${BLUEC}..${NORMALC} Configuring musl...\n"
 ARCH=$XARCH \
 CC=$XTARGET-gcc \
 CROSS_COMPILE=$XTARGET- \
-$SRCDIR/musl/musl-$musl_ver/configure \
+./configure \
   --host=$XTARGET \
   --prefix=/usr \
   --disable-static >> $MLOG 2>&1
