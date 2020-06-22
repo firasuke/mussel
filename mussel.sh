@@ -178,7 +178,8 @@ case "$XARCH" in
     printf -- '\n'
     printf -- 'Supported Architectures:\n'
     printf -- '\t+ aarch64\n'
-    printf -- '\t+ armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry Pi Zero)\n'
+    printf -- '\t+ armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module,'
+    printf -- '\n\t          and the Raspberry Pi Zero)\n'
     printf -- '\t+ armv7\n'
     printf -- '\t+ i586\n'
     printf -- '\t+ i686\n'
@@ -287,7 +288,15 @@ mpatch() {
   [ ! -d "$2" ] && mkdir "$2"
   cd "$2"
 
-  printf -- "${BLUEC}..${NORMALC} Patching ${4}.patch for $2...\n"
+  if [ ! -f "$4".patch ]; then
+    printf -- "${BLUEC}..${NORMALC} Fetching $2 ${4}.patch from $5...\n"
+    wget -q --show-progress https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
+  else
+    printf -- "${YELLOWC}!.${NORMALC} ${4}.patch already exists, skipping...\n"
+  fi
+
+  printf -- "${BLUEC}..${NORMALC} Applying ${4}.patch from $5 for ${2}...\n"
+
   cd $SRCDIR/$2/$2-$3
   patch -p$1 -i $PCHDIR/$2/${4}.patch >> $MLOG 2>&1 
   printf -- "${GREENC}=>${NORMALC} $2 patched with ${4}!\n"
@@ -319,6 +328,7 @@ printf -- '\n'
 printf -- "Chosen target architecture: $XARCH\n\n"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
+[ ! -d $PCHDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the patches directory...\n" && mkdir $PCHDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
 printf -- '\n'
 rm -fr $MLOG
@@ -351,7 +361,7 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 # and libiberty.
 #
 printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
-mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible gcc
+mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
 
 printf -- '\n'
 
@@ -441,9 +451,6 @@ printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
 cp -ar $SRCDIR/mpc/mpc-$mpc_ver $SRCDIR/gcc/gcc-$gcc_ver/mpc
-# ISL is not needed for libgcc-static but it's better to have it included here
-# than to copy the entire gcc directory for libgcc-static just to ensure it's
-# ISL free.
 cp -ar $SRCDIR/isl/isl-$isl_ver $SRCDIR/gcc/gcc-$gcc_ver/isl
 
 cd $BLDDIR
@@ -482,71 +489,60 @@ $MAKE \
 
 printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
 
-# ----- Step 4: libgcc-static ----- #
-# This step is required for all archs, and failure to due it would break the
-# ABI.
-#
-printf -- "\n-----\n*4) libgcc-static\n-----\n\n" >> $MLOG
-printf -- "${BLUEC}..${NORMALC} Preparing libgcc-static...\n"
-cd $BLDDIR
-mkdir libgcc-static
-cd libgcc-static
-
-# We configure libgcc-static using the same configure file from GCC's source
-# directory. We also pass `--without-isl` to ensure that the already copied ISL
-# prerequisite doesn't get picked up here as we don't need it for libgcc-static.
-printf -- "${BLUEC}..${NORMALC} Configuring libgcc-static...\n"
-$SRCDIR/gcc/gcc-$gcc_ver/configure \
-  --prefix=$MPREFIX \
-  --target=$XTARGET \
-  --with-sysroot=$MSYSROOT \
-  --enable-languages=c \
-  --disable-multilib \
-  --disable-nls  \
-  --disable-shared \
-  --without-isl \
-  --without-headers \
-  --with-newlib \
-  --disable-decimal-float \
-  --disable-libsanitizer \
-  --disable-libssp \
-  --disable-libquadmath \
-  --disable-libgomp \
-  --disable-libatomic \
-  --disable-libstdcxx \
-  --disable-threads \
-  --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
-
-printf -- "${BLUEC}..${NORMALC} Building libgcc-static...\n"
-$MAKE \
-  all-target-libgcc >> $MLOG 2>&1
-
-printf -- "${BLUEC}..${NORMALC} Installing libgcc-static...\n"
-$MAKE \
-  install-strip-target-libgcc >> $MLOG 2>&1
-
-printf -- "${GREENC}=>${NORMALC} libgcc-static finished.\n\n"
-
-# ----- Step 5: musl ----- #
+# ----- Step 4: musl ----- #
 # We need a separate build directory for musl now that we have our cross GCC
 # ready. Using the same directory as musl headers without reconfiguring musl
 # would break the ABI.
 #
-printf -- "\n-----\n*5) musl\n-----\n\n" >> $MLOG
+printf -- "\n-----\n*4) musl\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
 cd $BLDDIR/musl
 
-printf -- "${BLUEC}..${NORMALC} Configuring musl...\n"
+#
+# musl can be configured with a nonexistent libgcc-static that must be
+# provided later on before building musl!
+#
+printf -- "${BLUEC}..${NORMALC} Configuring musl...\n\n"
 ARCH=$MARCH \
 CC=$XTARGET-gcc \
 CROSS_COMPILE=$XTARGET- \
+LIBCC="$MPREFIX/lib/gcc/$XTARGET/$gcc_ver/libgcc.a" \
 ./configure \
   --host=$XTARGET \
   --prefix=/usr \
   --disable-static >> $MLOG 2>&1
 
+#
+# Providing libgcc-static for musl
+#
+# ----- Step 5: cross-gcc (libgcc-static) ----- #
+printf -- "\n-----\n*5) cross-gcc (libgcc-static)\n-----\n\n" >> $MLOG
+printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc-static...\n"
+cd $BLDDIR/cross-gcc
+
+#
+# Notice how we're not optimizing libgcc-static by passing -O0 in both CFLAGS
+# and CXXFLAGS as we're only using libgcc-static to build musl, then we rebuild
+# it later on as a full shared libgcc.
+#
+printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgcc...\n"
+CFLAGS='-g0 -O0' \
+CXXFLAGS='-g0 -O0' \
+$MAKE \
+  enable_shared=no \
+  all-target-libgcc >> $MLOG 2>&1
+
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc...\n"
+$MAKE \
+  install-strip-target-libgcc >> $MLOG 2>&1
+
+printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc finished.\n\n"
+
 printf -- "${BLUEC}..${NORMALC} Building musl...\n"
-$MAKE >> $MLOG 2>&1
+cd $BLDDIR/musl
+$MAKE \
+  AR=$XTARGET-ar \
+  RANLIB=$XTARGET-ranlib >> $MLOG 2>&1
 
 #
 # Notice how we're only installing musl's libs and tools here as the headers
@@ -554,6 +550,8 @@ $MAKE >> $MLOG 2>&1
 #
 printf -- "${BLUEC}..${NORMALC} Installing musl...\n"
 $MAKE \
+  AR=$XTARGET-ar \
+  RANLIB=$XTARGET-ranlib \
   DESTDIR=$MSYSROOT \
   install >> MLOG 2>&1
 
@@ -566,26 +564,12 @@ cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
 
 printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 
-# ----- Step 6: cross-gcc (libgcc) ----- #
-printf -- "\n-----\n*6) cross-gcc (libgcc)\n-----\n\n" >> $MLOG
-printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc...\n"
-cd $BLDDIR/cross-gcc
-
-printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgcc...\n"
-$MAKE \
-  all-target-libgcc >> $MLOG 2>&1
-
-printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc...\n"
-$MAKE \
-  install-strip-target-libgcc >> $MLOG 2>&1
-
-printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc finished.\n\n"
-
-# ----- [Optional For C++ Support] Step 7: cross-gcc (libstdc++-v3) ----- #
+# ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
 #
-printf -- "\n-----\n*7) cross-gcc (libstdc++-v3)\n-----\n\n" >> $MLOG
+printf -- "\n-----\n*6) cross-gcc (libstdc++-v3)\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Building cross-gcc libstdc++-v3...\n"
+cd $BLDDIR/cross-gcc
 $MAKE \
   all-target-libstdc++-v3 >> $MLOG 2>&1
 
@@ -595,10 +579,10 @@ $MAKE \
 
 printf -- "${GREENC}=>${NORMALC} cross-gcc libstdc++v3 finished.\n\n"
 
-# ----- [Optional For OpenMP Support] Step 8: cross-gcc (libgomp) ----- #
+# ----- [Optional For OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
-#printf -- "\n-----\n*8) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
+#printf -- "\n-----\n*7) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
 #printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgomp...\n"
 #$MAKE \
 #  all-target-libgomp &>> MLOG

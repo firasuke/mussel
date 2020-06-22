@@ -5,8 +5,10 @@ git:
 addons:
   apt:
     packages:
+    - bsdtar
     - bzip2
     - lzip
+    - pv
     - zstd
 script:
   - travis_wait 60 dash mussel.sh
