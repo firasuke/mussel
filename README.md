@@ -21,12 +21,11 @@ compilers that target musl libc.
 To confirm you have all required packages, you can execute `./check.sh`.
 ### For Fedora (32):
 ```Sh
-sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils
-diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make patch perl
-rsync sed tar texinfo xz libzstd-devel
+sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make patch perl rsync sed tar texinfo xz libzstd-devel
 ```
 
 ## Usage
+### Build a cross compiler
 ```Sh
 ./mussel.sh (arch) (flag)
 ```
@@ -34,6 +33,13 @@ rsync sed tar texinfo xz libzstd-devel
 **(arch)**: See **Supported Architectures** below (default is x86_64)
 
 **(flag)**: **--parallel:** Use all available cores on the host system
+
+### Cleaning mussel's build environment
+```Sh
+./mussel.sh --clean
+```
+
+Sources and patches will be preserved.
 
 ## Supported Architectures
 * aarch64

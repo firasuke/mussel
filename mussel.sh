@@ -160,7 +160,6 @@ case "$XARCH" in
     ;;
   c | -c | --clean)
     printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
-    rm -fr $SRCDIR
     rm -fr $BLDDIR
     rm -fr $MPREFIX
     rm -fr $MSYSROOT
@@ -174,7 +173,8 @@ case "$XARCH" in
     printf -- '\n'
     printf -- 'mussel - The fastest musl-libc cross compiler generator\n'
     printf -- '\n'
-    printf -- "Usage: $EXEC: [architecture]|[command] (flag)\n"
+    printf -- "Usage: $EXEC: (architecture) (flag)\n"
+    printf -- "Usage: $EXEC: (command)\n"
     printf -- '\n'
     printf -- 'Supported Architectures:\n'
     printf -- '\t+ aarch64\n'
@@ -188,13 +188,12 @@ case "$XARCH" in
     printf -- '\t+ powerpc64le\n'
     printf -- '\t+ riscv64\n'
     printf -- '\t+ x86_64 (default)\n'
-
-    printf -- '\n'
-    printf -- 'Commands:\n'
-    printf -- "\tc | -c | --clean:\tClean mussel's build environment\n"
     printf -- '\n'
     printf -- 'Flags:\n'
     printf -- '\tp | -p | --parallel:\tUse all available cores on the host system\n'
+    printf -- '\n'
+    printf -- 'Commands:\n'
+    printf -- "\tc | -c | --clean:\tClean mussel's build environment\n"
     printf -- '\n'
     printf -- 'No penguins were harmed in the making of this script!\n'
     exit 1
