@@ -116,7 +116,7 @@ case "$XARCH" in
     ;;
   armv6zk)
     MARCH=arm
-    XGCCARGS="--with-arch=armv6zk --with-cpu=arm1176jzf-s --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
+    XGCCARGS="--with-arch=armv6zk --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
     XTARGET=$MARCH-linux-musleabihf
     ;;
   armv7)
