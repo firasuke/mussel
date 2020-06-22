@@ -497,7 +497,7 @@ $MAKE \
   enable_shared=no \
   all-target-libgcc >> $MLOG 2>&1
 
-printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
 
@@ -552,6 +552,8 @@ $MAKE \
 #
 rm -f $MSYSROOT/lib/ld-musl-$XARCH.so.1
 cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
+
+printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 
 # ----- Step 5: cross-gcc libgcc-shared ----- #
 # After having built musl, we need to rebuild libgcc but this time as
