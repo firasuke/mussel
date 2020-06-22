@@ -75,12 +75,13 @@ MLOG="$CURDIR/log.txt"
 # to build musl for these architectures.
 # All listed archs were tested and are fully working!
 #
-# x86_64
+# i586
+# i686
+# x86_64 (default)
+# powerpc
 # powerpc64
 # powerpc64le
-# i686
 # aarch64
-# powerpc
 # riscv64
 
 # ----- Compilation Arguments ----- #
@@ -96,26 +97,37 @@ case "$XARCH" in
     printf -- "${YELLOWC}!.${NORMALC} Using the default architecture x86_64!\n"
     XARCH=x86_64
     ;;
-  x86_64)
-    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-    ;;
-  powerpc64)
-    XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
-    ;;
-  powerpc64le)
-    XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
+  i586)
+    XGCCARGS="--with-arch=i586 --with-tune=generic"
+    MARCH=i386
     ;;
   i686)
     XGCCARGS="--with-arch=i686 --with-tune=generic"
+    MARCH=i386
     ;;
-  aarch64)
-    XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
+  x86_64)
+    XGCCARGS="--with-arch=x86-64 --with-tune=generic"
+    MARCH=x86_64
     ;;
   powerpc)
     XGCCARGS="--with-cpu=powerpc --enable-secureplt --with-long-double-64"
+    MARCH=powerpc
+    ;;
+  powerpc64)
+    XGCCARGS="--with-cpu=powerpc64 --with-abi=elfv2"
+    MARCH=powerpc64
+    ;;
+  powerpc64le)
+    XGCCARGS="--with-cpu=powerpc64le --with-abi=elfv2"
+    MARCH=powerpc64
+    ;;
+  aarch64)
+    XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
+    MARCH=aarch64
     ;;
   riscv64)
     XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
+    MARCH=riscv64
     ;;
   c | -c | --clean)
     printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
@@ -136,13 +148,15 @@ case "$XARCH" in
     printf -- "Usage: $EXEC: [architecture]|[command] (flag)\n"
     printf -- '\n'
     printf -- 'Supported Architectures:\n'
-    printf -- '\t+ aarch64\n'
+    printf -- '\t+ i586\n'
     printf -- '\t+ i686\n'
+    printf -- '\t+ x86_64 (default)\n'
     printf -- '\t+ powerpc\n'
     printf -- '\t+ powerpc64\n'
     printf -- '\t+ powerpc64le\n'
+    printf -- '\t+ aarch64\n'
     printf -- '\t+ riscv64\n'
-    printf -- '\t+ x86_64 (default)\n'
+
     printf -- '\n'
     printf -- 'Commands:\n'
     printf -- "\tc | -c | --clean:\tClean mussel's build environment\n"
@@ -287,7 +301,7 @@ rm -fr $MLOG
 # system can tell us by printing each of them to the log
 #
 printf -- 'mussel.sh - Toolchain Compiler Log\n\n' >> $MLOG 2>&1
-printf -- "XARCH: $XARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
+printf -- "XARCH: $XARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
 printf -- "XGCCARGS: $XGCCARGS\n" >> $MLOG 2>&1
 printf -- "CFLAGS: $CFLAGS\nCXXFLAGS: $CXXFLAGS\n" >> $MLOG 2>&1
 printf -- "PATH: $PATH\nMAKE: $MAKE\n" >> $MLOG 2>&1
@@ -335,7 +349,7 @@ cd musl
 #
 printf -- "${BLUEC}..${NORMALC} Installing musl headers...\n"
 $MAKE \
-  ARCH=$XARCH \
+  ARCH=$MARCH \
   prefix=/usr \
   DESTDIR=$MSYSROOT \
   install-headers >> $MLOG 2>&1 
@@ -495,7 +509,7 @@ printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
 cd $BLDDIR/musl
 
 printf -- "${BLUEC}..${NORMALC} Configuring musl...\n"
-ARCH=$XARCH \
+ARCH=$MARCH \
 CC=$XTARGET-gcc \
 CROSS_COMPILE=$XTARGET- \
 ./configure \
