@@ -40,6 +40,11 @@ compilers that target musl libc.
 6. `mpfr`: 4.0.2
 7. `musl`: 1.2.0
 
+## Requirements:
+To confirm you have all required packages, you can execute `./check.sh`.
+### For Fedora (32):
+`sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make patch perl rsync sed tar texinfo xz libzstd-devel`
+
 ## Patches
 1. For `gcc`:
   * [Enable-CET-in-cross-compiler-if-possible.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch) [source: upstream]

@@ -70,21 +70,14 @@ MSYSROOT="$CURDIR/sysroot"
 MLOG="$CURDIR/log.txt"
 
 # ----- Available Architectures ----- #
+# All architectures require a static libgcc to be built before musl.
+# This static libgcc won't be linked against any C library, and will suffice to
+# to build musl for these architectures.
 # All listed archs were tested and are fully working!
-#
-# The following architectures don't require a static libgcc to be built before
-# musl. They basically make use of the shortest way that mussel uses to build a
-# cross compiler targetting musl libc.
 #
 # x86_64
 # powerpc64
 # powerpc64le
-
-#
-# The following architectures require a static libgcc to be built before musl.
-# This static libgcc won't be linked against any C library, and will suffice to
-# to build musl for these architectures.
-#
 # i686
 # aarch64
 # powerpc
@@ -99,8 +92,8 @@ MLOG="$CURDIR/log.txt"
 #
 case "$XARCH" in
   "")
-    printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
-    printf -- "${REDC}!!${NORMALC} Using the default architecture x86_64!\n"
+    printf -- "${YELLOWC}!.${NORMALC} No Architecture Specified!\n"
+    printf -- "${YELLOWC}!.${NORMALC} Using the default architecture x86_64!\n"
     XARCH=x86_64
     ;;
   x86_64)
@@ -241,7 +234,8 @@ mpackage() {
   printf -- "${BLUEC}..${NORMALC} Unpacking $HOLDER...\n"
   tar xf $HOLDER -C .
 
-  printf -- '\n'
+  printf -- "${GREENC}=>${NORMALC} $HOLDER prepared!\n\n"
+  printf -- "${HOLDER}: Ok\n" >> $MLOG
 }
 
 # ----- mpatch(): Patching ----- #
@@ -260,6 +254,7 @@ mpatch() {
   printf -- "${BLUEC}..${NORMALC} Applying $2 ${4}.patch from $5...\n"
   cd $SRCDIR/$2/$2-$3
   patch -p$1 -i $PCHDIR/$2/${4}.patch >> $MLOG 2>&1 
+  printf -- "${GREENC}=>${NORMALC} $2 patched!\n"
 }
 
 # ----- mclean(): Clean Directory ----- #
@@ -268,6 +263,8 @@ mclean() {
     printf -- "${BLUEC}..${NORMALC} Cleaning $1 directory...\n"
     rm -fr "$CURDIR/$1"
     mkdir "$CURDIR/$1"
+    printf -- "${GREENC}=>${NORMALC} $1 clean"
+    printf -- "Cleaned $1.\n" >> $MLOG
   fi
 }
 
@@ -288,6 +285,7 @@ printf -- "Chosen target architecture: $XARCH\n\n"
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
 [ ! -d $PCHDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the patches directory...\n\n" && mkdir $PCHDIR
+printf -- '\n'
 rm -fr $MLOG
 
 # ----- Print Variables to Log ----- #
@@ -295,14 +293,16 @@ rm -fr $MLOG
 # environmental variables are, and instead of assuming, the 
 # system can tell us by printing each of them to the log
 #
-printf -- 'mussel.sh - Toolchain Compiler\n\n' >> $MLOG 2>&1
+printf -- 'mussel.sh - Toolchain Compiler Log\n\n' >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
 printf -- "XGCCARGS: $XGCCARGS\n" >> $MLOG 2>&1
 printf -- "CFLAGS: $CFLAGS\nCXXFLAGS: $CXXFLAGS\n" >> $MLOG 2>&1
 printf -- "PATH: $PATH\nMAKE: $MAKE\n" >> $MLOG 2>&1
-printf -- "\nStart Time: $(date)\n" >> $MLOG 2>&1
+printf -- "Host Kernel: $(uname -a)\nHost Info: $(cat /etc/*release)\n" >> $MLOG 2>&1
+printf -- "\nStart Time: $(date)\n\n" >> $MLOG 2>&1
 
 # ----- Prepare Packages ----- #
+printf -- "-----\nprepare\n-----\n\n" >> $MLOG
 mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
 mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
 mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
@@ -315,11 +315,13 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 # The gcc patch is for a bug that forces CET when cross compiling in both lto-plugin
 # and libiberty.
 #
+printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
 mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
 
 printf -- '\n'
 
 # ----- Clean Directories ----- #
+printf -- "\n-----\nclean\n-----\n\n" >> $MLOG
 mclean builds
 mclean toolchain
 mclean sysroot
@@ -327,6 +329,7 @@ mclean sysroot
 printf -- '\n'
 
 # ----- Step 1: musl headers ----- #
+printf -- "\n-----\n*1) musl headers\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing musl headers...\n"
 cd $BLDDIR
 cp -ar $SRCDIR/musl/musl-$musl_ver musl
@@ -347,6 +350,7 @@ $MAKE \
 printf -- "${GREENC}=>${NORMALC} musl headers finished.\n\n"
 
 # ----- Step 2: cross-binutils ----- #
+printf -- "\n-----\n*2) cross-binutils\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing cross-binutils...\n"
 cd $BLDDIR
 mkdir cross-binutils
@@ -397,6 +401,7 @@ printf -- "${GREENC}=>${NORMALC} cross-binutils finished.\n\n"
 # We track GCC's prerequisites manually instead of using
 # `contrib/download_prerequisites` in gcc's sources.
 #
+printf -- "\n-----\n*3) cross-gcc (compiler)\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
@@ -446,6 +451,7 @@ printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
 # This step is required for all archs, and failure to due it would break the
 # ABI.
 #
+printf -- "\n-----\n*4) libgcc-static\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing libgcc-static...\n"
 cd $BLDDIR
 mkdir libgcc-static
@@ -491,6 +497,7 @@ printf -- "${GREENC}=>${NORMALC} libgcc-static finished.\n\n"
 # ready. Using the same directory as musl headers without reconfiguring musl
 # would break the ABI.
 #
+printf -- "\n-----\n*5) musl\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing musl...\n"
 cd $BLDDIR/musl
 
@@ -525,6 +532,7 @@ cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
 printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 
 # ----- Step 6: cross-gcc (libgcc) ----- #
+printf -- "\n-----\n*6) cross-gcc (libgcc)\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc...\n"
 cd $BLDDIR/cross-gcc
 
@@ -541,6 +549,7 @@ printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc finished.\n\n"
 # ----- [Optional For C++ Support] Step 7: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
 #
+printf -- "\n-----\n*7) cross-gcc (libstdc++-v3)\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Building cross-gcc libstdc++-v3...\n"
 $MAKE \
   all-target-libstdc++-v3 >> $MLOG 2>&1
@@ -554,6 +563,7 @@ printf -- "${GREENC}=>${NORMALC} cross-gcc libstdc++v3 finished.\n\n"
 # ----- [Optional For OpenMP Support] Step 8: cross-gcc (libgomp) ----- #
 # OpenMP support is disabled by default, uncomment the lines below to enable it.
 #
+#printf -- "\n-----\n*8) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
 #printf -- "${BLUEC}..${NORMALC} Building cross-gcc libgomp...\n"
 #$MAKE \
 #  all-target-libgomp &>> MLOG
