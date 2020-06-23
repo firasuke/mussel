@@ -116,7 +116,7 @@ case "$XARCH" in
     ;;
   armv6zk)
     MARCH=arm
-    XGCCARGS="--with-arch=armv6zk --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
+    XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
     XTARGET=$MARCH-linux-musleabihf
     ;;
   armv7)
@@ -554,8 +554,8 @@ $MAKE \
 # Almost all implementations of musl based toolchains would want to change the
 # symlink between LDSO and the libc.so because it'll be wrong almost always...
 #
-rm -f $MSYSROOT/lib/ld-musl-$XARCH.so.1
-cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$XARCH.so.1
+rm -f $MSYSROOT/lib/ld-musl-$MARCH.so.1
+cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$MARCH.so.1
 
 printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 
