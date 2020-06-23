@@ -475,6 +475,9 @@ $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --with-sysroot=$MSYSROOT \
   --enable-languages=c,c++ \
   --disable-multilib \
+  --disable-bootstrap \
+  --disable-libsanitizer \
+  --disable-werror \
   --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
 
 printf -- "${BLUEC}..${NORMALC} Building cross-gcc compiler...\n"
