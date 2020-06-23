@@ -426,6 +426,7 @@ $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --prefix=$MPREFIX \
   --target=$XTARGET \
   --with-sysroot=$MSYSROOT \
+  --disable-multilib \
   --disable-werror >> $MLOG 2>&1
 
 printf -- "${BLUEC}..${NORMALC} Building cross-binutils...\n"
