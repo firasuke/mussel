@@ -11,4 +11,4 @@ addons:
     - pv
     - zstd
 script:
-  - travis_wait 60 dash mussel.sh i686
+  - travis_wait 60 dash mussel.sh
