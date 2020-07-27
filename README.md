@@ -21,7 +21,7 @@ compilers that target musl libc.
 To confirm you have all required packages, you can execute `./check.sh`.
 ### For Fedora (32):
 ```Sh
-sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gawk gcc gcc-c++ git glibc grep gzip lzip libzstd-devel m4 make perl rsync sed tar texinfo xz zstd
+sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gawk gcc gcc-c++ git glibc grep gzip libarchive lzip libzstd-devel m4 make perl rsync sed texinfo xz zstd
 ```
 
 ## Usage
