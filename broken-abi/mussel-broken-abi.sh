@@ -26,7 +26,7 @@ NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
 binutils_ver=2.34
-gcc_ver=10.1.0
+gcc_ver=10.2.0
 gmp_ver=6.2.0
 isl_ver=0.22.1
 mpc_ver=1.1.0
@@ -332,16 +332,13 @@ mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword
 # They also remove musl's libgcc dependency for powerpc64 and powerpc64le
 # because they work just fine without it.
 #
+# These patches are not approved by Rich Felker the creator of musl as they
+# break the ABI. Use the original `mussel.sh` instead.
+#
 if [ "$XTARGET" = "powerpc64-linux-musl" ] || [ "$XTARGET" = "powerpc64le-linux-musl" ]; then 
   mpatch 0 musl "$musl_ver" 0001-powerpc-support glaucus
   mpatch 0 musl "$musl_ver" 0001-powerpc64-support glaucus
 fi
-
-#
-# The gcc patch is for a bug that forces CET when cross compiling in both lto-plugin
-# and libiberty.
-#
-mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
 
 printf -- '\n'
 

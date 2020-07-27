@@ -26,7 +26,7 @@ NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
 binutils_ver=2.34
-gcc_ver=10.1.0
+gcc_ver=10.2.0
 gmp_ver=6.2.0
 isl_ver=0.22.1
 mpc_ver=1.1.0
@@ -58,7 +58,6 @@ musl_sum=58bd88189a6002356728cea1c6f6605a893fe54f7687595879add4eab283c8692c3b031
 CURDIR="$PWD"
 SRCDIR="$CURDIR/sources"
 BLDDIR="$CURDIR/builds"
-PCHDIR="$CURDIR/patches"
 # Please don't change $MSYSROOT to `$CURDIR/toolchain/$XTARGET` like CLFS and
 # other implementations because it'll break here (even if binutils insists
 # on installing stuff to that directory).
@@ -282,26 +281,6 @@ mpackage() {
   printf -- "${HOLDER}: Ok\n" >> $MLOG
 }
 
-# ----- mpatch(): Patching ----- #
-mpatch() {
-  cd $PCHDIR
-  [ ! -d "$2" ] && mkdir "$2"
-  cd "$2"
-
-  if [ ! -f "$4".patch ]; then
-    printf -- "${BLUEC}..${NORMALC} Fetching $2 ${4}.patch from $5...\n"
-    wget -q --show-progress https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
-  else
-    printf -- "${YELLOWC}!.${NORMALC} ${4}.patch already exists, skipping...\n"
-  fi
-
-  printf -- "${BLUEC}..${NORMALC} Applying ${4}.patch from $5 for ${2}...\n"
-
-  cd $SRCDIR/$2/$2-$3
-  patch -p$1 -i $PCHDIR/$2/${4}.patch >> $MLOG 2>&1 
-  printf -- "${GREENC}=>${NORMALC} $2 patched with ${4}!\n"
-}
-
 # ----- mclean(): Clean Directory ----- #
 mclean() {
   if [ -d "$CURDIR/$1" ]; then
@@ -328,7 +307,6 @@ printf -- '\n'
 printf -- "Chosen target architecture: $XARCH\n\n"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
-[ ! -d $PCHDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the patches directory...\n" && mkdir $PCHDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
 printf -- '\n'
 rm -fr $MLOG
@@ -355,13 +333,6 @@ mpackage isl "$isl_url" $isl_sum $isl_ver
 mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
 mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
 mpackage musl "$musl_url" $musl_sum $musl_ver
-
-# ----- Patch Packages ----- #
-# The gcc patch is for a bug that forces CET when cross compiling in both lto-plugin
-# and libiberty.
-#
-printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
-mpatch 1 gcc "$gcc_ver" Enable-CET-in-cross-compiler-if-possible upstream
 
 printf -- '\n'
 
