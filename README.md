@@ -21,7 +21,7 @@ compilers that target musl libc.
 To confirm you have all required packages, you can execute `./check.sh`.
 ### For Fedora (32):
 ```Sh
-sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make perl rsync sed tar texinfo xz libzstd-devel
+sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gawk gcc gcc-c++ git glibc grep gzip lzip libzstd-devel m4 make perl rsync sed tar texinfo xz zstd
 ```
 
 ## Usage
@@ -55,12 +55,12 @@ Pi Zero)
 * x86_64 (default)
 
 ## Packages
-1. `binutils`: 2.34
+1. `binutils`: 2.35
 2. `gcc`: 10.2.0
 3. `gmp`: 6.2.0
 4. `isl`: 0.22.1
 5. `mpc`: 1.1.0
-6. `mpfr`: 4.0.2
+6. `mpfr`: 4.1.0
 7. `musl`: 1.2.0
 
 ## How is mussel doing it?

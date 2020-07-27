@@ -25,33 +25,33 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.34
+binutils_ver=2.35
 gcc_ver=10.2.0
 gmp_ver=6.2.0
 isl_ver=0.22.1
 mpc_ver=1.1.0
-mpfr_ver=4.0.2
+mpfr_ver=4.1.0
 musl_ver=1.2.0
 
 # ----- Package URLs ----- #
 # The usage of ftpmirror for GNU packages is preferred. We also try to use the
-# smallest available tarballs from upstream (so .lz > .xz > .bzip2 > .gz).
+# smallest available tarballs from upstream (so .zst > .lz > .xz > .bzip2 > .gz).
 #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
 gcc_url=https://ftpmirror.gnu.org/gcc/gcc-$gcc_ver/gcc-$gcc_ver.tar.xz
-gmp_url=https://ftpmirror.gnu.org/gmp/gmp-$gmp_ver.tar.lz
+gmp_url=https://ftpmirror.gnu.org/gmp/gmp-$gmp_ver.tar.zst
 isl_url=http://isl.gforge.inria.fr/isl-$isl_ver.tar.xz
 mpc_url=https://ftpmirror.gnu.org/mpc/mpc-$mpc_ver.tar.gz
 mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 
 # ----- Package Checksums (sha512sum) ----- #
-binutils_sum=f4aadea1afa85d9ceb7be377afab9270a42ab0fd1fae86a7c69510b80de1aaac76f15cfb8730f9d233466a89fd020ab7e6e705e754c6b40f5fe2d16a5214562e
+binutils_sum=5ad795fab0803be83b53aa955fd5414c8408b4cf2a66eba2f8688298312934b4b1b0cbe9cf887d86de77f88adf1333d85fc9f6ab4a530e85a09b9b2dbf6aaf3f
 gcc_sum=42ae38928bd2e8183af445da34220964eb690b675b1892bbeb7cd5bb62be499011ec9a93397dba5e2fb681afadfc6f2767d03b9035b44ba9be807187ae6dc65e
-gmp_sum=9975e8766e62a1d48c0b6d7bbdd2fccb5b22243819102ca6c8d91f0edd2d3a1cef21c526d647c2159bb29dd2a7dcbd0d621391b2e4b48662cf63a8e6749561cd
+gmp_sum=58a2e3265befb000c0614d9dc6420ddc15b5b78cd9989b8e5d7dc6e6d59e87de4b1c093ccf7245dd496ad216de43675df23fc16ee7e2cac006d1a801bfe71f29
 isl_sum=8dc7b0c14e5bfdca8f2161be51d3c9afcd18bc217bb19b7de01dbba0c6f3fdc2b725fb999f8562c77bf2918d3005c9247f7a58474a6da7697390067944d4d4aa
 mpc_sum=72d657958b07c7812dc9c7cbae093118ce0e454c68a585bfb0e2fa559f1bf7c5f49b93906f580ab3f1073e5b595d23c6494d4d76b765d16dde857a18dd239628
-mpfr_sum=d583555d08863bf36c89b289ae26bae353d9a31f08ee3894520992d2c26e5683c4c9c193d7ad139632f71c0a476d85ea76182702a98bf08dde7b6f65a54f8b88
+mpfr_sum=1bd1c349741a6529dfa53af4f0da8d49254b164ece8a46928cdb13a99460285622d57fe6f68cef19c6727b3f9daa25ddb3d7d65c201c8f387e421c7f7bee6273
 musl_sum=58bd88189a6002356728cea1c6f6605a893fe54f7687595879add4eab283c8692c3b031eb9457ad00d1edd082cfe62fcc0eb5eb1d3bf4f1d749c0efa2a95fec1
 
 # ----- Development Directories ----- #

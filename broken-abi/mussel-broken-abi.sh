@@ -25,12 +25,12 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.34
+binutils_ver=2.35
 gcc_ver=10.2.0
 gmp_ver=6.2.0
 isl_ver=0.22.1
 mpc_ver=1.1.0
-mpfr_ver=4.0.2
+mpfr_ver=4.1.0
 musl_ver=1.2.0
 
 # ----- Package URLs ----- #
