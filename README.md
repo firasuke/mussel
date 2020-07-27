@@ -21,7 +21,7 @@ compilers that target musl libc.
 To confirm you have all required packages, you can execute `./check.sh`.
 ### For Fedora (32):
 ```Sh
-sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make patch perl rsync sed tar texinfo xz libzstd-devel
+sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gcc-c++ gawk gcc git glibc grep gzip lzip m4 make perl rsync sed tar texinfo xz libzstd-devel
 ```
 
 ## Usage
@@ -39,7 +39,7 @@ sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffu
 ./mussel.sh --clean
 ```
 
-Sources and patches will be preserved.
+Sources will be preserved.
 
 ## Supported Architectures
 * aarch64
@@ -56,16 +56,12 @@ Pi Zero)
 
 ## Packages
 1. `binutils`: 2.34
-2. `gcc`: 10.1.0
+2. `gcc`: 10.2.0
 3. `gmp`: 6.2.0
 4. `isl`: 0.22.1
 5. `mpc`: 1.1.0
 6. `mpfr`: 4.0.2
 7. `musl`: 1.2.0
-
-## Patches
-1. For `gcc`:
-  * [Enable-CET-in-cross-compiler-if-possible.patch](https://raw.githubusercontent.com/glaucuslinux/glaucus/master/cerata/gcc/patches/upstream/Enable-CET-in-cross-compiler-if-possible.patch) [source: upstream]
 
 ## How is mussel doing it?
 1. Install `musl` headers

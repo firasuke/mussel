@@ -72,9 +72,6 @@ m4 --version | sed 1q | cut -d' ' -f4 &&
 printf 'make:      ' &&
 make --version | sed 1q | cut -d' ' -f3 &&
 
-printf 'patch:     ' &&
-patch --version | sed 1q | cut -d' ' -f3 &&
-
 printf 'perl:      ' &&
 perl -V:version | cut -d"'" -f2 &&
 
