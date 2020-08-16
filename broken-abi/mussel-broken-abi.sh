@@ -31,7 +31,7 @@ gmp_ver=6.2.0
 isl_ver=0.22.1
 mpc_ver=1.1.0
 mpfr_ver=4.1.0
-musl_ver=1.2.0
+musl_ver=1.2.1
 
 # ----- Package URLs ----- #
 # The usage of ftpmirror for GNU packages is preferred. We also try to use the
@@ -52,7 +52,7 @@ gmp_sum=9975e8766e62a1d48c0b6d7bbdd2fccb5b22243819102ca6c8d91f0edd2d3a1cef21c526
 isl_sum=8dc7b0c14e5bfdca8f2161be51d3c9afcd18bc217bb19b7de01dbba0c6f3fdc2b725fb999f8562c77bf2918d3005c9247f7a58474a6da7697390067944d4d4aa
 mpc_sum=72d657958b07c7812dc9c7cbae093118ce0e454c68a585bfb0e2fa559f1bf7c5f49b93906f580ab3f1073e5b595d23c6494d4d76b765d16dde857a18dd239628
 mpfr_sum=d583555d08863bf36c89b289ae26bae353d9a31f08ee3894520992d2c26e5683c4c9c193d7ad139632f71c0a476d85ea76182702a98bf08dde7b6f65a54f8b88
-musl_sum=58bd88189a6002356728cea1c6f6605a893fe54f7687595879add4eab283c8692c3b031eb9457ad00d1edd082cfe62fcc0eb5eb1d3bf4f1d749c0efa2a95fec1
+musl_sum=455464ef47108a78457291bda2b1ea574987a1787f6001e9376956f20521593a4816bc215dab41c1a80292ae7ebd315accb4d4fa6a1210ff77d9a4d68239e960
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
