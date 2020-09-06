@@ -61,7 +61,7 @@ Pi Zero)
 4. `isl`: 0.22.1
 5. `mpc`: 1.2.0
 6. `mpfr`: 4.1.0
-7. `musl`: 1.2.0
+7. `musl`: 1.2.1
 
 ## How is mussel doing it?
 1. Install `musl` headers
