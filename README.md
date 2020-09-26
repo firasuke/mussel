@@ -5,7 +5,7 @@ compilers that target musl libc.
 ## Features
 1. **Up-to-date**: uses latest available upstream sources for packages
 2. **Fast**: probably the fastest script around to build a cross compiler
-   targetting musl libc, also it's written entirely in POSIX and runs fully
+   targetting musl libc, also it's written entirely in POSIX sh and runs fully
    under DASH
 3. **Short**: has the least amount of steps (see below) required to build a
    cross compiler targetting musl libc (even less than
