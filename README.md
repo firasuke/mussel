@@ -6,14 +6,14 @@ compilers that target musl libc.
 1. **Up-to-date**: uses latest available upstream sources for packages
 2. **Fast**: probably the fastest script around to build a cross compiler
    targetting musl libc, also it's written entirely in POSIX sh and runs fully
-   under the dash shell
+   under DASH
 3. **Short**: has the least amount of steps (see below) required to build a
    cross compiler targetting musl libc (even less than
    [musl-cross-make](https://github.com/richfelker/musl-cross-make))
 4. **Small**: all installation steps use `install-strip` when applicable
 5. **Simple**: easy to read, modify and extend
 6. **POSIX Compliant**: the entire script is POSIX compliant and runs entirely
-   under the dash shell
+   under DASH
 7. **Well Documented**: the script has comments (that are considered state of
    the art information) all over the place explaining what is being done and why
 
