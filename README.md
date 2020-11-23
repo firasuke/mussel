@@ -55,11 +55,11 @@ Pi Zero)
 * x86_64 (default)
 
 ## Packages
-1. `binutils`: 2.35
+1. `binutils`: 2.35.1
 2. `gcc`: 10.2.0
-3. `gmp`: 6.2.0
+3. `gmp`: 6.2.1
 4. `isl`: 0.22.1
-5. `mpc`: 1.2.0
+5. `mpc`: 1.2.1
 6. `mpfr`: 4.1.0
 7. `musl`: 1.2.1
 
