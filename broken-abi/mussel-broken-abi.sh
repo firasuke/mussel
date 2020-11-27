@@ -312,6 +312,11 @@ mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
 mpackage musl "$musl_url" $musl_sum $musl_ver
 
 # ----- Patch Packages ----- #
+# Apply CVE-2020-28928 patch for musl
+#
+printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
+mpatch 1 musl "$musl_ver" CVE-2020-28928 upstream
+
 # The musl patch allows us to pass `-ffast-math` in CFLAGS when building musl
 # since musl requires libgcc and libgcc requires musl, so the build script needs
 # patching so that you can pass -ffast-math to CFLAGS. (Aurelian)
@@ -323,7 +328,6 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 #
 mpatch 0 musl "$musl_ver" 0002-enable-fast-math qword
 
-#
 # The following patches from glaucus for powerpc64 and powerpc64le remove
 # certain checks for cross gcc/libgcc in musl's configure script to allow musl
 # to configure and install its headers at first before cross gcc and libgcc are
