@@ -86,6 +86,7 @@ MLOG="$CURDIR/log.txt"
 # - powerpc64
 # - powerpc64le
 # - riscv64
+# - s390x
 # - x86_64 (default)
 
 # ----- Compilation Arguments ----- #
@@ -161,6 +162,12 @@ case "$XARCH" in
     XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
     XTARGET=$XARCH-linux-musl
     ;;
+  s390x)
+    MARCH=$XARCH
+    # --enable-decimal-float is the default on z9-ec and higher (e.g. z196)
+    XGCCARGS="--with-arch=z196 --with-tune=z15 --with-long-double-128"
+    XTARGET=$XARCH-linux-musl
+    ;;
   x86_64)
     MARCH=$XARCH
     XGCCARGS="--with-arch=x86-64 --with-tune=generic"
@@ -196,6 +203,7 @@ case "$XARCH" in
     printf -- '\t+ powerpc64\n'
     printf -- '\t+ powerpc64le\n'
     printf -- '\t+ riscv64\n'
+    printf -- '\t+ s390x\n'
     printf -- '\t+ x86_64 (default)\n'
     printf -- '\n'
     printf -- 'Flags:\n'
