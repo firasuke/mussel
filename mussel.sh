@@ -81,6 +81,8 @@ MLOG="$CURDIR/log.txt"
 # - armv7
 # - i586
 # - i686
+# - microblaze
+# - microblazeel
 # - or1k
 # - powerpc
 # - powerpc64
@@ -134,6 +136,16 @@ case "$XARCH" in
   i686)
     MARCH=i386
     XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  microblaze)
+    MARCH=$XARCH
+    XGCCARGS="--with-endian=big"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  microblazeel)
+    MARCH=microblaze
+    XGCCARGS="--with-endian=little"
     XTARGET=$XARCH-linux-musl
     ;;
   or1k)

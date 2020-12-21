@@ -48,6 +48,9 @@ Pi Zero)
 * armv7
 * i586
 * i686
+* microblaze
+* microblazeel
+* or1k
 * powerpc
 * powerpc64
 * powerpc64le
