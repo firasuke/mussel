@@ -81,6 +81,7 @@ MLOG="$CURDIR/log.txt"
 # - armv7
 # - i586
 # - i686
+# - or1k
 # - powerpc
 # - powerpc64
 # - powerpc64le
@@ -134,6 +135,12 @@ case "$XARCH" in
     XGCCARGS="--with-arch=$XARCH --with-tune=generic"
     XTARGET=$XARCH-linux-musl
     ;;
+  or1k)
+    MARCH=$XARCH
+    # There's no such option as `--with-float=hard` for this arch
+    XGCCARGS=""
+    XTARGET=$XARCH-linux-musl
+    ;;
   powerpc)
     MARCH=$XARCH
     XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128"
@@ -184,6 +191,7 @@ case "$XARCH" in
     printf -- '\t+ armv7\n'
     printf -- '\t+ i586\n'
     printf -- '\t+ i686\n'
+    printf -- '\t+ or1k\n'
     printf -- '\t+ powerpc\n'
     printf -- '\t+ powerpc64\n'
     printf -- '\t+ powerpc64le\n'
