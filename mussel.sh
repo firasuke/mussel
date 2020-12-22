@@ -177,7 +177,7 @@ case "$XARCH" in
   s390x)
     MARCH=$XARCH
     # --enable-decimal-float is the default on z9-ec and higher (e.g. z196)
-    XGCCARGS="--with-arch=z196 --with-tune=z15 --with-long-double-128"
+    XGCCARGS="--with-arch=z196 --with-tune=zEC12 --with-long-double-128"
     XTARGET=$XARCH-linux-musl
     ;;
   x86_64)
