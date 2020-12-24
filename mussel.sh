@@ -83,6 +83,10 @@ MLOG="$CURDIR/log.txt"
 # - i686
 # - microblaze
 # - microblazeel
+# - mips64
+# - mips64el
+# - mips64r6
+# - mips64r6el
 # - or1k
 # - powerpc
 # - powerpc64
@@ -148,6 +152,26 @@ case "$XARCH" in
     XGCCARGS="--with-endian=little"
     XTARGET=$XARCH-linux-musl
     ;;
+  mips64)
+    MARCH=$XARCH
+    XGCCARGS="--with-endian=big --with-arch=$XARCH --with-abi=64 --with-float=hard"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  mips64el)
+    MARCH=mips64
+    XGCCARGS="--with-endian=little --with-arch=mips64 --with-abi=64 --with-float=hard"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  mips64r6)
+    MARCH=mips64
+    XGCCARGS="--with-endian=big --with-arch=$XARCH --with-abi=64 --with-float=hard"
+    XTARGET=$XARCH-linux-musl
+    ;;
+  mips64r6el)
+    MARCH=mips64
+    XGCCARGS="--with-endian=little --with-arch=mips64r6 --with-abi=64 --with-float=hard"
+    XTARGET=$XARCH-linux-musl
+    ;;
   or1k)
     MARCH=$XARCH
     # There's no such option as `--with-float=hard` for this arch
@@ -210,6 +234,12 @@ case "$XARCH" in
     printf -- '\t+ armv7\n'
     printf -- '\t+ i586\n'
     printf -- '\t+ i686\n'
+    printf -- '\t+ microblaze\n'
+    printf -- '\t+ microblazeel\n'
+    printf -- '\t+ mips64\n'
+    printf -- '\t+ mips64el\n'
+    printf -- '\t+ mips64r6\n'
+    printf -- '\t+ mips64r6el\n'
     printf -- '\t+ or1k\n'
     printf -- '\t+ powerpc\n'
     printf -- '\t+ powerpc64\n'
