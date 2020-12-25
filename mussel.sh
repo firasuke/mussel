@@ -165,12 +165,12 @@ case "$XARCH" in
   mips64r6)
     MARCH=mips64
     XGCCARGS="--with-endian=big --with-arch=$XARCH --with-abi=64 --with-float=hard"
-    XTARGET=$XARCH-linux-musl
+    XTARGET=mipsisa64r6-linux-musl
     ;;
   mips64r6el)
     MARCH=mips64
     XGCCARGS="--with-endian=little --with-arch=mips64r6 --with-abi=64 --with-float=hard"
-    XTARGET=$XARCH-linux-musl
+    XTARGET=mipsisa64r6el-linux-musl
     ;;
   or1k)
     MARCH=$XARCH
