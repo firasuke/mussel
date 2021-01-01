@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-# Copyright (c) 2020, Firas Khalil Khana
+# Copyright (c) 2020-2021, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
 # Contributors: Alexander Barris (AwlsomeAlex)
@@ -219,7 +219,7 @@ case "$XARCH" in
     exit
     ;;
   h | -h | --help)
-    printf -- 'Copyright (c) 2020, Firas Khalil Khana\n'
+    printf -- 'Copyright (c) 2020-2021, Firas Khalil Khana\n'
     printf -- 'Distributed under the terms of the ISC License\n'
     printf -- '\n'
     printf -- 'mussel - The fastest musl-libc cross compiler generator\n'
@@ -378,7 +378,7 @@ printf -- '\n'
 printf -- '+=======================================================+\n'
 printf -- '| mussel.sh - The fastest musl-libc Toolchain Generator |\n'
 printf -- '+-------------------------------------------------------+\n'
-printf -- '|        Copyright (c) 2020, Firas Khalil Khana         |\n'
+printf -- '|      Copyright (c) 2020-2021, Firas Khalil Khana      |\n'
 printf -- '|     Distributed under the terms of the ISC License    |\n'
 printf -- '+=======================================================+\n'
 printf -- '\n'
