@@ -30,7 +30,9 @@ sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffu
 ./mussel.sh (arch) (flags)
 ```
 
-**(arch)**: See **Supported Architectures** below (default is x86_64)
+**(arch)**: See [**Supported
+Architectures**](https://github.com/firasuke/mussel#supported-architectures)
+below (default is `x86_64`)
 
 **(flags)**:
 * **l | -l | --linux:** Enable optional Linux Headers support
