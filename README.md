@@ -1,5 +1,5 @@
 # mussel
-mussel is the shortest and fastest script available today to build working cross
+`mussel` is the shortest and fastest script available today to build working cross
 compilers that target musl libc.
 
 ## Features
@@ -19,7 +19,7 @@ compilers that target musl libc.
 
 ## Requirements:
 To confirm you have all required packages, you can execute `./check.sh`.
-### For Fedora (32):
+### For Fedora:
 ```Sh
 sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffutils findutils gawk gcc gcc-c++ git glibc grep gzip libarchive lzip libzstd-devel m4 make perl rsync sed texinfo xz zstd
 ```
@@ -35,9 +35,11 @@ Architectures**](https://github.com/firasuke/mussel#supported-architectures)
 below (default is `x86_64`)
 
 **(flags)**:
-* **l | -l | --linux:** Enable optional Linux Headers support
-* **o | -o | --openmp:** Enable optional OpenMP support
-* **p | -p | --parallel:** Use all available cores on the host system
+```Shell
+l | -l | --linux: Enable optional Linux Headers support
+o | -o | --openmp: Enable optional OpenMP support
+p | -p | --parallel: Use all available cores on the host system
+```
 
 ### Other Commands
 ```Sh
@@ -45,7 +47,9 @@ below (default is `x86_64`)
 ```
 
 **(command)**:
-* **c | -c | --clean**: Clean mussel's build environment
+```Shell
+c | -c | --clean**: Clean mussel's build environment
+```
 
 Sources will be preserved.
 
@@ -80,7 +84,7 @@ Pi Zero)
 7. `mpfr`: 4.1.0
 8. `musl`: 1.2.2
 
-## How Is mussel Doing It?
+## How Is `mussel` Doing It?
 1. Install `musl` headers
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (with `libgcc-static`)
@@ -92,7 +96,7 @@ Pi Zero)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
 * Install `linux-headers` (For Linux Headers Support) (Disabled by default)
 
-### Using mussel With Host's pkg-config/pkgconf
+### Using `mussel` With Host's `pkg-config`/`pkgconf`
 The reason we didn't include `pkg-config` or `pkgconf` with `mussel` (even as an
 optional step) is because we can easily configure the host's `pkg-config` or
 `pkgconf` to work with `mussel` without having to build our own version of
@@ -110,10 +114,10 @@ export PKG_CONFIG_SYSTEM_INCLUDE_PATH=$MSYSROOT/usr/include
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=$MSYSROOT/usr/lib
 ```
 
-The last two I believe are pkgconf specific but setting them won't do any harm.
+The last two I believe are `pkgconf` specific but setting them won't do any harm.
 
 ## Credits and Inspiration
-mussel is possible thanks to the awesome work done by Aurelian, Rich Felker,
+`mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
 [qword](https://github.com/qword-os), [The Managram Project](
 https://github.com/managarm), [glaucus](https://www.glaucuslinux.org/) (where
 it's actually implemented) and [musl-cross-make](
@@ -127,11 +131,11 @@ mailto:firasuke@glaucuslinux.org)>
 * Alexander Barris (AwlsomeAlex)
 
 ## License
-mussel is licensed under the Internet Systems Consortium (ISC) license.
+`mussel` is licensed under the Internet Systems Consortium (ISC) license.
 
 ## Dedication
-mussel is dedicated to all those that believe setting up a cross compiler
-targetting musl libc is a complicated process.
+`mussel` is dedicated to all those that believe setting up a cross compiler
+targeting musl libc is a complicated process.
 
 ## Community
 * [Discord](https://discord.gg/b6r2p3z)
