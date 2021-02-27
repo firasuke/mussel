@@ -25,7 +25,7 @@ sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffu
 ```
 
 ## Usage
-### Build a cross compiler
+### Building a Cross Compiler
 ```Sh
 ./mussel.sh (arch) (flags)
 ```
@@ -39,7 +39,7 @@ below (default is `x86_64`)
 * **o | -o | --openmp:** Enable optional OpenMP support
 * **p | -p | --parallel:** Use all available cores on the host system
 
-### Cleaning mussel's build environment
+### Other Commands
 ```Sh
 ./mussel.sh (command)
 ```
@@ -80,17 +80,37 @@ Pi Zero)
 7. `mpfr`: 4.1.0
 8. `musl`: 1.2.2
 
-## How is mussel doing it?
+## How Is mussel Doing It?
 1. Install `musl` headers
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (with `libgcc-static`)
 4. Configure, build and install `musl`
 5. Build, and install `libgcc-shared` only
 
-## Additional Steps
+## Optional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
 * Install `linux-headers` (For Linux Headers Support) (Disabled by default)
+
+### Using mussel With Host's pkg-config/pkgconf
+The reason we didn't include `pkg-config` or `pkgconf` with `mussel` (even as an
+optional step) is because we can easily configure the host's `pkg-config` or
+`pkgconf` to work with `mussel` without having to build our own version of
+`pkg-config` or `pkgconf`.
+
+Here are the five magical environment variables that we need to set to configure
+the host's `pkg-config` or `pkgconf` to work with `mussel`:
+
+```Shell
+export PKG_CONFIG_PATH=$MSYSROOT/usr/lib/pkgconfig:$MSYSROOT/usr/share/pkgconfig
+export PKG_CONFIG_LIBDIR=$MSYSROOT/usr/lib/pkgconfig:$MSYSROOT/usr/share/pkgconfig
+export PKG_CONFIG_SYSROOT_DIR=$MSYSROOT
+
+export PKG_CONFIG_SYSTEM_INCLUDE_PATH=$MSYSROOT/usr/include
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=$MSYSROOT/usr/lib
+```
+
+The last two I believe are pkgconf specific but setting them won't do any harm.
 
 ## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian, Rich Felker,
