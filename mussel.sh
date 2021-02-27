@@ -344,17 +344,6 @@ else
   MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
 fi
 
-echo XARCH is $XARCH
-echo LARCH is $LARCH
-echo MARCH is $MARCH
-echo XGCCARGS is $XGCCARGS
-echo XTARGET is $XTARGET
-echo OPENMP_SUPPORT is $OPENMP_SUPPORT
-echo PARALLEL_SUPPORT is $PARALLEL_SUPPORT
-echo LINUX_SUPPORT is $LINUX_SUPPORT
-echo MAKE is $MAKE
-echo JOBS are $JOBS
-
 ################################################
 # !!!!! DON'T CHANGE ANYTHING UNDER HERE !!!!! #
 # !!!!! UNLESS YOU KNOW WHAT YOURE DOING !!!!! #
