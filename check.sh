@@ -16,7 +16,7 @@ printf 'bc:        ' &&
 bc --version | sed 1q | cut -d' ' -f2 &&
 
 printf 'binutils:  ' &&
-ld --version | sed 1q | cut -d' ' -f4 &&
+ld --version | sed 1q | cut -d' ' -f4- &&
 
 printf 'bison:     ' &&
 bison --version | sed 1q | cut -d' ' -f4 &&
