@@ -313,7 +313,7 @@ while [ $# -gt 0 ]; do
       exit 1
       ;;
     l | -l | --linux)
-      LINUX_SUPPORT=yes
+      LINUX_HEADERS_SUPPORT=yes
       ;;
     o | -o | --openmp)
       OPENMP_SUPPORT=yes
@@ -736,7 +736,7 @@ fi
 # If you're planning on targeting a Linux system then it's a good idea to
 # include support for Linux kernel headers as several packages require them.
 #
-if [ $LINUX_SUPPORT = yes ]; then
+if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   printf -- "\n-----\n*8) linux-headers\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Preparing linux-headers...\n"
   cd $BLDDIR
