@@ -13,6 +13,11 @@ umask 022
 # ------------- Variables ------------- #
 #---------------------------------------#
 
+# ----- Optional ----- #
+LINUX_HEADERS_SUPPORT=no
+OPENMP_SUPPORT=no
+PARALLEL_SUPPORT=no
+
 # ----- Colors ----- #
 REDC='\033[1;31m'
 GREENC='\033[1;32m'
