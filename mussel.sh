@@ -122,6 +122,7 @@ CXXFLAGS=-O2
 # - MARCH is the arch that is supported by musl (found in
 # $SRCDIR/musl/musl-$musl_ver/arch/)
 # - XTARGET is the final target triplet
+#
 while [ $# -gt 0 ]; do
   case $1 in
     "")
@@ -492,6 +493,7 @@ cd musl
 # We also need to pass `ARCH=$MARCH` and `prefix=/usr` since we haven't
 # configured musl, to get the right versions of musl headers for the target
 # architecture.
+#
 printf -- "${BLUEC}..${NORMALC} Installing musl headers...\n"
 $MAKE \
   ARCH=$MARCH \
