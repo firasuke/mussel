@@ -277,7 +277,7 @@ while [ $# -gt 0 ]; do
       printf -- '\n'
       printf -- 'mussel - The fastest musl-libc cross compiler generator\n'
       printf -- '\n'
-      printf -- "Usage: $0: (architecture) (flag)\n"
+      printf -- "Usage: $0: (architecture) (flags)\n"
       printf -- "Usage: $0: (command)\n"
       printf -- '\n'
       printf -- 'Supported Architectures:\n'

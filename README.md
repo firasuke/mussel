@@ -27,17 +27,23 @@ sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffu
 ## Usage
 ### Build a cross compiler
 ```Sh
-./mussel.sh (arch) (flag)
+./mussel.sh (arch) (flags)
 ```
 
 **(arch)**: See **Supported Architectures** below (default is x86_64)
 
-**(flag)**: **--parallel:** Use all available cores on the host system
+**(flags)**:
+* **l | -l | --linux:** Enable optional Linux Headers support
+* **o | -o | --openmp:** Enable optional OpenMP support
+* **p | -p | --parallel:** Use all available cores on the host system
 
 ### Cleaning mussel's build environment
 ```Sh
-./mussel.sh --clean
+./mussel.sh (command)
 ```
+
+**(command)**:
+* **c | -c | --clean**: Clean mussel's build environment
 
 Sources will be preserved.
 
@@ -82,7 +88,7 @@ Pi Zero)
 ## Additional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
-* Install `linux-headers` (Disabled by default)
+* Install `linux-headers` (For Linux Headers Support) (Disabled by default)
 
 ## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian, Rich Felker,
