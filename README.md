@@ -67,9 +67,10 @@ Pi Zero)
 2. `gcc`: 10.2.0
 3. `gmp`: 6.2.1
 4. `isl`: 0.23
-5. `mpc`: 1.2.1
-6. `mpfr`: 4.1.0
-7. `musl`: 1.2.1
+5. `linux`: 5.11.1
+6. `mpc`: 1.2.1
+7. `mpfr`: 4.1.0
+8. `musl`: 1.2.2
 
 ## How is mussel doing it?
 1. Install `musl` headers
@@ -81,6 +82,7 @@ Pi Zero)
 ## Additional Steps
 * Build, and install `libstdc++-v3` (For C++ Support) (Enabled by default)
 * Build, and install `libgomp` (For OpenMP Support) (Disabled by default)
+* Install `linux-headers` (Disabled by default)
 
 ## Credits and Inspiration
 mussel is possible thanks to the awesome work done by Aurelian, Rich Felker,
