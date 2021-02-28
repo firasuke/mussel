@@ -616,6 +616,8 @@ printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
 
+printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-static finished.\n\n"
+
 # ----- Step 4: musl ----- #
 # We need a separate build directory for musl now that we have our cross GCC
 # ready. Using the same directory as musl headers without reconfiguring musl
