@@ -14,6 +14,7 @@ umask 022
 #---------------------------------------#
 
 # ----- Optional ----- #
+CXX_SUPPORT=yes
 LINUX_HEADERS_SUPPORT=no
 OPENMP_SUPPORT=no
 PARALLEL_SUPPORT=no
@@ -130,8 +131,8 @@ CXXFLAGS=-O2
 #
 if [ $# -eq 0 ]; then
   printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
-  printf -- "Run '${0} -h' for help.\n"
-  exit
+  printf -- "Run '$0 -h' for help.\n"
+  exit 1
 fi
 while [ $# -gt 0 ]; do
   case $1 in
@@ -263,7 +264,7 @@ while [ $# -gt 0 ]; do
       XGCCARGS="--with-arch=x86-64 --with-tune=generic"
       XTARGET=$XARCH-linux-musl
       ;;
-    c | -c | clean)
+    c | -c | --clean)
       printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
       rm -fr $BLDDIR
       rm -fr $MPREFIX
@@ -303,15 +304,16 @@ while [ $# -gt 0 ]; do
       printf -- '\t+ x86_64\n'
       printf -- '\n'
       printf -- 'Flags:\n'
-      printf -- '\tl | -l | --linux:   \tEnable optional Linux Headers support\n'
-      printf -- '\to | -o | --openmp:  \tEnable optional OpenMP support\n'
-      printf -- '\tp | -p | --parallel:\tUse all available cores on the host system\n'
+      printf -- '\tl | -l | --linux   \tEnable optional Linux Headers support\n'
+      printf -- '\to | -o | --openmp  \tEnable optional OpenMP support\n'
+      printf -- '\tp | -p | --parallel\tUse all available cores on the host system\n'
+      printf -- '\tx | -x | --no-cxx  \tDisable optional C++ support\n'
       printf -- '\n'
       printf -- 'Commands:\n'
-      printf -- "\tc | -c | clean:\tClean mussel's build environment\n"
+      printf -- "\tc | -c | --clean   \tClean mussel's build environment\n"
       printf -- '\n'
       printf -- 'No penguins were harmed in the making of this script!\n'
-      exit 1
+      exit
       ;;
     l | -l | --linux)
       LINUX_HEADERS_SUPPORT=yes
@@ -322,9 +324,12 @@ while [ $# -gt 0 ]; do
     p | -p | --parallel)
       PARALLEL_SUPPORT=yes
       ;;
+    x | -x | --no-cxx)
+      CXX_SUPPORT=no
+      ;;
     *)
       printf -- "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
-      printf -- "Refer to '$0 -h' for help.\n"
+      printf -- "Run '$0 -h' for help.\n"
       exit 1
       ;;
   esac
@@ -434,7 +439,11 @@ printf -- '|      Copyright (c) 2020-2021, Firas Khalil Khana      |\n'
 printf -- '|     Distributed under the terms of the ISC License    |\n'
 printf -- '+=======================================================+\n'
 printf -- '\n'
-printf -- "Chosen target architecture: $XARCH\n\n"
+printf -- "Target Architecture:            $XARCH\n\n"
+printf -- "Optional C++ Support:           $CXX_SUPPORT\n"
+printf -- "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
+printf -- "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
+printf -- "Optional Parallel Support:      $PARALLEL_SUPPORT\n\n"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
@@ -442,17 +451,18 @@ printf -- "Chosen target architecture: $XARCH\n\n"
 printf -- '\n'
 rm -fr $MLOG
 
-# ----- Print Variables to Log ----- #
+# ----- Print Variables to mussel Log File ----- #
 # This is important as debugging will be easier knowing what the 
 # environmental variables are, and instead of assuming, the 
-# system can tell us by printing each of them to the log
+# system can tell us by printing each of them to the log file
 #
-printf -- 'mussel.sh - Toolchain Compiler Log\n\n' >> $MLOG 2>&1
+printf -- 'mussel Log File\n\n' >> $MLOG 2>&1
+printf -- "CXX_SUPPORT: $CXX_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\n\n" >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
-printf -- "XGCCARGS: $XGCCARGS\n" >> $MLOG 2>&1
-printf -- "CFLAGS: $CFLAGS\nCXXFLAGS: $CXXFLAGS\n" >> $MLOG 2>&1
-printf -- "PATH: $PATH\nMAKE: $MAKE\n" >> $MLOG 2>&1
-printf -- "Host Kernel: $(uname -a)\nHost Info: $(cat /etc/*release)\n" >> $MLOG 2>&1
+printf -- "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG 2>&1
+printf -- "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG 2>&1
+printf -- "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >> $MLOG 2>&1
+printf -- "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >> $MLOG 2>&1
 printf -- "\nStart Time: $(date)\n\n" >> $MLOG 2>&1
 
 # ----- Prepare Packages ----- #
@@ -612,7 +622,7 @@ printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
 
-printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-static finished.\n\n"
+printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
 
 # ----- Step 4: musl ----- #
 # We need a separate build directory for musl now that we have our cross GCC
@@ -700,19 +710,22 @@ $MAKE \
 printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-shared finished.\n\n"
 
 # ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
-# C++ support is enabled by default.
+# It's a good idea to leave the support for C++ enabled as many programs require
+# it (e.g. gcc).
 #
-printf -- "\n-----\n*6) cross-gcc (libstdc++-v3)\n-----\n\n" >> $MLOG
-printf -- "${BLUEC}..${NORMALC} Building cross-gcc libstdc++-v3...\n"
-cd $BLDDIR/cross-gcc
-$MAKE \
-  all-target-libstdc++-v3 >> $MLOG 2>&1
+if [ $CXX_SUPPORT = yes ]; then
+  printf -- "\n-----\n*6) cross-gcc (libstdc++-v3)\n-----\n\n" >> $MLOG
+  printf -- "${BLUEC}..${NORMALC} Building cross-gcc libstdc++-v3...\n"
+  cd $BLDDIR/cross-gcc
+  $MAKE \
+    all-target-libstdc++-v3 >> $MLOG 2>&1
 
-printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libstdc++-v3...\n"
-$MAKE \
-  install-strip-target-libstdc++-v3 >> $MLOG 2>&1
+  printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libstdc++-v3...\n"
+  $MAKE \
+    install-strip-target-libstdc++-v3 >> $MLOG 2>&1
 
-printf -- "${GREENC}=>${NORMALC} cross-gcc libstdc++v3 finished.\n\n"
+  printf -- "${GREENC}=>${NORMALC} cross-gcc libstdc++v3 finished.\n\n"
+fi
 
 # ----- [Optional For OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 # If you're planning on targeting a machine with two or more cores, then it
