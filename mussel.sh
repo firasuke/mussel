@@ -608,11 +608,11 @@ $MAKE \
   enable_shared=no \
   all-target-libgcc >> $MLOG 2>&1
 
-printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
 
-printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-static finished.\n"
+printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-static finished.\n\n"
 
 # ----- Step 4: musl ----- #
 # We need a separate build directory for musl now that we have our cross GCC
@@ -697,10 +697,7 @@ printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-shared...\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
 
-#
-# We only finish cross-gcc once which is here (which is where it truly ends).
-#
-printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
+printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-shared finished.\n\n"
 
 # ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
