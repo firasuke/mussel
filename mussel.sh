@@ -757,7 +757,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   #
   $MAKE \
     ARCH=$LARCH \
-    mrproper
+    mrproper &>> MLOG
 
   #
   # It's always a good idea to perform a sanity check on the headers we're
@@ -766,7 +766,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   $MAKE \
     O=$BLDDIR/linux-headers \
     ARCH=$LARCH \
-    headers_check
+    headers_check &>> MLOG
 
   #
   # We won't be polluting our kernel source tree which is why we're specifying
@@ -784,7 +784,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   O=$BLDDIR/linux-headers \
   ARCH=$LARCH \
   INSTALL_HDR_PATH=$MSYSROOT/usr \
-  headers_install
+  headers_install &>> MLOG
 
   printf -- "${GREENC}=>${NORMALC} linux-headers finished.\n\n"
 fi
