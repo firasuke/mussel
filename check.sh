@@ -1,7 +1,13 @@
 #!/bin/sh -e
 
-# Copyright (c) 2018-2020, Firas Khalil Khana
+# Copyright (c) 2018-2021, Firas Khalil Khana
 # Distributed under the terms of the ISC License
+
+#
+# Repurposed from glaucus's require script for use in mussel. The original
+# script can be found over at:
+# <https://github.com/glaucuslinux/glaucus/blob/master/scripts/require>
+#
 
 printf 'bash:      ' &&
 bash --version | sed 1q | cut -d' ' -f4 &&
@@ -10,7 +16,7 @@ printf 'bc:        ' &&
 bc --version | sed 1q | cut -d' ' -f2 &&
 
 printf 'binutils:  ' &&
-ld --version | sed 1q | cut -d' ' -f4 &&
+ld --version | sed 1q | cut -d' ' -f4- &&
 
 printf 'bison:     ' &&
 bison --version | sed 1q | cut -d' ' -f4 &&
@@ -66,14 +72,11 @@ m4 --version | sed 1q | cut -d' ' -f4 &&
 printf 'make:      ' &&
 make --version | sed 1q | cut -d' ' -f3 &&
 
-printf 'patch:     ' &&
-patch --version | sed 1q | cut -d' ' -f3 &&
-
 printf 'perl:      ' &&
 perl -V:version | cut -d"'" -f2 &&
 
 printf 'pv:        ' &&
-pv -V | grep 'pv ' | cut -d ' ' -f2 &&
+pv --version | sed 1q | cut -d' ' -f2 &&
 
 printf 'rsync:     ' &&
 rsync --version | sed 1q | cut -d' ' -f4 &&
