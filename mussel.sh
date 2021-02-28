@@ -267,7 +267,7 @@ while [ $# -gt 0 ]; do
       XGCCARGS="--with-arch=x86-64 --with-tune=generic"
       XTARGET=$XARCH-linux-musl
       ;;
-    c | -c | --clean)
+    c | -c | clean)
       printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
       rm -fr $BLDDIR
       rm -fr $MPREFIX
@@ -312,7 +312,7 @@ while [ $# -gt 0 ]; do
       printf -- '\tp | -p | --parallel:\tUse all available cores on the host system\n'
       printf -- '\n'
       printf -- 'Commands:\n'
-      printf -- "\tc | -c | --clean:\tClean mussel's build environment\n"
+      printf -- "\tc | -c | clean:\tClean mussel's build environment\n"
       printf -- '\n'
       printf -- 'No penguins were harmed in the making of this script!\n'
       exit 1
