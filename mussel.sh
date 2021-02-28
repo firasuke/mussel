@@ -484,7 +484,7 @@ mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
 mpackage musl "$musl_url" $musl_sum $musl_ver
 
 # ----- Patch Packages ----- #
-# No packages require patching (GCC may require patching when targetting 64-bit
+# No packages require patching (GCC may require patching when targeting 64-bit
 # MIPS architectures, if that happens consider using the following patch from
 # glaucus: https://raw.githubusercontent.com/glaucuslinux/cerata/master/gcc/patches/glaucus/0001-pure64-for-mips64.patch)
 #
