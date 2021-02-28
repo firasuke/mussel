@@ -323,7 +323,7 @@ while [ $# -gt 0 ]; do
       PARALLEL_SUPPORT=yes
       ;;
     *)
-      printf -- "${REDC}!!${NORMALC} Unsupported architecture: $XARCH\n"
+      printf -- "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
       printf -- "Refer to '$0 -h' for help.\n"
       exit 1
       ;;
