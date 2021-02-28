@@ -97,7 +97,7 @@ MLOG="$CURDIR/log.txt"
 # - powerpc64le
 # - riscv64
 # - s390x
-# - x86_64 (default)
+# - x86_64
 
 # ----- PATH ----- # 
 # Use host tools, then switch to ours when they're available
@@ -128,17 +128,13 @@ CXXFLAGS=-O2
 # $SRCDIR/musl/musl-$musl_ver/arch/)
 # - XTARGET is the final target triplet
 #
+if [ $# -eq 0 ]; then
+  printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
+  printf -- "Run '${0} -h' for help.\n"
+  exit
+fi
 while [ $# -gt 0 ]; do
   case $1 in
-    "")
-      printf -- "${YELLOWC}!.${NORMALC} No Architecture Specified!\n"
-      printf -- "${YELLOWC}!.${NORMALC} Using the default architecture x86_64!\n"
-      XARCH=x86_64
-      LARCH=$XARCH
-      MARCH=$XARCH
-      XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-      XTARGET=$XARCH-linux-musl
-      ;;
     aarch64)
       XARCH=aarch64
       LARCH=arm64
@@ -304,7 +300,7 @@ while [ $# -gt 0 ]; do
       printf -- '\t+ powerpc64le\n'
       printf -- '\t+ riscv64\n'
       printf -- '\t+ s390x\n'
-      printf -- '\t+ x86_64 (default)\n'
+      printf -- '\t+ x86_64\n'
       printf -- '\n'
       printf -- 'Flags:\n'
       printf -- '\tl | -l | --linux:   \tEnable optional Linux Headers support\n'
