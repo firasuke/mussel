@@ -32,7 +32,7 @@ sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffu
 
 **(arch)**: See [**Supported
 Architectures**](https://github.com/firasuke/mussel#supported-architectures)
-below (default is `x86_64`)
+below
 
 **(flags)**:
 ```Shell
@@ -72,7 +72,7 @@ Pi Zero)
 * powerpc64le
 * riscv64
 * s390x
-* x86_64 (default)
+* x86_64
 
 ## Packages
 1. `binutils`: 2.36.1

@@ -30,7 +30,7 @@ binutils_ver=2.36.1
 gcc_ver=10.2.0
 gmp_ver=6.2.1
 isl_ver=0.23
-linux_ver=5.11.1
+linux_ver=5.11.2
 mpc_ver=1.2.1
 mpfr_ver=4.1.0
 musl_ver=1.2.2
@@ -53,7 +53,7 @@ binutils_sum=4c28e2dbc5b5cc99ab1265c8569a63925cf99109296deaa602b9d7d1123dcc1011f
 gcc_sum=42ae38928bd2e8183af445da34220964eb690b675b1892bbeb7cd5bb62be499011ec9a93397dba5e2fb681afadfc6f2767d03b9035b44ba9be807187ae6dc65e
 gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
 isl_sum=da4e7cbd5045d074581d4e1c212acb074a8b2345a96515151b0543cbe2601db6ac2bbd93f9ad6643e98f845b68f438f3882c05b8b90969ae542802a3c78fea20
-linux_sum=615ec7d06f6ed78a2b283857b5abb7c161ce80d48a9fd1626ed49ba816b28de0023d6a420f8ef0312931bfeed0ab3f8ec1b489baf0dc99d90a35c58252e76561
+linux_sum=16090ec6dea7a8c417ca7483b296902c9b55b423482ad8a881dffcaae76411806bc9502373efd6a51b0acefec3a44c19c5a7d42c5b76c1321183a4798a5959d3
 mpc_sum=3279f813ab37f47fdcc800e4ac5f306417d07f539593ca715876e43e04896e1d5bceccfb288ef2908a3f24b760747d0dbd0392a24b9b341bc3e12082e5c836ee
 mpfr_sum=1bd1c349741a6529dfa53af4f0da8d49254b164ece8a46928cdb13a99460285622d57fe6f68cef19c6727b3f9daa25ddb3d7d65c201c8f387e421c7f7bee6273
 musl_sum=5344b581bd6463d71af8c13e91792fa51f25a96a1ecbea81e42664b63d90b325aeb421dfbc8c22e187397ca08e84d9296a0c0c299ba04fa2b751d6864914bd82
@@ -97,7 +97,7 @@ MLOG="$CURDIR/log.txt"
 # - powerpc64le
 # - riscv64
 # - s390x
-# - x86_64 (default)
+# - x86_64
 
 # ----- PATH ----- # 
 # Use host tools, then switch to ours when they're available
@@ -128,17 +128,13 @@ CXXFLAGS=-O2
 # $SRCDIR/musl/musl-$musl_ver/arch/)
 # - XTARGET is the final target triplet
 #
+if [ $# -eq 0 ]; then
+  printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
+  printf -- "Run '${0} -h' for help.\n"
+  exit
+fi
 while [ $# -gt 0 ]; do
   case $1 in
-    "")
-      printf -- "${YELLOWC}!.${NORMALC} No Architecture Specified!\n"
-      printf -- "${YELLOWC}!.${NORMALC} Using the default architecture x86_64!\n"
-      XARCH=x86_64
-      LARCH=$XARCH
-      MARCH=$XARCH
-      XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-      XTARGET=$XARCH-linux-musl
-      ;;
     aarch64)
       XARCH=aarch64
       LARCH=arm64
@@ -267,7 +263,7 @@ while [ $# -gt 0 ]; do
       XGCCARGS="--with-arch=x86-64 --with-tune=generic"
       XTARGET=$XARCH-linux-musl
       ;;
-    c | -c | --clean)
+    c | -c | clean)
       printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
       rm -fr $BLDDIR
       rm -fr $MPREFIX
@@ -304,7 +300,7 @@ while [ $# -gt 0 ]; do
       printf -- '\t+ powerpc64le\n'
       printf -- '\t+ riscv64\n'
       printf -- '\t+ s390x\n'
-      printf -- '\t+ x86_64 (default)\n'
+      printf -- '\t+ x86_64\n'
       printf -- '\n'
       printf -- 'Flags:\n'
       printf -- '\tl | -l | --linux:   \tEnable optional Linux Headers support\n'
@@ -312,7 +308,7 @@ while [ $# -gt 0 ]; do
       printf -- '\tp | -p | --parallel:\tUse all available cores on the host system\n'
       printf -- '\n'
       printf -- 'Commands:\n'
-      printf -- "\tc | -c | --clean:\tClean mussel's build environment\n"
+      printf -- "\tc | -c | clean:\tClean mussel's build environment\n"
       printf -- '\n'
       printf -- 'No penguins were harmed in the making of this script!\n'
       exit 1
@@ -327,7 +323,7 @@ while [ $# -gt 0 ]; do
       PARALLEL_SUPPORT=yes
       ;;
     *)
-      printf -- "${REDC}!!${NORMALC} Unsupported architecture: $XARCH\n"
+      printf -- "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
       printf -- "Refer to '$0 -h' for help.\n"
       exit 1
       ;;
@@ -612,9 +608,11 @@ $MAKE \
   enable_shared=no \
   all-target-libgcc >> $MLOG 2>&1
 
-printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-static...\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
+
+printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-static finished.\n\n"
 
 # ----- Step 4: musl ----- #
 # We need a separate build directory for musl now that we have our cross GCC
@@ -699,10 +697,7 @@ printf -- "${BLUEC}..${NORMALC} Installing cross-gcc libgcc-shared...\n"
 $MAKE \
   install-strip-target-libgcc >> $MLOG 2>&1
 
-#
-# We only finish cross-gcc once which is here (which is where it truly ends).
-#
-printf -- "${GREENC}=>${NORMALC} cross-gcc finished.\n\n"
+printf -- "${GREENC}=>${NORMALC} cross-gcc libgcc-shared finished.\n\n"
 
 # ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 # C++ support is enabled by default.
@@ -747,7 +742,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   cd $BLDDIR
   mkdir linux-headers
 
-  cd $SRCDIR/linux/linux-$ver
+  cd $SRCDIR/linux/linux-$linux_ver
 
   #
   # We first perform a `mrproper` to ensure that our kernel source tree is
@@ -755,7 +750,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   #
   $MAKE \
     ARCH=$LARCH \
-    mrproper
+    mrproper &>> MLOG
 
   #
   # It's always a good idea to perform a sanity check on the headers we're
@@ -764,7 +759,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   $MAKE \
     O=$BLDDIR/linux-headers \
     ARCH=$LARCH \
-    headers_check
+    headers_check &>> MLOG
 
   #
   # We won't be polluting our kernel source tree which is why we're specifying
@@ -782,7 +777,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   O=$BLDDIR/linux-headers \
   ARCH=$LARCH \
   INSTALL_HDR_PATH=$MSYSROOT/usr \
-  headers_install
+  headers_install &>> MLOG
 
   printf -- "${GREENC}=>${NORMALC} linux-headers finished.\n\n"
 fi
