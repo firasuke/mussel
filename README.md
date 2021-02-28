@@ -36,9 +36,10 @@ below
 
 **(flags)**:
 ```Shell
-  l | -l | --linux: Enable optional Linux Headers support
-  o | -o | --openmp: Enable optional OpenMP support
-  p | -p | --parallel: Use all available cores on the host system
+  l | -l | --linux     Enable optional Linux Headers support
+  o | -o | --openmp    Enable optional OpenMP support
+  p | -p | --parallel  Use all available cores on the host system
+  x | -x | --no-cxx    Disable optional C++ support
 ```
 
 ### Other Commands
@@ -48,7 +49,7 @@ below
 
 **(command)**:
 ```Shell
-  c | -c | --clean: Clean mussel's build environment
+  c | -c | --clean     Clean mussel's build environment
 ```
 
 Sources will be preserved.
@@ -79,7 +80,7 @@ Pi Zero)
 2. `gcc`: 10.2.0
 3. `gmp`: 6.2.1
 4. `isl`: 0.23
-5. `linux`: 5.11.1
+5. `linux`: 5.11.2
 6. `mpc`: 1.2.1
 7. `mpfr`: 4.1.0
 8. `musl`: 1.2.2
