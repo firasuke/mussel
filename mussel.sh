@@ -747,7 +747,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   cd $BLDDIR
   mkdir linux-headers
 
-  cd $SRCDIR/linux/linux-$ver
+  cd $SRCDIR/linux/linux-$linux_ver
 
   #
   # We first perform a `mrproper` to ensure that our kernel source tree is
