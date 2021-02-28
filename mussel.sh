@@ -64,6 +64,8 @@ CURDIR="$PWD"
 SRCDIR="$CURDIR/sources"
 BLDDIR="$CURDIR/builds"
 PCHDIR="$CURDIR/patches"
+
+#
 # Please don't change $MSYSROOT to `$CURDIR/toolchain/$XTARGET` like CLFS and
 # other implementations because it'll break here (even if binutils insists
 # on installing stuff to that directory).
@@ -99,6 +101,7 @@ MLOG="$CURDIR/log.txt"
 # - riscv64
 # - s390x
 # - x86_64
+#
 
 # ----- PATH ----- # 
 # Use host tools, then switch to ours when they're available
@@ -137,132 +140,136 @@ fi
 while [ $# -gt 0 ]; do
   case $1 in
     aarch64)
-      XARCH=aarch64
+      XARCH=$1
       LARCH=arm64
-      MARCH=$XARCH
+      MARCH=$1
       XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
-      XTARGET=$XARCH-linux-musl
+      XTARGET=$1-linux-musl
       ;;
     armv6zk)
-      XARCH=armv6zk
+      XARCH=$1
       LARCH=arm
       MARCH=$LARCH
-      XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
-      XTARGET=$MARCH-linux-musleabihf
+      XGCCARGS="--with-arch=$1 --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
+      XTARGET=$LARCH-linux-musleabihf
       ;;
     armv7)
-      XARCH=armv7
+      XARCH=$1
       LARCH=arm
       MARCH=$LARCH
-      XGCCARGS="--with-arch=${MARCH}v7-a --with-fpu=vfpv3 --with-float=hard"
-      XTARGET=$MARCH-linux-musleabihf
+      XGCCARGS="--with-arch=${LARCH}v7-a --with-fpu=vfpv3 --with-float=hard"
+      XTARGET=$LARCH-linux-musleabihf
       ;;
     i586)
-      XARCH=i586
+      XARCH=$1
       LARCH=i386
       MARCH=$LARCH
-      XGCCARGS="--with-arch=$XARCH --with-tune=generic"
-      XTARGET=$XARCH-linux-musl
+      XGCCARGS="--with-arch=$1 --with-tune=generic"
+      XTARGET=$1-linux-musl
       ;;
     i686)
-      XARCH=i686
+      XARCH=$1
       LARCH=i386
       MARCH=$LARCH
-      XGCCARGS="--with-arch=$XARCH --with-tune=generic"
-      XTARGET=$XARCH-linux-musl
+      XGCCARGS="--with-arch=$1 --with-tune=generic"
+      XTARGET=$1-linux-musl
       ;;
     microblaze)
-      XARCH=microblaze
-      LARCH=$XARCH
-      MARCH=$XARCH
+      XARCH=$1
+      LARCH=$1
+      MARCH=$1
       XGCCARGS="--with-endian=big"
-      XTARGET=$XARCH-linux-musl
+      XTARGET=$1-linux-musl
       ;;
     microblazeel)
-      XARCH=microblazeel
+      XARCH=$1
       LARCH=microblaze
       MARCH=$LARCH
       XGCCARGS="--with-endian=little"
-      XTARGET=$XARCH-linux-musl
+      XTARGET=$1-linux-musl
       ;;
     mips64)
-      XARCH=mips64
+      XARCH=$1
       LARCH=mips
-      MARCH=$XARCH
-      XGCCARGS="--with-endian=big --with-arch=$XARCH --with-abi=64 --with-float=hard"
-      XTARGET=$XARCH-linux-musl
+      MARCH=$1
+      XGCCARGS="--with-endian=big --with-arch=$1 --with-abi=64 --with-float=hard"
+      XTARGET=$1-linux-musl
       ;;
     mips64el)
-      XARCH=mips64el
+      XARCH=$1
       LARCH=mips
-      MARCH=mips64
-      XGCCARGS="--with-endian=little --with-arch=mips64 --with-abi=64 --with-float=hard"
-      XTARGET=$XARCH-linux-musl
+      MARCH=${LARCH}64
+      XGCCARGS="--with-endian=little --with-arch=$MARCH --with-abi=64 --with-float=hard"
+      XTARGET=$1-linux-musl
       ;;
     mips64r6)
-      XARCH=mips64r6
+      XARCH=$1
       LARCH=mips
-      MARCH=mips64
+      MARCH=${LARCH}64
       XGCCARGS="--with-endian=big --with-arch=$XARCH --with-abi=64 --with-float=hard"
-      XTARGET=mipsisa64r6-linux-musl
+      XTARGET=${LARCH}isa64r6-linux-musl
       ;;
     mips64r6el)
-      XARCH=mips64r6el
+      XARCH=$1
       LARCH=mips
-      MARCH=mips64
-      XGCCARGS="--with-endian=little --with-arch=mips64r6 --with-abi=64 --with-float=hard"
-      XTARGET=mipsisa64r6el-linux-musl
+      MARCH=${LARCH}64
+      XGCCARGS="--with-endian=little --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard"
+      XTARGET=${LARCH}isa64r6el-linux-musl
       ;;
     or1k)
-      XARCH=or1k
+      XARCH=$1
       LARCH=openrisc
-      MARCH=$XARCH
-      # There's no such option as `--with-float=hard` for this arch
+      MARCH=$1
+      #
+      # There's no such option as `--with-float=hard` for this arch.
+      #
       XGCCARGS=""
-      XTARGET=$XARCH-linux-musl
+      XTARGET=$1-linux-musl
       ;;
     powerpc)
-      XARCH=powerpc
-      LARCH=$XARCH
-      MARCH=$XARCH
-      XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128"
-      XTARGET=$XARCH-linux-musl
+      XARCH=$1
+      LARCH=$1
+      MARCH=$1
+      XGCCARGS="--with-cpu=$1 --enable-secureplt --without-long-double-128"
+      XTARGET=$1-linux-musl
       ;;
     powerpc64)
-      XARCH=powerpc64
+      XARCH=$1
       LARCH=powerpc
-      MARCH=$XARCH
-      XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
-      XTARGET=$XARCH-linux-musl
+      MARCH=$1
+      XGCCARGS="--with-cpu=$1 --with-abi=elfv2"
+      XTARGET=$1-linux-musl
       ;;
     powerpc64le)
-      XARCH=powerpc64le
+      XARCH=$1
       LARCH=powerpc
-      MARCH=powerpc64
-      XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
-      XTARGET=$XARCH-linux-musl
+      MARCH=${LARCH}64
+      XGCCARGS="--with-cpu=$1 --with-abi=elfv2"
+      XTARGET=$1-linux-musl
       ;;
     riscv64)
-      XARCH=riscv64
+      XARCH=$1
       LARCH=riscv
-      MARCH=$XARCH
+      MARCH=$1
       XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
-      XTARGET=$XARCH-linux-musl
+      XTARGET=$1-linux-musl
       ;;
     s390x)
-      XARCH=s390x
+      XARCH=$1
       LARCH=s390
-      MARCH=$XARCH
+      MARCH=$1
+      #
       # --enable-decimal-float is the default on z9-ec and higher (e.g. z196)
+      #
       XGCCARGS="--with-arch=z196 --with-tune=zEC12 --with-long-double-128"
-      XTARGET=$XARCH-linux-musl
+      XTARGET=$1-linux-musl
       ;;
     x86_64)
-      XARCH=x86_64
-      LARCH=$XARCH
-      MARCH=$XARCH
+      XARCH=$1
+      LARCH=$1
+      MARCH=$1
       XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-      XTARGET=$XARCH-linux-musl
+      XTARGET=$1-linux-musl
       ;;
     c | -c | --clean)
       printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
@@ -477,9 +484,10 @@ mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
 mpackage musl "$musl_url" $musl_sum $musl_ver
 
 # ----- Patch Packages ----- #
-# No package requires patching (GCC may require patching when targetting 64-bit
+# No packages requires patching (GCC may require patching when targetting 64-bit
 # MIPS architectures, if that happens consider using the following patch from
 # glaucus: https://raw.githubusercontent.com/glaucuslinux/cerata/master/gcc/patches/glaucus/0001-pure64-for-mips64.patch)
+#
 
 # ----- Clean Directories ----- #
 printf -- "\n-----\nclean\n-----\n\n" >> $MLOG
@@ -687,10 +695,12 @@ printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 printf -- "\n-----\n*5) cross-gcc libgcc-shared\n-----\n\n" >> $MLOG
 printf -- "${BLUEC}..${NORMALC} Preparing cross-gcc libgcc-shared...\n"
 cd $BLDDIR/cross-gcc
+#
 # We need to run `make distclean` and not just `make clean` to make sure the
 # leftovers from the previous static build of libgcc are gone so we can build
 # the shared version without having to restart the entire build just to build
 # libgcc-shared!
+#
 $MAKE \
   -C $XTARGET/libgcc distclean >> $MLOG 2>&1
 
