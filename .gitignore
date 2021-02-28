@@ -1,5 +1,8 @@
-sources/
+# ----- Files ----- #
 log.txt
+
+# ----- Directories ----- #
 builds/
+sources/
 sysroot/
 toolchain/
