@@ -478,7 +478,7 @@ mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
 mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
 mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
 mpackage isl "$isl_url" $isl_sum $isl_ver
-mpackage linux "$linux_url" $linux_sum $linux_ver
+[ $LINUX_HEADERS_SUPPORT = yes ] && mpackage linux "$linux_url" $linux_sum $linux_ver
 mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
 mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
 mpackage musl "$musl_url" $musl_sum $musl_ver
@@ -586,7 +586,7 @@ cd cross-gcc
 #
 # Again, everything said in cross-binutils applies here.
 #
-# We need c++ language support to be able to build GCC, since GCC has big parts
+# We need C++ language support to be able to build GCC, since GCC has big parts
 # of its source code written in C++.
 #
 # If you want to use zstd as a backend for LTO, just add `--with-zstd` below and
