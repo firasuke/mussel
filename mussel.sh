@@ -257,7 +257,7 @@ while [ $# -gt 0 ]; do
       printf -- '\n'
       printf -- 'Flags:\n'
       printf -- '\tg | -g | --go        \tEnable optional Go support\n'
-      printf -- '\th | -h | --help      \tDisplay this help message\n'
+      printf -- '\th | -h | --help      \tDisplay help message\n'
       printf -- '\tk | -k | --pkg-config\tEnable optional pkg-config support\n'
       printf -- '\tl | -l | --linux     \tEnable optional Linux Headers support\n'
       printf -- '\to | -o | --openmp    \tEnable optional OpenMP support\n'
