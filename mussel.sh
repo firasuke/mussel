@@ -651,10 +651,10 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
 
   printf -- "${BLUEC}..${NORMALC} Installing linux headers...\n"
   $MAKE \
-  O=$BLDDIR/linux \
-  ARCH=$LARCH \
-  INSTALL_HDR_PATH=$MSYSROOT/usr \
-  headers_install &>> MLOG
+    O=$BLDDIR/linux \
+    ARCH=$LARCH \
+    INSTALL_HDR_PATH=$MSYSROOT/usr \
+    headers_install &>> MLOG
 
   printf -- "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
