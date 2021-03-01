@@ -657,8 +657,7 @@ CROSS_COMPILE=$XTARGET- \
 LIBCC="$MPREFIX/lib/gcc/$XTARGET/$gcc_ver/libgcc.a" \
 ./configure \
   --host=$XTARGET \
-  --prefix=/usr \
-  --disable-static >> $MLOG 2>&1
+  --prefix=/usr >> $MLOG 2>&1
 
 printf -- "${BLUEC}..${NORMALC} Building musl...\n"
 $MAKE \
