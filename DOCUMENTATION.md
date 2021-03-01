@@ -29,11 +29,11 @@
 * We also try to use the smallest tarballs available from upstream (in order of
     preference):
 
-    1.zst
-    2.lz
-    3.xz
-    4.bzip2
-    5.gz
+    * zst
+    * lz
+    * xz
+    * bzip2
+    * gz
 
 ## ii. Development Directories
 Please don't change `$MSYSROOT` to `$CURDIR/toolchain/$XTARGET` like CLFS and
