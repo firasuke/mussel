@@ -393,6 +393,7 @@ printf -- '+=======================================================+\n'
 printf -- '\n'
 printf -- "Target Architecture:            $XARCH\n\n"
 printf -- "Optional C++ Support:           $CXX_SUPPORT\n"
+printf -- "Optional Go Support:            $GO_SUPPORT\n"
 printf -- "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
 printf -- "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
 printf -- "Optional Parallel Support:      $PARALLEL_SUPPORT\n\n"
@@ -405,7 +406,7 @@ rm -fr $MLOG
 
 # ----- Print Variables to mussel Log File ----- #
 printf -- 'mussel Log File\n\n' >> $MLOG 2>&1
-printf -- "CXX_SUPPORT: $CXX_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\n\n" >> $MLOG 2>&1
+printf -- "CXX_SUPPORT: $CXX_SUPPORT\nGO_SUPPORT: $GO_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\n\n" >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
 printf -- "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG 2>&1
 printf -- "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG 2>&1
