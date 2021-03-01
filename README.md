@@ -37,13 +37,13 @@ below
 
 **(flags)**:
 ```Shell
-  g | -g | --go          Enable optional Go support
-  h | -h | --help        Display help message
-  k | -k | --pkg-config  Enable optional pkg-config support
-  l | -l | --linux       Enable optional Linux Headers support
-  o | -o | --openmp      Enable optional OpenMP support
-  p | -p | --parallel    Use all available cores on the host system
-  x | -x | --no-cxx      Disable optional C++ support
+  g | -g | --enable-go             Enable optional Go support
+  h | -h | --help                  Display help message
+  k | -k | --enable-pkg-config     Enable optional pkg-config support
+  l | -l | --enable-linux-headers  Enable optional Linux Headers support
+  o | -o | --enable-openmp         Enable optional OpenMP support
+  p | -p | --parallel              Use all available cores on the host system
+  x | -x | --disable-cxx           Disable optional C++ support
 ```
 
 ### Other Commands
@@ -53,7 +53,7 @@ below
 
 **(command)**:
 ```Shell
-  c | -c | --clean       Clean mussel's build environment
+  c | -c | --clean                 Clean mussel's build environment
 ```
 
 Sources will be preserved.

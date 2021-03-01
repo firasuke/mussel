@@ -83,11 +83,6 @@ CFLAGS=-O2
 CXXFLAGS=-O2
 
 # ----- mussel Flags ----- #
-if [ $# -eq 0 ]; then
-  printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
-  printf -- "Run '$0 -h' for help.\n"
-  exit 1
-fi
 while [ $# -gt 0 ]; do
   case $1 in
     aarch64)
@@ -225,14 +220,14 @@ while [ $# -gt 0 ]; do
       printf -- "${GREENC}=>${NORMALC} Cleaned mussel.\n"
       exit
       ;;
-    g | -g | --go)
+    g | -g | --enable-go)
       GO_SUPPORT=yes
       ;;
     h | -h | --help)
       printf -- 'Copyright (c) 2020-2021, Firas Khalil Khana\n'
       printf -- 'Distributed under the terms of the ISC License\n'
       printf -- '\n'
-      printf -- 'mussel - The fastest musl-libc cross compiler generator\n'
+      printf -- 'mussel - The fastest musl libc cross compiler generator\n'
       printf -- '\n'
       printf -- "Usage: $0: (architecture) (flags)\n"
       printf -- "Usage: $0: (command)\n"
@@ -259,33 +254,33 @@ while [ $# -gt 0 ]; do
       printf -- '\t+ x86_64\n'
       printf -- '\n'
       printf -- 'Flags:\n'
-      printf -- '\tg | -g | --go        \tEnable optional Go support\n'
-      printf -- '\th | -h | --help      \tDisplay help message\n'
-      printf -- '\tk | -k | --pkg-config\tEnable optional pkg-config support\n'
-      printf -- '\tl | -l | --linux     \tEnable optional Linux Headers support\n'
-      printf -- '\to | -o | --openmp    \tEnable optional OpenMP support\n'
-      printf -- '\tp | -p | --parallel  \tUse all available cores on the host system\n'
-      printf -- '\tx | -x | --no-cxx    \tDisable optional C++ support\n'
+      printf -- '\tg | -g | --enable-go           \tEnable optional Go support\n'
+      printf -- '\th | -h | --help                \tDisplay help message\n'
+      printf -- '\tk | -k | --enable-pkg-config   \tEnable optional pkg-config support\n'
+      printf -- '\tl | -l | --enable-linux-headers\tEnable optional Linux Headers support\n'
+      printf -- '\to | -o | --enable-openmp       \tEnable optional OpenMP support\n'
+      printf -- '\tp | -p | --parallel            \tUse all available cores on the host system\n'
+      printf -- '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
       printf -- '\n'
       printf -- 'Commands:\n'
-      printf -- "\tc | -c | --clean   \tClean mussel's build environment\n"
+      printf -- "\tc | -c | --clean               \tClean mussel's build environment\n"
       printf -- '\n'
       printf -- 'No penguins were harmed in the making of this script!\n'
       exit
       ;;
-    k | -k | --pkg-config)
+    k | -k | --enable-pkg-config)
       PKG_CONFIG_SUPPORT=yes
       ;;
-    l | -l | --linux)
+    l | -l | --enable-linux-headers)
       LINUX_HEADERS_SUPPORT=yes
       ;;
-    o | -o | --openmp)
+    o | -o | --enable-openmp)
       OPENMP_SUPPORT=yes
       ;;
     p | -p | --parallel)
       PARALLEL_SUPPORT=yes
       ;;
-    x | -x | --no-cxx)
+    x | -x | --disable-cxx)
       CXX_SUPPORT=no
       ;;
     *)
@@ -297,6 +292,12 @@ while [ $# -gt 0 ]; do
 
   shift
 done
+
+if [ -z $XARCH ]; then
+  printf -- "${REDC}!!${NORMALC} No Architecture Specified!\n"
+  printf -- "Run '$0 -h' for help.\n"
+  exit 1
+fi
 
 # ----- Make Flags ----- #
 if [ $PARALLEL_SUPPORT = yes ]; then
@@ -388,7 +389,7 @@ mclean() {
 
 printf -- '\n'
 printf -- '+=======================================================+\n'
-printf -- '| mussel.sh - The fastest musl-libc Toolchain Generator |\n'
+printf -- '| mussel.sh - The fastest musl libc Toolchain Generator |\n'
 printf -- '+-------------------------------------------------------+\n'
 printf -- '|      Copyright (c) 2020-2021, Firas Khalil Khana      |\n'
 printf -- '|     Distributed under the terms of the ISC License    |\n'
@@ -399,7 +400,7 @@ printf -- "Optional C++ Support:           $CXX_SUPPORT\n"
 printf -- "Optional Go Support:            $GO_SUPPORT\n"
 printf -- "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
 printf -- "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
-printf -- "Optional Parallel Support:      $PARALLEL_SUPPORT\n\n"
+printf -- "Optional Parallel Support:      $PARALLEL_SUPPORT\n"
 printf -- "Optional pkg-config Support:    $PKG_CONFIG_SUPPORT\n\n"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
@@ -410,8 +411,7 @@ rm -fr $MLOG
 
 # ----- Print Variables to mussel Log File ----- #
 printf -- 'mussel Log File\n\n' >> $MLOG 2>&1
-printf -- "CXX_SUPPORT: $CXX_SUPPORT\nGO_SUPPORT:
-$GO_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n" >> $MLOG 2>&1
+printf -- "CXX_SUPPORT: $CXX_SUPPORT\nGO_SUPPORT: $GO_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n\n" >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
 printf -- "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG 2>&1
 printf -- "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG 2>&1
