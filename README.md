@@ -14,8 +14,8 @@ compilers that target musl libc.
 5. **Simple**: easy to read, modify and extend
 6. **POSIX Compliant**: the entire script is POSIX compliant and runs entirely
    under DASH
-7. **Well Documented**: the script has comments (that are considered state of
-   the art information) all over the place explaining what is being done and why
+7. **Well Documented**: the script comes with a `DOCUMENTATION.md` file that
+   includes state of the art information explaining what is being done and why
 
 ## Requirements:
 To confirm you have all required packages, you can execute `./check.sh`.
