@@ -602,7 +602,22 @@ if [ $CXX_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} cross-gcc (libstdc++v3) finished.\n\n"
 fi
 
-# ----- [Optional OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
+# ----- [Optional Go Support] Step 7: cross-gcc (libgo) ----- #
+if [ $GO_SUPPORT = yes ]; then
+  printf -- "\n-----\n*6) cross-gcc (libgo)\n-----\n\n" >> $MLOG
+  printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgo)...\n"
+  cd $BLDDIR/cross-gcc
+  $MAKE \
+    all-target-libgo >> $MLOG 2>&1
+
+  printf -- "${BLUEC}..${NORMALC} Installing cross-gcc (libgo)...\n"
+  $MAKE \
+    install-strip-target-libgo >> $MLOG 2>&1
+
+  printf -- "${GREENC}=>${NORMALC} cross-gcc (libgo) finished.\n\n"
+fi
+
+# ----- [Optional OpenMP Support] Step 8: cross-gcc (libgomp) ----- #
 if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "\n-----\n*7) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgomp)...\n"
@@ -616,7 +631,7 @@ if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} cross-gcc (libgomp) finished.\n\n"
 fi
 
-# ----- [Optional Linux Headers Support] Step 8: linux headers ----- #
+# ----- [Optional Linux Headers Support] Step 9: linux headers ----- #
 if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   printf -- "\n-----\n*8) linux headers\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Preparing linux headers...\n"
@@ -644,7 +659,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
 
-# ----- [Optional pkg-config Support] Step 9: pkgconf ----- #
+# ----- [Optional pkg-config Support] Step 10: pkgconf ----- #
 if [ $PKG_CONFIG_SUPPORT = yes ]; then
   :
 fi

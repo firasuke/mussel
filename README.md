@@ -1,19 +1,18 @@
 # mussel
 `mussel` is the shortest and fastest script available today to build working cross
-compilers that target musl libc.
+compilers that target `musl` libc.
 
 ## Features
 1. **Up-to-date**: uses latest available upstream sources for packages
 2. **Fast**: probably the fastest script around to build a cross compiler
-   targetting musl libc, also it's written entirely in POSIX sh and runs fully
-   under DASH
-3. **Short**: has the least amount of steps (see below) required to build a
-   cross compiler targetting musl libc (even less than
+   targeting `musl` libc, and runs fully under `dash`
+3. **Short**: has the least amount of steps ([see
+   below](https://github.com/firasuke/mussel#how-is-mussel-doing-it)) required
+   to build a cross compiler targeting musl libc (even less than
    [musl-cross-make](https://github.com/richfelker/musl-cross-make))
-4. **Small**: all installation steps use `install-strip` when applicable
+4. **Small**: all installation steps use `install-strip` where applicable
 5. **Simple**: easy to read, modify and extend
-6. **POSIX Compliant**: the entire script is POSIX compliant and runs entirely
-   under DASH
+6. **POSIX Compliant**: the entire script is POSIX compliant
 7. **Well Documented**: the script comes with a
    [`DOCUMENTATION.md`](https://github.com/firasuke/mussel/blob/master/DOCUMENTATION.md)
    file that includes state of the art information explaining what is being done
@@ -85,11 +84,11 @@ Pi Zero)
 2. `gcc`: 10.2.0
 3. `gmp`: 6.2.1
 4. `isl`: 0.23
-5. `linux`: 5.11.2 (Optional Linux Headers Support) (Disabled by default)
+5. `linux`: 5.11.2 (**Optional** Linux Headers Support) (Disabled by default)
 6. `mpc`: 1.2.1
 7. `mpfr`: 4.1.0
 8. `musl`: 1.2.2
-9. `pkgconf`: 1.7.3 (Optional `pkg-config` Support) (Disabled by default)
+9. `pkgconf`: 1.7.3 (**Optional** `pkg-config` Support) (Disabled by default)
 
 ## How Is `mussel` Doing It?
 1. Install `musl` headers
@@ -98,19 +97,19 @@ Pi Zero)
 4. Configure, build and install `musl`
 5. Build, and install `libgcc-shared`
 
-## Optional Steps
-* Build and install `libstdc++-v3` (Optional C++ Support) (Enabled by default)
-* Build and install `libgo` (Optional Go Support) (Disabled by default)
-* Build and install `libgomp` (Optional OpenMP Support) (Disabled by default)
-* Install `linux-headers` (Optional Linux Headers Support) (Disabled by default)
-* Configure, build and install `pkgconf` (Optional `pkg-config` Support)
+## **Optional** Steps
+* Build and install `libstdc++-v3` (**Optional** C++ Support) (Enabled by default)
+* Build and install `libgo` (**Optional** Go Support) (Disabled by default)
+* Build and install `libgomp` (**Optional** OpenMP Support) (Disabled by default)
+* Install `linux-headers` (**Optional** Linux Headers Support) (Disabled by default)
+* Configure, build and install `pkgconf` (**Optional** `pkg-config` Support)
 (Disabled by default)
 
-### Using `mussel` With Host's `pkg-config`/`pkgconf`
-The reason we didn't include `pkg-config` or `pkgconf` with `mussel` (even as an
-optional step) is because we can easily configure the host's `pkg-config` or
-`pkgconf` to work with `mussel` without having to build our own version of
-`pkg-config` or `pkgconf`.
+### Using `mussel` With Host's `pkg-config` or `pkgconf`
+The reason we included `pkgconf` with `mussel` as an **optional** step is
+because we can easily configure the host's `pkg-config` or `pkgconf` to work
+with `mussel` without having to build our own version of `pkg-config` or
+`pkgconf`.
 
 Here are the five magical environment variables that we need to set to configure
 the host's `pkg-config` or `pkgconf` to work with `mussel`:
