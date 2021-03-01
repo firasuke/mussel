@@ -1,4 +1,4 @@
-# mussel
+# `mussel`
 `mussel` is the shortest and fastest script available today to build working cross
 compilers that target `musl` libc.
 
