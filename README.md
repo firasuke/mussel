@@ -130,6 +130,7 @@ mailto:firasuke@glaucuslinux.org)>
 
 ## Contributors
 * Alexander Barris (AwlsomeAlex)
+* ayb <[ayb@3hg.fr](mailto:ayb@3hg.fr)>
 
 ## License
 `mussel` is licensed under the Internet Systems Consortium (ISC) license.

@@ -5,6 +5,7 @@
 
 # Contributors:
 # * Alexander Barris (AwlsomeAlex)
+# * ayb <ayb@3hg.fr>
 
 set -e
 umask 022
