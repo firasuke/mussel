@@ -1,27 +1,26 @@
 # mussel Documentation
 
 ## Table of Contents
-* i. Package URLs
-* ii. Development Directories
-* iii. Available Architectures
-* iv. PATH
-* v. mussel Flags
-  * v.i `or1k`
-  * v.ii `s390x`
-* vi. `make` Flags
-* vii. Print Variables to mussel Log File
-* viii. Patch Packages
-
-* 1. Step 1: `musl` headers
-* 2. Step 2: `cross-binutils`
-* 3. Step 3: `cross-gcc` (compiler)
-* 4. Step 4: `musl`
-* 5. Step 5: `cross-gcc` (`libgcc-shared`)
-* 6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)
-* 7. [**Optional** Go Support] Step 7: `cross-gcc` (`libgo`)
-* 8. [**Optional** OpenMP Support] Step 8: `cross-gcc` (`libgomp`)
-* 9. [**Optional** Linux Headers Support] Step 9: `linux` headers
-* 10. [**Optional** `pkg-config` Support] Step 10: `pkgconf`
+* [i. Package URLs](#i-package-urls)
+* [ii. Development Directories](#ii-development-directories)
+* [iii. Available Architectures](#iii-available-architectures)
+* [iv. PATH](#iv-path)
+* [v. mussel Flags](#v-mussel-flags)
+ * [v.i or1k](#vi-or1k)
+ * [v.ii s390x](#vii-s390x)
+* [vi. make Flags](#vi-make-flags)
+* [vii. Print Variables to mussel Log File](#vii-print-variables-to-mussel-log-file)
+* [viii. Patch Packages](#viii-patch-packages)
+* [1. Step 1: musl headers](#1-step-1-musl-headers)
+* [2. Step 2: cross-binutils](#2-step-2-cross-binutils)
+* [3. Step 3: cross-gcc (compiler)](#3-step-3-cross-gcc-compiler)
+* [4. Step 4: musl](#4-step-4-musl)
+* [5. Step 5: cross-gcc (libgcc-shared)](#5-step-5-cross-gcc-libgcc-shared)
+* [6. [**Optional** C++ Support] Step 6: cross-gcc (libstdc++-v3)](#6-optional-c-support-step-6-cross-gcc-libstdc-v3)
+* [7. [**Optional** Go Support] Step 7: cross-gcc (libgo)](#7-optional-go-support-step-7-cross-gcc-libgo)
+* [8. [**Optional** OpenMP Support] Step 8: cross-gcc (libgomp)](#8-optional-openmp-support-step-8-cross-gcc-libgomp)
+* [9. [**Optional** Linux Headers Support] Step 9: linux-headers](#9-optional-linux-headers-support-step-9-linux-headers)
+* [10. [**Optional** pkg-config Support] Step 10: pkgconf](#10-optional-pkg-config-support-step-10-pkgconf)
 
 ## i. Package URLs
 * The usage of ftpmirror for GNU packages is preferred.
