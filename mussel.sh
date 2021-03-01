@@ -4,7 +4,7 @@
 # Distributed under the terms of the ISC License
 
 # Contributors:
-# * Alexander Barris (AwlsomeAlex)
+# * Alexander Barris (AwlsomeAlex) <alex@awlsome.com>
 # * ayb <ayb@3hg.fr>
 
 set -e

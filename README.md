@@ -129,7 +129,7 @@ Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
 mailto:firasuke@glaucuslinux.org)>
 
 ## Contributors
-* Alexander Barris (AwlsomeAlex)
+* Alexander Barris (AwlsomeAlex) <[alex@awlsome.com](mailto:alex@awlsome.com)>
 * ayb <[ayb@3hg.fr](mailto:ayb@3hg.fr)>
 
 ## License
