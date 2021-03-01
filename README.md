@@ -85,22 +85,26 @@ Pi Zero)
 2. `gcc`: 10.2.0
 3. `gmp`: 6.2.1
 4. `isl`: 0.23
-5. `linux`: 5.11.2 (Optional For Linux Headers Support) (Disabled by default)
+5. `linux`: 5.11.2 (Optional Linux Headers Support) (Disabled by default)
 6. `mpc`: 1.2.1
 7. `mpfr`: 4.1.0
 8. `musl`: 1.2.2
+9. `pkgconf`: 1.7.3 (Optional `pkg-config` Support) (Disabled by default)
 
 ## How Is `mussel` Doing It?
 1. Install `musl` headers
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (with `libgcc-static`)
 4. Configure, build and install `musl`
-5. Build, and install `libgcc-shared` only
+5. Build, and install `libgcc-shared`
 
 ## Optional Steps
-* Build, and install `libstdc++-v3` (Optional For C++ Support) (Enabled by default)
-* Build, and install `libgomp` (Optional For OpenMP Support) (Disabled by default)
-* Install `linux-headers` (Optional For Linux Headers Support) (Disabled by default)
+* Build and install `libstdc++-v3` (Optional C++ Support) (Enabled by default)
+* Build and install `libgo` (Optional Go Support) (Disabled by default)
+* Build and install `libgomp` (Optional OpenMP Support) (Disabled by default)
+* Install `linux-headers` (Optional Linux Headers Support) (Disabled by default)
+* Configure, build and install `pkgconf` (Optional `pkg-config` Support)
+(Disabled by default)
 
 ### Using `mussel` With Host's `pkg-config`/`pkgconf`
 The reason we didn't include `pkg-config` or `pkgconf` with `mussel` (even as an

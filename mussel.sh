@@ -38,6 +38,7 @@ linux_ver=5.11.2
 mpc_ver=1.2.1
 mpfr_ver=4.1.0
 musl_ver=1.2.2
+pkgconf_ver=1.7.3
 
 # ----- Package URLs ----- #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
@@ -48,6 +49,7 @@ linux_url=https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$linux_ver.tar.xz
 mpc_url=https://ftpmirror.gnu.org/mpc/mpc-$mpc_ver.tar.gz
 mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
+pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
 # ----- Package Checksums (sha512sum) ----- #
 binutils_sum=4c28e2dbc5b5cc99ab1265c8569a63925cf99109296deaa602b9d7d1123dcc1011ffbffb7bb6bb0e5e812176b43153f5a576cc4281e5f2b06e4a1d9db146b609
@@ -58,6 +60,7 @@ linux_sum=16090ec6dea7a8c417ca7483b296902c9b55b423482ad8a881dffcaae76411806bc950
 mpc_sum=3279f813ab37f47fdcc800e4ac5f306417d07f539593ca715876e43e04896e1d5bceccfb288ef2908a3f24b760747d0dbd0392a24b9b341bc3e12082e5c836ee
 mpfr_sum=1bd1c349741a6529dfa53af4f0da8d49254b164ece8a46928cdb13a99460285622d57fe6f68cef19c6727b3f9daa25ddb3d7d65c201c8f387e421c7f7bee6273
 musl_sum=5344b581bd6463d71af8c13e91792fa51f25a96a1ecbea81e42664b63d90b325aeb421dfbc8c22e187397ca08e84d9296a0c0c299ba04fa2b751d6864914bd82
+pkgconf_sum=37b6c4f9f3b93970e35b6970fde22fbbde65e7fa32a5634b3fdfc25cc1f33843582722ad13d9a8e96fd6768406fcbe86bf5feb76996ddd0bb66d6ff91e65f0b6
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
@@ -397,6 +400,7 @@ printf -- "Optional Go Support:            $GO_SUPPORT\n"
 printf -- "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
 printf -- "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
 printf -- "Optional Parallel Support:      $PARALLEL_SUPPORT\n\n"
+printf -- "Optional pkg-config Support:    $PKG_CONFIG_SUPPORT\n\n"
 
 [ ! -d $SRCDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf -- "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
@@ -406,7 +410,8 @@ rm -fr $MLOG
 
 # ----- Print Variables to mussel Log File ----- #
 printf -- 'mussel Log File\n\n' >> $MLOG 2>&1
-printf -- "CXX_SUPPORT: $CXX_SUPPORT\nGO_SUPPORT: $GO_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\n\n" >> $MLOG 2>&1
+printf -- "CXX_SUPPORT: $CXX_SUPPORT\nGO_SUPPORT:
+$GO_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n" >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
 printf -- "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG 2>&1
 printf -- "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG 2>&1
@@ -420,10 +425,14 @@ mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
 mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
 mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
 mpackage isl "$isl_url" $isl_sum $isl_ver
+
 [ $LINUX_HEADERS_SUPPORT = yes ] && mpackage linux "$linux_url" $linux_sum $linux_ver
+
 mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
 mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
 mpackage musl "$musl_url" $musl_sum $musl_ver
+
+[ $PKG_CONFIG_SUPPORT = yes ] && mpackage pkgconf "$pkgconf_url" $pkgconf_sum $pkgconf_ver
 
 # ----- Patch Packages ----- #
 
@@ -578,7 +587,7 @@ $MAKE \
 
 printf -- "${GREENC}=>${NORMALC} cross-gcc (libgcc-shared) finished.\n\n"
 
-# ----- [Optional For C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
+# ----- [Optional C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 if [ $CXX_SUPPORT = yes ]; then
   printf -- "\n-----\n*6) cross-gcc (libstdc++-v3)\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libstdc++-v3)...\n"
@@ -593,7 +602,7 @@ if [ $CXX_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} cross-gcc (libstdc++v3) finished.\n\n"
 fi
 
-# ----- [Optional For OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
+# ----- [Optional OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "\n-----\n*7) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgomp)...\n"
@@ -607,12 +616,12 @@ if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} cross-gcc (libgomp) finished.\n\n"
 fi
 
-# ----- [Optional For Linux Headers Support] Step 8: linux-headers ----- #
+# ----- [Optional Linux Headers Support] Step 8: linux headers ----- #
 if [ $LINUX_HEADERS_SUPPORT = yes ]; then
-  printf -- "\n-----\n*8) linux-headers\n-----\n\n" >> $MLOG
-  printf -- "${BLUEC}..${NORMALC} Preparing linux-headers...\n"
+  printf -- "\n-----\n*8) linux headers\n-----\n\n" >> $MLOG
+  printf -- "${BLUEC}..${NORMALC} Preparing linux headers...\n"
   cd $BLDDIR
-  mkdir linux-headers
+  mkdir linux
 
   cd $SRCDIR/linux/linux-$linux_ver
 
@@ -621,18 +630,23 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
     mrproper &>> MLOG
 
   $MAKE \
-    O=$BLDDIR/linux-headers \
+    O=$BLDDIR/linux \
     ARCH=$LARCH \
     headers_check &>> MLOG
 
-  printf -- "${BLUEC}..${NORMALC} Installing linux-headers...\n"
+  printf -- "${BLUEC}..${NORMALC} Installing linux headers...\n"
   $MAKE \
-  O=$BLDDIR/linux-headers \
+  O=$BLDDIR/linux \
   ARCH=$LARCH \
   INSTALL_HDR_PATH=$MSYSROOT/usr \
   headers_install &>> MLOG
 
-  printf -- "${GREENC}=>${NORMALC} linux-headers finished.\n\n"
+  printf -- "${GREENC}=>${NORMALC} linux headers finished.\n\n"
+fi
+
+# ----- [Optional pkg-config Support] Step 9: pkgconf ----- #
+if [ $PKG_CONFIG_SUPPORT = yes ]; then
+  :
 fi
 
 printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
