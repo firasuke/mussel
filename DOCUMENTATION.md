@@ -249,6 +249,6 @@ make use of the host's `pkg-config` or `pkgconf` by setting 3-5 environment
 variables that point to where we're storing our relevant `.pc` files). The only
 advantage we have when building our own `pkg-config` or `pkgconf` is that we can
 configure these options at compile time instead of relying on environment
-variables, and that's it...
+variables, and that's pretty much about it...
 
 * It's also a good idea to symlink `pkg-config` to `pkgconf`.
