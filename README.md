@@ -37,7 +37,6 @@ below
 
 **(flags)**:
 ```Shell
-  g | -g | --enable-go             Enable optional Go support
   h | -h | --help                  Display help message
   k | -k | --enable-pkg-config     Enable optional pkg-config support
   l | -l | --enable-linux-headers  Enable optional Linux Headers support
@@ -99,7 +98,6 @@ Pi Zero)
 
 ## **Optional** Steps
 * Build and install `libstdc++-v3` (**Optional** C++ Support) (Enabled by default)
-* Build and install `libgo` (**Optional** Go Support) (Disabled by default)
 * Build and install `libgomp` (**Optional** OpenMP Support) (Disabled by default)
 * Install `linux-headers` (**Optional** Linux Headers Support) (Disabled by default)
 * Configure, build and install `pkgconf` (**Optional** `pkg-config` Support)

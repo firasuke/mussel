@@ -16,7 +16,6 @@ umask 022
 
 # ----- Optional ----- #
 CXX_SUPPORT=yes
-GO_SUPPORT=no
 LINUX_HEADERS_SUPPORT=no
 OPENMP_SUPPORT=no
 PARALLEL_SUPPORT=no
@@ -220,9 +219,6 @@ while [ $# -gt 0 ]; do
       printf -- "${GREENC}=>${NORMALC} mussel cleaned.\n"
       exit
       ;;
-    g | -g | --enable-go)
-      GO_SUPPORT=yes
-      ;;
     h | -h | --help)
       printf -- 'Copyright (c) 2020-2021, Firas Khalil Khana\n'
       printf -- 'Distributed under the terms of the ISC License\n'
@@ -254,7 +250,6 @@ while [ $# -gt 0 ]; do
       printf -- '\t+ x86_64\n'
       printf -- '\n'
       printf -- 'Flags:\n'
-      printf -- '\tg | -g | --enable-go           \tEnable optional Go support\n'
       printf -- '\th | -h | --help                \tDisplay help message\n'
       printf -- '\tk | -k | --enable-pkg-config   \tEnable optional pkg-config support\n'
       printf -- '\tl | -l | --enable-linux-headers\tEnable optional Linux Headers support\n'
@@ -397,7 +392,6 @@ printf -- '+=======================================================+\n'
 printf -- '\n'
 printf -- "Target Architecture:            $XARCH\n\n"
 printf -- "Optional C++ Support:           $CXX_SUPPORT\n"
-printf -- "Optional Go Support:            $GO_SUPPORT\n"
 printf -- "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
 printf -- "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
 printf -- "Optional Parallel Support:      $PARALLEL_SUPPORT\n"
@@ -411,7 +405,7 @@ rm -fr $MLOG
 
 # ----- Print Variables to mussel Log File ----- #
 printf -- 'mussel Log File\n\n' >> $MLOG 2>&1
-printf -- "CXX_SUPPORT: $CXX_SUPPORT\nGO_SUPPORT: $GO_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n\n" >> $MLOG 2>&1
+printf -- "CXX_SUPPORT: $CXX_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n\n" >> $MLOG 2>&1
 printf -- "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
 printf -- "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG 2>&1
 printf -- "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG 2>&1
@@ -506,7 +500,7 @@ $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --prefix=$MPREFIX \
   --target=$XTARGET \
   --with-sysroot=$MSYSROOT \
-  --enable-languages=c,c++$([ $GO_SUPPORT = yes ] && printf -- ',go') \
+  --enable-languages=c,c++ \
   --disable-multilib \
   --disable-bootstrap \
   --disable-libsanitizer \
@@ -602,22 +596,7 @@ if [ $CXX_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} cross-gcc (libstdc++v3) finished.\n\n"
 fi
 
-# ----- [Optional Go Support] Step 7: cross-gcc (libgo) ----- #
-if [ $GO_SUPPORT = yes ]; then
-  printf -- "\n-----\n*6) cross-gcc (libgo)\n-----\n\n" >> $MLOG
-  printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgo)...\n"
-  cd $BLDDIR/cross-gcc
-  $MAKE \
-    all-target-libgo >> $MLOG 2>&1
-
-  printf -- "${BLUEC}..${NORMALC} Installing cross-gcc (libgo)...\n"
-  $MAKE \
-    install-strip-target-libgo >> $MLOG 2>&1
-
-  printf -- "${GREENC}=>${NORMALC} cross-gcc (libgo) finished.\n\n"
-fi
-
-# ----- [Optional OpenMP Support] Step 8: cross-gcc (libgomp) ----- #
+# ----- [Optional OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "\n-----\n*7) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgomp)...\n"
@@ -631,7 +610,7 @@ if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} cross-gcc (libgomp) finished.\n\n"
 fi
 
-# ----- [Optional Linux Headers Support] Step 9: linux headers ----- #
+# ----- [Optional Linux Headers Support] Step 8: linux headers ----- #
 if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   printf -- "\n-----\n*8) linux headers\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Preparing linux headers...\n"
@@ -659,7 +638,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
 
-# ----- [Optional pkg-config Support] Step 10: pkgconf ----- #
+# ----- [Optional pkg-config Support] Step 9: pkgconf ----- #
 if [ $PKG_CONFIG_SUPPORT = yes ]; then
   :
 fi

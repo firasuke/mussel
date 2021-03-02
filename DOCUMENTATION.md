@@ -18,10 +18,9 @@
 * [4. Step 4: `musl`](#4-step-4-musl)
 * [5. Step 5: `cross-gcc` (`libgcc-shared`)](#5-step-5-cross-gcc-libgcc-shared)
 * [6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)](#6-optional-c-support-step-6-cross-gcc-libstdc-v3)
-* [7. [**Optional** Go Support] Step 7: `cross-gcc` (`libgo`)](#7-optional-go-support-step-7-cross-gcc-libgo)
-* [8. [**Optional** OpenMP Support] Step 8: `cross-gcc` (`libgomp`)](#8-optional-openmp-support-step-8-cross-gcc-libgomp)
-* [9. [**Optional** Linux Headers Support] Step 9: `linux` headers](#9-optional-linux-headers-support-step-9-linux-headers)
-* [10. [**Optional** `pkg-config` Support] Step 10: `pkgconf`](#10-optional-pkg-config-support-step-10-pkgconf)
+* [8. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)](#8-optional-openmp-support-step-8-cross-gcc-libgomp)
+* [9. [**Optional** Linux Headers Support] Step 8: `linux` headers](#9-optional-linux-headers-support-step-9-linux-headers)
+* [10. [**Optional** `pkg-config` Support] Step 9: `pkgconf`](#10-optional-pkg-config-support-step-10-pkgconf)
 
 ## i. Package URLs
 * The usage of ftpmirror for GNU packages is preferred.
@@ -159,9 +158,6 @@ big chunks of its source code written in C++.
 * LTO is not a default language, but is built by default because `--enable-lto`
 is enabled by default.
 
-* Go support (when enabled) will be available through `gccgo` and not through
-Go's default compiler.
-
 * If you want to use `zstd` as a backend for LTO, just add `--with-zstd` below
 and make sure you have `zstd` (or `zstd-devel` or whatever it's called)
 installed on your host.
@@ -210,14 +206,12 @@ recommended to ensure that this step results in a shared version of `libgcc`.
 It's a good idea to leave the support for C++ enabled as many programs require
 it (e.g. `gcc`).
 
-## 7. [**Optional** Go Support] Step 7: `cross-gcc` (`libgo`)
-
-## 8. [**Optional** OpenMP Support] Step 8: `cross-gcc` (`libgomp`)
+## 7. [**Optional** OpenMP Support] Step 8: `cross-gcc` (`libgomp`)
 If you're planning on targeting a machine with two or more cores, then it might
 be a good idea to enable support for OpenMP optimizations as well (beware as
 some packages may fail to build with OpenMP enabled e.g. `grub`).
 
-## 9. [**Optional** Linux Headers Support] Step 9: linux headers
+## 8. [**Optional** Linux Headers Support] Step 9: linux headers
 * If you're planning on targeting a Linux system then it's a good idea to include
 support for Linux kernel headers as several packages require them.
 
@@ -236,4 +230,4 @@ default as of `5.3`, it also performs additional cleaning on `*.cmd` files which
 may require manual cleaning if we're manually copying the headers (in the case
 of `rsync` not being available, which isn't recommended)).
 
-## 10. [**Optional** `pkg-config` Support] Step 10: `pkgconf`
+## 9. [**Optional** `pkg-config` Support] Step 10: `pkgconf`
