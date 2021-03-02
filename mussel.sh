@@ -650,7 +650,10 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
   CFLAGS="$CFLAGS -fcommon" \
   $SRCDIR/pkgconf/pkgconf-$pkgconf_ver/configure \
     --prefix=$MPREFIX \
-    --with-pkg-config-dir="$MSYSROOT/usr/lib/pkgconfig:$MSYSROOT/usr/share/pkgconfig" >> $MLOG 2>&1
+    --with-sysroot=$MSYSROOT \
+    --with-pkg-config-dir="$MSYSROOT/usr/lib/pkgconfig:$MSYSROOT/usr/share/pkgconfig" \
+    --with-system-libdir="$MSYSROOT/usr/lib" \
+    --with-system-includedir="$MSYSROOT/usr/include" >> $MLOG 2>&1
 
   printf -- "${BLUEC}..${NORMALC} Building pkgconf...\n"
   $MAKE >> $MLOG 2>&1
