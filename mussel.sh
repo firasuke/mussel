@@ -217,7 +217,7 @@ while [ $# -gt 0 ]; do
       rm -fr $MPREFIX
       rm -fr $MSYSROOT
       rm -fr $MLOG
-      printf -- "${GREENC}=>${NORMALC} Cleaned mussel.\n"
+      printf -- "${GREENC}=>${NORMALC} mussel cleaned.\n"
       exit
       ;;
     g | -g | --enable-go)
@@ -348,7 +348,7 @@ mpackage() {
   printf -- "${BLUEC}..${NORMALC} Unpacking $HOLDER...\n"
   pv $HOLDER | bsdtar xf - -C .
 
-  printf -- "${GREENC}=>${NORMALC} $HOLDER prepared!\n\n"
+  printf -- "${GREENC}=>${NORMALC} $HOLDER prepared.\n\n"
   printf -- "${HOLDER}: Ok\n" >> $MLOG
 }
 
@@ -378,7 +378,7 @@ mclean() {
     printf -- "${BLUEC}..${NORMALC} Cleaning $1 directory...\n"
     rm -fr "$CURDIR/$1"
     mkdir "$CURDIR/$1"
-    printf -- "${GREENC}=>${NORMALC} $1 cleaned\n"
+    printf -- "${GREENC}=>${NORMALC} $1 cleaned.\n"
     printf -- "Cleaned $1.\n" >> $MLOG
   fi
 }
