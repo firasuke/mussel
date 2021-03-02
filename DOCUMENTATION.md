@@ -231,3 +231,24 @@ may require manual cleaning if we're manually copying the headers (in the case
 of `rsync` not being available, which isn't recommended)).
 
 ## 9. [**Optional** `pkg-config` Support] Step 10: `pkgconf`
+* As of `gcc` 10, the flag `-fno-common` is now enabled by default, which in
+most cases is a good thing because it helps in performance but for `pkgconf` it
+will result in breakage which is why we're passing `-fcommon` instead.
+
+* Since we're building our own `pkgconf` it should be able to run on where the
+toolchain will be hosted, and it will be built on the same machine that we used
+to build our toolchain, this makes `--build` equal to `--host` equal to the
+machine we're building everything on. There's no need to set `--target` because
+`pkgconf` doesn't produce binaries or executables that can be run on a given
+target, hence the option is irrelevant here. You might also notice that since
+`--build` is equal to `--host` (which is mostly `x86_64-pc-linux-gnu`) then why
+aren't we using the host's `pkg-config` or `pkgconf` in the first place (since
+both ours and the host's will be compiled using the same toolchain installed on
+the host system), and we already answered that in the `README.md` file (we can
+make use of the host's `pkg-config` or `pkgconf` by setting 3-5 environment
+variables that point to where we're storing our relevant `.pc` files). The only
+advantage we have when building our own `pkg-config` or `pkgconf` is that we can
+configure these options at compile time instead of relying on environment
+variables, and that's it...
+
+* It's also a good idea to symlink `pkg-config` to `pkgconf`.

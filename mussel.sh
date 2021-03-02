@@ -404,14 +404,14 @@ printf -- '\n'
 rm -fr $MLOG
 
 # ----- Print Variables to mussel Log File ----- #
-printf -- 'mussel Log File\n\n' >> $MLOG 2>&1
-printf -- "CXX_SUPPORT: $CXX_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n\n" >> $MLOG 2>&1
-printf -- "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG 2>&1
-printf -- "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG 2>&1
-printf -- "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG 2>&1
-printf -- "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >> $MLOG 2>&1
-printf -- "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >> $MLOG 2>&1
-printf -- "\nStart Time: $(date)\n\n" >> $MLOG 2>&1
+printf -- 'mussel Log File\n\n' >> $MLOG
+printf -- "CXX_SUPPORT: $CXX_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n\n" >> $MLOG
+printf -- "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG
+printf -- "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG
+printf -- "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG
+printf -- "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >> $MLOG
+printf -- "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >> $MLOG
+printf -- "\nStart Time: $(date)\n\n" >> $MLOG
 
 # ----- Prepare Packages ----- #
 printf -- "-----\nprepare\n-----\n\n" >> $MLOG
@@ -555,10 +555,10 @@ $MAKE \
   AR=$XTARGET-ar \
   RANLIB=$XTARGET-ranlib \
   DESTDIR=$MSYSROOT \
-  install >> MLOG 2>&1
+  install >> $MLOG 2>&1
 
 rm -f $MSYSROOT/lib/ld-musl-$MARCH.so.1
-cp -a $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$MARCH.so.1
+cp -av $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$MARCH.so.1 >> $MLOG 2>&1
 
 printf -- "${GREENC}=>${NORMALC} musl finished.\n\n"
 
@@ -601,7 +601,7 @@ if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "\n-----\n*7) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgomp)...\n"
   $MAKE \
-    all-target-libgomp &>> MLOG
+    all-target-libgomp >> $MLOG 2>&1
 
   printf -- "${BLUEC}..${NORMALC} Installing cross-gcc (libgomp)...\n"
   $MAKE \
@@ -621,26 +621,47 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
 
   $MAKE \
     ARCH=$LARCH \
-    mrproper &>> MLOG
+    mrproper >> $MLOG 2>&1
 
   $MAKE \
     O=$BLDDIR/linux \
     ARCH=$LARCH \
-    headers_check &>> MLOG
+    headers_check >> $MLOG 2>&1
 
   printf -- "${BLUEC}..${NORMALC} Installing linux headers...\n"
   $MAKE \
     O=$BLDDIR/linux \
     ARCH=$LARCH \
     INSTALL_HDR_PATH=$MSYSROOT/usr \
-    headers_install &>> MLOG
+    headers_install >> $MLOG 2>&1
 
   printf -- "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
 
 # ----- [Optional pkg-config Support] Step 9: pkgconf ----- #
 if [ $PKG_CONFIG_SUPPORT = yes ]; then
-  :
+  printf -- "\n-----\n*9) pkgconf\n-----\n\n" >> $MLOG
+  printf -- "${BLUEC}..${NORMALC} Preparing pkgconf...\n"
+  cd $BLDDIR
+  mkdir pkgconf
+  cd pkgconf
+
+  printf -- "${BLUEC}..${NORMALC} Configuring pkgconf...\n"
+  CFLAGS="$CFLAGS -fcommon" \
+  $SRCDIR/pkgconf/pkgconf-$pkgconf_ver/configure \
+    --prefix=$MPREFIX \
+    --with-pkg-config-dir="$MSYSROOT/usr/lib/pkgconfig:$MSYSROOT/usr/share/pkgconfig" >> $MLOG 2>&1
+
+  printf -- "${BLUEC}..${NORMALC} Building pkgconf...\n"
+  $MAKE >> $MLOG 2>&1
+
+  printf -- "${BLUEC}..${NORMALC} Installing pkgconf...\n"
+  $MAKE \
+    install-strip >> $MLOG 2>&1
+
+  ln -sv pkgconf $MPREFIX/bin/pkg-config >> $MLOG 2>&1
+
+  printf -- "${GREENC}=>${NORMALC} pkgconf finished.\n\n"
 fi
 
 printf -- "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
