@@ -18,9 +18,9 @@
 * [4. Step 4: `musl`](#4-step-4-musl)
 * [5. Step 5: `cross-gcc` (`libgcc-shared`)](#5-step-5-cross-gcc-libgcc-shared)
 * [6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)](#6-optional-c-support-step-6-cross-gcc-libstdc-v3)
-* [8. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)](#8-optional-openmp-support-step-8-cross-gcc-libgomp)
-* [9. [**Optional** Linux Headers Support] Step 8: `linux` headers](#9-optional-linux-headers-support-step-9-linux-headers)
-* [10. [**Optional** `pkg-config` Support] Step 9: `pkgconf`](#10-optional-pkg-config-support-step-10-pkgconf)
+* [7. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)](#7-optional-openmp-support-step-8-cross-gcc-libgomp)
+* [8. [**Optional** Linux Headers Support] Step 8: `linux` headers](#8-optional-linux-headers-support-step-9-linux-headers)
+* [9. [**Optional** `pkg-config` Support] Step 9: `pkgconf`](#9-optional-pkg-config-support-step-10-pkgconf)
 
 ## i. Package URLs
 * The usage of ftpmirror for GNU packages is preferred.
