@@ -84,7 +84,7 @@ CXXFLAGS=-O2
 # ----- mussel Flags ----- #
 while [ $# -gt 0 ]; do
   case $1 in
-    aarch64 | armv8-a | arm64)
+    aarch64 | arm64 | armv8-a)
       XARCH=aarch64
       LARCH=arm64
       MARCH=$XARCH
@@ -204,7 +204,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    riscv | riscv64 | rvimafdc)
+    riscv | riscv64 | rv64imafdc)
       XARCH=riscv64
       LARCH=riscv
       MARCH=$XARCH
