@@ -84,19 +84,19 @@ CXXFLAGS=-O2
 # ----- mussel Flags ----- #
 while [ $# -gt 0 ]; do
   case $1 in
-    aarch64)
-      XARCH=$1
+    aarch64 | armv8-a | arm64)
+      XARCH=aarch64
       LARCH=arm64
-      MARCH=$1
+      MARCH=$XARCH
       XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
-      XTARGET=$1-linux-musl
+      XTARGET=$XARCH-linux-musl
       ;;
-    armv6zk)
-      XARCH=$1
+    armv6zk | arm | bcm2835)
+      XARCH=armv6zk
       LARCH=arm
       MARCH=$LARCH
-      XGCCARGS="--with-arch=$1 --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
-      XTARGET=$LARCH-linux-musleabihf
+      XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
+      XTARGET=$XARCH-linux-musleabihf
       ;;
     armv7)
       XARCH=$1
@@ -112,103 +112,103 @@ while [ $# -gt 0 ]; do
       XGCCARGS="--with-arch=$1 --with-tune=generic"
       XTARGET=$1-linux-musl
       ;;
-    i686)
-      XARCH=$1
+    i686 | i386 | x86)
+      XARCH=i686
       LARCH=i386
       MARCH=$LARCH
-      XGCCARGS="--with-arch=$1 --with-tune=generic"
-      XTARGET=$1-linux-musl
+      XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XTARGET=$XARCH-linux-musl
       ;;
-    microblaze)
-      XARCH=$1
-      LARCH=$1
-      MARCH=$1
+    microblaze | mblaze | microblazebe | microblazeeb)
+      XARCH=microblaze
+      LARCH=$XARCH
+      MARCH=$XARCH
       XGCCARGS="--with-endian=big"
-      XTARGET=$1-linux-musl
+      XTARGET=$XARCH-linux-musl
       ;;
-    microblazeel)
-      XARCH=$1
+    microblazeel | microblazele)
+      XARCH=microblazeel
       LARCH=microblaze
       MARCH=$LARCH
       XGCCARGS="--with-endian=little"
-      XTARGET=$1-linux-musl
+      XTARGET=$XARCH-linux-musl
       ;;
-    mips64)
-      XARCH=$1
+    mips64 | mips64r2 | mips | mips64be | mips64eb)
+      XARCH=mips64
       LARCH=mips
-      MARCH=$1
-      XGCCARGS="--with-endian=big --with-arch=$1 --with-abi=64 --with-float=hard"
-      XTARGET=$1-linux-musl
+      MARCH=$XARCH
+      XGCCARGS="--with-endian=big --with-arch=${XARCH}r2 --with-abi=64 --with-float=hard"
+      XTARGET=$XARCH-linux-musl
       ;;
-    mips64el)
-      XARCH=$1
-      LARCH=mips
-      MARCH=${LARCH}64
-      XGCCARGS="--with-endian=little --with-arch=$MARCH --with-abi=64 --with-float=hard"
-      XTARGET=$1-linux-musl
-      ;;
-    mips64r6)
-      XARCH=$1
+    mips64el | mips64le | mips64r2el | mips64elr2)
+      XARCH=mips64el
       LARCH=mips
       MARCH=${LARCH}64
-      XGCCARGS="--with-endian=big --with-arch=$XARCH --with-abi=64 --with-float=hard"
-      XTARGET=${LARCH}isa64r6-linux-musl
+      XGCCARGS="--with-endian=little --with-arch=${MARCH}r2 --with-abi=64 --with-float=hard"
+      XTARGET=$XARCH-linux-musl
       ;;
-    mips64r6el)
-      XARCH=$1
+    mipsisa64r6 | mips64r6)
+      XARCH=mipsisa64r6
       LARCH=mips
       MARCH=${LARCH}64
-      XGCCARGS="--with-endian=little --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard"
-      XTARGET=${LARCH}isa64r6el-linux-musl
+      XGCCARGS="--with-endian=big --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
+      XTARGET=$XARCH-linux-musl
       ;;
-    or1k)
-      XARCH=$1
+    mipsisa64r6el | mips64r6el | mips64r6le)
+      XARCH=mipsisa64r6el
+      LARCH=mips
+      MARCH=${LARCH}64
+      XGCCARGS="--with-endian=little --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
+      XTARGET=$XARCH-linux-musl
+      ;;
+    or1k | openrisc | or1ksim)
+      XARCH=or1k
       LARCH=openrisc
-      MARCH=$1
+      MARCH=$XARCH
       XGCCARGS=""
-      XTARGET=$1-linux-musl
+      XTARGET=$XARCH-linux-musl
       ;;
-    powerpc)
-      XARCH=$1
-      LARCH=$1
-      MARCH=$1
-      XGCCARGS="--with-cpu=$1 --enable-secureplt --without-long-double-128"
-      XTARGET=$1-linux-musl
+    powerpc | pmac32 | ppc)
+      XARCH=powerpc
+      LARCH=$XARCH
+      MARCH=$XARCH
+      XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128"
+      XTARGET=$XARCH-linux-musl
       ;;
-    powerpc64)
-      XARCH=$1
+    powerpc64 | g5 | ppc64 | powerpc64be | powerpc64eb | ppc64be | ppc64eb)
+      XARCH=powerpc64
       LARCH=powerpc
-      MARCH=$1
-      XGCCARGS="--with-cpu=$1 --with-abi=elfv2"
-      XTARGET=$1-linux-musl
+      MARCH=$XARCH
+      XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+      XTARGET=$XARCH-linux-musl
       ;;
-    powerpc64le)
-      XARCH=$1
+    powerpc64le | powernv | ppc64le)
+      XARCH=powerpc64le
       LARCH=powerpc
       MARCH=${LARCH}64
-      XGCCARGS="--with-cpu=$1 --with-abi=elfv2"
-      XTARGET=$1-linux-musl
+      XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+      XTARGET=$XARCH-linux-musl
       ;;
-    riscv64)
-      XARCH=$1
+    riscv64 | rvimafdc | riscv)
+      XARCH=riscv64
       LARCH=riscv
-      MARCH=$1
+      MARCH=$XARCH
       XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
-      XTARGET=$1-linux-musl
+      XTARGET=$XARCH-linux-musl
       ;;
-    s390x)
-      XARCH=$1
+    s390x | z196 | z15 | s390)
+      XARCH=s390x
       LARCH=s390
-      MARCH=$1
-      XGCCARGS="--with-arch=z196 --with-tune=zEC12 --with-long-double-128"
-      XTARGET=$1-linux-musl
+      MARCH=$XARCH
+      XGCCARGS="--with-arch=z196 --with-tune=z15 --with-long-double-128"
+      XTARGET=$XARCH-linux-musl
       ;;
-    x86_64)
-      XARCH=$1
-      LARCH=$1
-      MARCH=$1
-      XGCCARGS="--with-arch=x86-64 --with-tune=generic"
-      XTARGET=$1-linux-musl
+    x86-64 | x86_64)
+      XARCH=x86-64
+      LARCH=x86_64
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XTARGET=$LARCH-linux-musl
       ;;
     c | -c | --clean)
       printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
