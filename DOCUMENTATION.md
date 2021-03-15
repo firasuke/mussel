@@ -115,9 +115,9 @@ variables are, and instead of assuming, the system can tell us by printing each
 of them to the log file.
 
 ## viii. Patch Packages
-No packages require patching (`gcc` may require patching when targeting 64-bit
-`mips*` architectures, if that happens consider using the [following patch from
-glaucus](https://raw.githubusercontent.com/glaucuslinux/cerata/master/gcc/patches/glaucus/0001-pure64-for-mips64.patch)).
+Currently only `gcc` is being patched to provide pure 64-bit support for 64-bit
+architectures (this means that `/lib/` will be used instead of `/lib64/`, and
+`/lib32/` will be used instead of `/lib/`).
 
 ## 1. Step 1: `musl` headers
 * We only want the headers to configure `gcc`... Also with `musl` installs, you
