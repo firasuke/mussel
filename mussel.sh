@@ -89,6 +89,7 @@ while [ $# -gt 0 ]; do
       LARCH=arm64
       MARCH=$XARCH
       XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
+      XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
     armv6zk | arm | bcm2835)
@@ -96,6 +97,7 @@ while [ $# -gt 0 ]; do
       LARCH=arm
       MARCH=$LARCH
       XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
+      XPURE64=""
       XTARGET=$XARCH-linux-musleabihf
       ;;
     armv7)
@@ -103,6 +105,7 @@ while [ $# -gt 0 ]; do
       LARCH=arm
       MARCH=$LARCH
       XGCCARGS="--with-arch=${LARCH}v7-a --with-fpu=vfpv3 --with-float=hard"
+      XPURE64=""
       XTARGET=$LARCH-linux-musleabihf
       ;;
     i586)
@@ -110,6 +113,7 @@ while [ $# -gt 0 ]; do
       LARCH=i386
       MARCH=$LARCH
       XGCCARGS="--with-arch=$1 --with-tune=generic"
+      XPURE64=""
       XTARGET=$1-linux-musl
       ;;
     i686 | i386 | x86)
@@ -117,6 +121,7 @@ while [ $# -gt 0 ]; do
       LARCH=i386
       MARCH=$LARCH
       XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
     microblaze | mblaze | microblazebe | microblazeeb)
@@ -124,6 +129,7 @@ while [ $# -gt 0 ]; do
       LARCH=$XARCH
       MARCH=$XARCH
       XGCCARGS="--with-endian=big"
+      XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
     microblazeel | microblazele)
@@ -131,6 +137,7 @@ while [ $# -gt 0 ]; do
       LARCH=microblaze
       MARCH=$LARCH
       XGCCARGS="--with-endian=little"
+      XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
     mips64 | mips64r2 | mips | mips64be | mips64eb)
@@ -138,13 +145,15 @@ while [ $# -gt 0 ]; do
       LARCH=mips
       MARCH=$XARCH
       XGCCARGS="--with-endian=big --with-arch=${XARCH}r2 --with-abi=64 --with-float=hard"
+      XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    mips64el | mips64le | mips64r2el | mips64elr2)
+    loongson | loongson3 | mips64el | mips64le | mips64r2el | mips64elr2)
       XARCH=mips64el
       LARCH=mips
       MARCH=${LARCH}64
       XGCCARGS="--with-endian=little --with-arch=${MARCH}r2 --with-abi=64 --with-float=hard"
+      XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
     mipsisa64r6 | mips64r6)
@@ -152,6 +161,7 @@ while [ $# -gt 0 ]; do
       LARCH=mips
       MARCH=${LARCH}64
       XGCCARGS="--with-endian=big --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
+      XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
     mipsisa64r6el | mips64r6el | mips64r6le)
@@ -159,6 +169,7 @@ while [ $# -gt 0 ]; do
       LARCH=mips
       MARCH=${LARCH}64
       XGCCARGS="--with-endian=little --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
+      XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
     or1k | openrisc | or1ksim)
@@ -166,6 +177,7 @@ while [ $# -gt 0 ]; do
       LARCH=openrisc
       MARCH=$XARCH
       XGCCARGS=""
+      XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
     powerpc | pmac32 | ppc)
@@ -173,6 +185,7 @@ while [ $# -gt 0 ]; do
       LARCH=$XARCH
       MARCH=$XARCH
       XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128"
+      XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
     powerpc64 | g5 | ppc64 | powerpc64be | powerpc64eb | ppc64be | ppc64eb)
@@ -180,6 +193,7 @@ while [ $# -gt 0 ]; do
       LARCH=powerpc
       MARCH=$XARCH
       XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+      XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
     powerpc64le | powernv | ppc64le)
@@ -187,6 +201,7 @@ while [ $# -gt 0 ]; do
       LARCH=powerpc
       MARCH=${LARCH}64
       XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+      XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
     riscv64 | rvimafdc | riscv)
@@ -194,6 +209,7 @@ while [ $# -gt 0 ]; do
       LARCH=riscv
       MARCH=$XARCH
       XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
+      XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
     s390x | z196 | z15 | s390)
@@ -201,6 +217,7 @@ while [ $# -gt 0 ]; do
       LARCH=s390
       MARCH=$XARCH
       XGCCARGS="--with-arch=z196 --with-tune=z15 --with-long-double-128"
+      XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
     x86-64 | x86_64)
@@ -208,6 +225,7 @@ while [ $# -gt 0 ]; do
       LARCH=x86_64
       MARCH=$LARCH
       XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XPURE64=$XARCH
       XTARGET=$LARCH-linux-musl
       ;;
     c | -c | --clean)
@@ -429,6 +447,10 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 [ $PKG_CONFIG_SUPPORT = yes ] && mpackage pkgconf "$pkgconf_url" $pkgconf_sum $pkgconf_ver
 
 # ----- Patch Packages ----- #
+if [ ! -z $XPURE64 ]; then
+  printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
+  mpatch 0 gcc "$gcc_ver" 0001-pure64-for-$XARCH glaucus
+fi
 
 # ----- Clean Directories ----- #
 printf -- "\n-----\nclean\n-----\n\n" >> $MLOG
