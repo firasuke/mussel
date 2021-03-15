@@ -92,7 +92,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    armv6zk | arm | bcm2835)
+    arm | armv6zk | bcm2835)
       XARCH=armv6zk
       LARCH=arm
       MARCH=$LARCH
@@ -116,7 +116,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$1-linux-musl
       ;;
-    i686 | i386 | x86)
+    i386 | i686 | x86)
       XARCH=i686
       LARCH=i386
       MARCH=$LARCH
@@ -124,7 +124,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
-    microblaze | mblaze | microblazebe | microblazeeb)
+    mblaze | microblaze | microblazebe | microblazeeb)
       XARCH=microblaze
       LARCH=$XARCH
       MARCH=$XARCH
@@ -140,7 +140,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
-    mips64 | mips64r2 | mips | mips64be | mips64eb)
+    mips | mips64 | mips64be | mips64eb | mips64r2)
       XARCH=mips64
       LARCH=mips
       MARCH=$XARCH
@@ -148,7 +148,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    loongson | loongson3 | mips64el | mips64le | mips64r2el | mips64elr2)
+    loongson | loongson3 | mips64el | mips64le | mips64elr2 | mips64r2el)
       XARCH=mips64el
       LARCH=mips
       MARCH=${LARCH}64
@@ -156,7 +156,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    mipsisa64r6 | mips64r6)
+    mips64r6 | mipsisa64r6)
       XARCH=mipsisa64r6
       LARCH=mips
       MARCH=${LARCH}64
@@ -164,7 +164,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    mipsisa64r6el | mips64r6el | mips64r6le)
+    mips64r6el | mips64r6le | mipsisa64r6el)
       XARCH=mipsisa64r6el
       LARCH=mips
       MARCH=${LARCH}64
@@ -172,7 +172,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    or1k | openrisc | or1ksim)
+    openrisc | or1k | or1ksim)
       XARCH=or1k
       LARCH=openrisc
       MARCH=$XARCH
@@ -180,7 +180,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
-    powerpc | pmac32 | ppc)
+    pmac32 | powerpc | ppc)
       XARCH=powerpc
       LARCH=$XARCH
       MARCH=$XARCH
@@ -188,7 +188,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
-    powerpc64 | g5 | ppc64 | powerpc64be | powerpc64eb | ppc64be | ppc64eb)
+    g5 | powerpc64 | powerpc64be | powerpc64eb | ppc64 | ppc64be | ppc64eb)
       XARCH=powerpc64
       LARCH=powerpc
       MARCH=$XARCH
@@ -196,7 +196,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    powerpc64le | powernv | ppc64le)
+    powernv | powerpc64le | ppc64le)
       XARCH=powerpc64le
       LARCH=powerpc
       MARCH=${LARCH}64
@@ -204,7 +204,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    riscv64 | rvimafdc | riscv)
+    riscv | riscv64 | rvimafdc)
       XARCH=riscv64
       LARCH=riscv
       MARCH=$XARCH
@@ -212,7 +212,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    s390x | z196 | z15 | s390)
+    s390 | s390x | z15 | z196)
       XARCH=s390x
       LARCH=s390
       MARCH=$XARCH
