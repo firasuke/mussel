@@ -21,9 +21,6 @@ ld --version | sed 1q | cut -d' ' -f4-
 printf 'bison:     '
 bison --version | sed 1q | cut -d' ' -f4
 
-printf 'tar:       '
-tar --version | sed 1q | cut -d' ' -f4
-
 printf 'bzip2:     '
 bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8 | sed s/,//
 
@@ -83,6 +80,9 @@ rsync --version | sed 1q | cut -d' ' -f4
 
 printf 'sed:       '
 sed --version | sed 1q | cut -d' ' -f4
+
+printf 'tar:       '
+tar --version | sed 1q | cut -d' ' -f4
 
 printf 'texinfo:   '
 makeinfo --version | sed 1q | cut -d' ' -f4
