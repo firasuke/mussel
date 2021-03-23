@@ -72,9 +72,6 @@ make --version | sed 1q | cut -d' ' -f3
 printf 'perl:      '
 perl -V:version | cut -d"'" -f2
 
-printf 'pv:        '
-pv --version | sed 1q | cut -d' ' -f2
-
 printf 'rsync:     '
 rsync --version | sed 1q | cut -d' ' -f4
 
