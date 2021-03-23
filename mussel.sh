@@ -359,7 +359,7 @@ mpackage() {
 
   rm -fr $1-$4
   printf -- "${BLUEC}..${NORMALC} Unpacking $HOLDER...\n"
-  pv $HOLDER | bsdtar xf - -C .
+  pv $HOLDER | tar xf - -C .
 
   printf -- "${GREENC}=>${NORMALC} $HOLDER prepared.\n\n"
   printf -- "${HOLDER}: Ok\n" >> $MLOG
