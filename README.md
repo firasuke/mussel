@@ -80,7 +80,7 @@ Pi Zero)
 
 ## Packages
 1. `binutils`: 2.36.1
-2. `gcc`: 10.2.0
+2. `gcc`: 11.1.0
 3. `gmp`: 6.2.1
 4. `isl`: 0.23
 5. `linux`: 5.11.2 (**Optional** Linux Headers Support) (**Disabled** by default)

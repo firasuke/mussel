@@ -30,7 +30,7 @@ NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
 binutils_ver=2.36.1
-gcc_ver=10.2.0
+gcc_ver=11.1.0
 gmp_ver=6.2.1
 isl_ver=0.23
 linux_ver=5.11.2
@@ -52,7 +52,7 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 # ----- Package Checksums (sha512sum) ----- #
 binutils_sum=4c28e2dbc5b5cc99ab1265c8569a63925cf99109296deaa602b9d7d1123dcc1011ffbffb7bb6bb0e5e812176b43153f5a576cc4281e5f2b06e4a1d9db146b609
-gcc_sum=42ae38928bd2e8183af445da34220964eb690b675b1892bbeb7cd5bb62be499011ec9a93397dba5e2fb681afadfc6f2767d03b9035b44ba9be807187ae6dc65e
+gcc_sum=fd6bba0f67ff48069d03073d1a9b5e896383b1cfc9dde008e868e60a9ec5014a837d56af0ecbf467b3fb9b37ec74a676e819a18b44393a0a3c4280175b5d7ad8
 gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
 isl_sum=da4e7cbd5045d074581d4e1c212acb074a8b2345a96515151b0543cbe2601db6ac2bbd93f9ad6643e98f845b68f438f3882c05b8b90969ae542802a3c78fea20
 linux_sum=16090ec6dea7a8c417ca7483b296902c9b55b423482ad8a881dffcaae76411806bc9502373efd6a51b0acefec3a44c19c5a7d42c5b76c1321183a4798a5959d3
@@ -367,17 +367,6 @@ mpackage() {
 
 # ----- mpatch(): Patching ----- #
 mpatch() {
-  cd $PCHDIR
-  [ ! -d "$2" ] && mkdir "$2"
-  cd "$2"
-
-  if [ ! -f "$4".patch ]; then
-    printf -- "${BLUEC}..${NORMALC} Fetching $2 ${4}.patch from $5...\n"
-    wget -q --show-progress https://raw.githubusercontent.com/firasuke/mussel/master/patches/$2/$5/${4}.patch
-  else
-    printf -- "${YELLOWC}!.${NORMALC} ${4}.patch already exists, skipping...\n"
-  fi
-
   printf -- "${BLUEC}..${NORMALC} Applying ${4}.patch from $5 for ${2}...\n"
 
   cd $SRCDIR/$2/$2-$3
