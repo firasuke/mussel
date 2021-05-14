@@ -525,7 +525,7 @@ mkdir -p $MSYSROOT/usr/include
 $MAKE \
   all-gcc >> $MLOG 2>&1
 
-printf -- "${BLUEC}..${NORMALC} Installing cross-gcc (compiler)...\n"
+printf -- "${BLUEC}..${NORMALC} Installing cross-gcc (compiler)...\n\n"
 $MAKE \
   install-strip-gcc >> $MLOG 2>&1
 
