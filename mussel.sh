@@ -370,7 +370,7 @@ mpatch() {
   printf -- "${BLUEC}..${NORMALC} Applying ${4}.patch from $5 for ${2}...\n"
 
   cd $SRCDIR/$2/$2-$3
-  patch -p$1 -i $PCHDIR/$2/${4}.patch >> $MLOG 2>&1
+  patch -p$1 -i $PCHDIR/$2/$5/${4}.patch >> $MLOG 2>&1
   printf -- "${GREENC}=>${NORMALC} $2 patched with ${4}!\n"
 }
 
@@ -440,6 +440,8 @@ if [ ! -z $XPURE64 ]; then
   printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
   mpatch 0 gcc "$gcc_ver" 0001-pure64-for-$XARCH glaucus
 fi
+
+printf -- '\n'
 
 # ----- Clean Directories ----- #
 printf -- "\n-----\nclean\n-----\n\n" >> $MLOG
