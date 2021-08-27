@@ -30,14 +30,14 @@ NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
 binutils_ver=2.37
-gcc_ver=11.1.0
+gcc_ver=11.2.0
 gmp_ver=6.2.1
 isl_ver=0.24
 linux_ver=5.13.1
 mpc_ver=1.2.1
 mpfr_ver=4.1.0
 musl_ver=1.2.2
-pkgconf_ver=1.7.4
+pkgconf_ver=1.8.0
 
 # ----- Package URLs ----- #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
@@ -52,14 +52,14 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 # ----- Package Checksums (sha512sum) ----- #
 binutils_sum=eca2422fcb1a33bf05f66194faebd235b74872aa39a1865fc0b1a98d00c1061449380d51753e8312134aed885f06631f2917e164e239a5c52861d60ca730d64d
-gcc_sum=fd6bba0f67ff48069d03073d1a9b5e896383b1cfc9dde008e868e60a9ec5014a837d56af0ecbf467b3fb9b37ec74a676e819a18b44393a0a3c4280175b5d7ad8
+gcc_sum=d53a0a966230895c54f01aea38696f818817b505f1e2bfa65e508753fcd01b2aedb4a61434f41f3a2ddbbd9f41384b96153c684ded3f0fa97c82758d9de5c7cf
 gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
 isl_sum=ff6bdcff839e1cd473f2a0c1e4dd4a3612ec6fee4544ccbc62b530a7248db2cf93b4b99bf493a86ddf2aba00e768927265d5d411f92061ea85fd7929073428e8
 linux_sum=ca54c415f368160d0c5c22e1a98e835eb9c5ebbdce2a1f9c49b916b1fb2562a3813a56d03bbf36f20e659d4371a8b61555a21c1d03cd298a802f05540c71905d
 mpc_sum=3279f813ab37f47fdcc800e4ac5f306417d07f539593ca715876e43e04896e1d5bceccfb288ef2908a3f24b760747d0dbd0392a24b9b341bc3e12082e5c836ee
 mpfr_sum=1bd1c349741a6529dfa53af4f0da8d49254b164ece8a46928cdb13a99460285622d57fe6f68cef19c6727b3f9daa25ddb3d7d65c201c8f387e421c7f7bee6273
 musl_sum=5344b581bd6463d71af8c13e91792fa51f25a96a1ecbea81e42664b63d90b325aeb421dfbc8c22e187397ca08e84d9296a0c0c299ba04fa2b751d6864914bd82
-pkgconf_sum=92c080684898b42824a1f1a7e3ce8a600896fc9c20fcf263f032b856fa4c7139607f87ba44d18ed358b8c5f4f04477708800d20a4e10f96e4268a55682f7f0c1
+pkgconf_sum=58204006408ad5ce91222ed3c93c2e0b61c04fa83c0a8ad337b747b583744578dbebd4ad5ccbc577689637caa1c5dc246b7795ac46e39c6666b1aa78199b7c28
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
