@@ -73,7 +73,7 @@ MSYSROOT="$CURDIR/sysroot"
 # ----- mussel Log File ---- #
 MLOG="$CURDIR/log.txt"
 
-# ----- PATH ----- # 
+# ----- PATH ----- #
 #
 PATH=$MPREFIX/bin:/usr/bin:/bin
 
@@ -229,7 +229,7 @@ while [ $# -gt 0 ]; do
       XTARGET=$LARCH-linux-musl
       ;;
     c | -c | --clean)
-      printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n" 
+      printf -- "${BLUEC}..${NORMALC} Cleaning mussel...\n"
       rm -fr $BLDDIR
       rm -fr $MPREFIX
       rm -fr $MSYSROOT
@@ -463,7 +463,7 @@ $MAKE \
   ARCH=$MARCH \
   prefix=/usr \
   DESTDIR=$MSYSROOT \
-  install-headers >> $MLOG 2>&1 
+  install-headers >> $MLOG 2>&1
 
 printf -- "${GREENC}=>${NORMALC} musl headers finished.\n\n"
 
@@ -676,6 +676,8 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
     install-strip >> $MLOG 2>&1
 
   ln -sv pkgconf $MPREFIX/bin/pkg-config >> $MLOG 2>&1
+  ln -sv pkgconf $MPREFIX/bin/${XARCH}-linux-musl-pkgconf >> $MLOG 2>&1
+  ln -sv pkgconf $MPREFIX/bin/${XARCH}-linux-musl-pkg-config >> $MLOG 2>&1
 
   printf -- "${GREENC}=>${NORMALC} pkgconf finished.\n\n"
 fi
