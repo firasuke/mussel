@@ -677,7 +677,7 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
 
   ln -sv pkgconf $MPREFIX/bin/pkg-config >> $MLOG 2>&1
   # Different architectures require different names
-  if [ $XARCH == "x86-64" ]; then
+  if [ "$XARCH" = "x86-64" ]; then
     ln -sv pkgconf $MPREFIX/bin/${LARCH}-linux-musl-pkgconf >> $MLOG 2>&1
     ln -sv pkgconf $MPREFIX/bin/${LARCH}-linux-musl-pkg-config >> $MLOG 2>&1
   else
