@@ -676,8 +676,14 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
     install-strip >> $MLOG 2>&1
 
   ln -sv pkgconf $MPREFIX/bin/pkg-config >> $MLOG 2>&1
-  ln -sv pkgconf $MPREFIX/bin/${XARCH}-linux-musl-pkgconf >> $MLOG 2>&1
-  ln -sv pkgconf $MPREFIX/bin/${XARCH}-linux-musl-pkg-config >> $MLOG 2>&1
+  # Different architectures require different names
+  if [ $XARCH == "x86-64" ]; then
+    ln -sv pkgconf $MPREFIX/bin/${LARCH}-linux-musl-pkgconf >> $MLOG 2>&1
+    ln -sv pkgconf $MPREFIX/bin/${LARCH}-linux-musl-pkg-config >> $MLOG 2>&1
+  else
+    ln -sv pkgconf $MPREFIX/bin/${XARCH}-linux-musl-pkgconf >> $MLOG 2>&1
+    ln -sv pkgconf $MPREFIX/bin/${XARCH}-linux-musl-pkg-config >> $MLOG 2>&1
+  fi
 
   printf -- "${GREENC}=>${NORMALC} pkgconf finished.\n\n"
 fi
