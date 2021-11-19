@@ -58,15 +58,15 @@ build `musl` for these architectures.
     * microblazeel
     * mips64
     * mips64el
-    * mips64r6
-    * mips64r6el
+    * mipsisa64r6
+    * mipsisa64r6el
     * or1k
     * powerpc
     * powerpc64
     * powerpc64le
     * riscv64
     * s390x
-    * x86_64
+    * x86-64
 
 ## iv. PATH
 We start by using the tools available on the host system. We then switch to ours

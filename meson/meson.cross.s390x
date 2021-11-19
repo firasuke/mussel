@@ -1,0 +1,22 @@
+[binaries]
+ar = 's390x-linux-musl-gcc-ar'
+as = 's390x-linux-musl-as'
+c = 's390x-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 's390x-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 's390x-linux-musl-ld.bfd'
+nm = 's390x-linux-musl-gcc-nm'
+objcopy = 's390x-linux-musl-objcopy'
+objdump = 's390x-linux-musl-objdump'
+ranlib = 's390x-linux-musl-gcc-ranlib'
+readelf = 's390x-linux-musl-readelf'
+size = 's390x-linux-musl-size'
+strings = 's390x-linux-musl-strings'
+strip = 's390x-linux-musl-strip'
+
+[host_machine]
+cpu = 's390x'
+cpu_family = 's390x'
+system = 'linux'
+endian = 'big'

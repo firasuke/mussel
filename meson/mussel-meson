@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+# Copyright (c) 2018-2021, Firas Khalil Khana
+# Distributed under the terms of the ISC License
+
+exec meson setup \
+  --prefix /usr \
+  --libexecdir lib \
+  --sbindir bin \
+  --buildtype release \
+  --optimization 3 \
+  --stdsplit \
+  --strip \
+  --wrap-mode nodownload \
+  -Db_lto=true \
+  --cross-file meson.cross.$XARCH \
+  $@

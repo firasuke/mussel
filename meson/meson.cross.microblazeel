@@ -1,0 +1,22 @@
+[binaries]
+ar = 'microblazeel-linux-musl-gcc-ar'
+as = 'microblazeel-linux-musl-as'
+c = 'microblazeel-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'microblazeel-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'microblazeel-linux-musl-ld.bfd'
+nm = 'microblazeel-linux-musl-gcc-nm'
+objcopy = 'microblazeel-linux-musl-objcopy'
+objdump = 'microblazeel-linux-musl-objdump'
+ranlib = 'microblazeel-linux-musl-gcc-ranlib'
+readelf = 'microblazeel-linux-musl-readelf'
+size = 'microblazeel-linux-musl-size'
+strings = 'microblazeel-linux-musl-strings'
+strip = 'microblazeel-linux-musl-strip'
+
+[host_machine]
+cpu = 'microblaze'
+cpu_family = 'microblaze'
+system = 'linux'
+endian = 'little'

@@ -1,0 +1,22 @@
+[binaries]
+ar = 'i686-linux-musl-gcc-ar'
+as = 'i686-linux-musl-as'
+c = 'i686-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'i686-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'i686-linux-musl-ld.bfd'
+nm = 'i686-linux-musl-gcc-nm'
+objcopy = 'i686-linux-musl-objcopy'
+objdump = 'i686-linux-musl-objdump'
+ranlib = 'i686-linux-musl-gcc-ranlib'
+readelf = 'i686-linux-musl-readelf'
+size = 'i686-linux-musl-size'
+strings = 'i686-linux-musl-strings'
+strip = 'i686-linux-musl-strip'
+
+[host_machine]
+cpu = 'i686'
+cpu_family = 'x86'
+system = 'linux'
+endian = 'little'

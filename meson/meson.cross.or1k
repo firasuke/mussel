@@ -1,0 +1,22 @@
+[binaries]
+ar = 'or1k-linux-musl-gcc-ar'
+as = 'or1k-linux-musl-as'
+c = 'or1k-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'or1k-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'or1k-linux-musl-ld.bfd'
+nm = 'or1k-linux-musl-gcc-nm'
+objcopy = 'or1k-linux-musl-objcopy'
+objdump = 'or1k-linux-musl-objdump'
+ranlib = 'or1k-linux-musl-gcc-ranlib'
+readelf = 'or1k-linux-musl-readelf'
+size = 'or1k-linux-musl-size'
+strings = 'or1k-linux-musl-strings'
+strip = 'or1k-linux-musl-strip'
+
+[host_machine]
+cpu = 'openrisc'
+cpu_family = 'openrisc'
+system = 'linux'
+endian = 'big'

@@ -1,0 +1,22 @@
+[binaries]
+ar = 'powerpc64le-linux-musl-gcc-ar'
+as = 'powerpc64le-linux-musl-as'
+c = 'powerpc64le-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'powerpc64le-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'powerpc64le-linux-musl-ld.bfd'
+nm = 'powerpc64le-linux-musl-gcc-nm'
+objcopy = 'powerpc64le-linux-musl-objcopy'
+objdump = 'powerpc64le-linux-musl-objdump'
+ranlib = 'powerpc64le-linux-musl-gcc-ranlib'
+readelf = 'powerpc64le-linux-musl-readelf'
+size = 'powerpc64le-linux-musl-size'
+strings = 'powerpc64le-linux-musl-strings'
+strip = 'powerpc64le-linux-musl-strip'
+
+[host_machine]
+cpu = 'ppc64le'
+cpu_family = 'ppc64'
+system = 'linux'
+endian = 'little'

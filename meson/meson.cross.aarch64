@@ -1,0 +1,22 @@
+[binaries]
+ar = 'aarch64-linux-musl-gcc-ar'
+as = 'aarch64-linux-musl-as'
+c = 'aarch64-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'aarch64-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'aarch64-linux-musl-ld.bfd'
+nm = 'aarch64-linux-musl-gcc-nm'
+objcopy = 'aarch64-linux-musl-objcopy'
+objdump = 'aarch64-linux-musl-objdump'
+ranlib = 'aarch64-linux-musl-gcc-ranlib'
+readelf = 'aarch64-linux-musl-readelf'
+size = 'aarch64-linux-musl-size'
+strings = 'aarch64-linux-musl-strings'
+strip = 'aarch64-linux-musl-strip'
+
+[host_machine]
+cpu = 'aarch64'
+cpu_family = 'aarch64'
+system = 'linux'
+endian = 'little'

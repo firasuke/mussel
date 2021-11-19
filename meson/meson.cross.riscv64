@@ -1,0 +1,22 @@
+[binaries]
+ar = 'riscv64-linux-musl-gcc-ar'
+as = 'riscv64-linux-musl-as'
+c = 'riscv64-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'riscv64-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'riscv64-linux-musl-ld.bfd'
+nm = 'riscv64-linux-musl-gcc-nm'
+objcopy = 'riscv64-linux-musl-objcopy'
+objdump = 'riscv64-linux-musl-objdump'
+ranlib = 'riscv64-linux-musl-gcc-ranlib'
+readelf = 'riscv64-linux-musl-readelf'
+size = 'riscv64-linux-musl-size'
+strings = 'riscv64-linux-musl-strings'
+strip = 'riscv64-linux-musl-strip'
+
+[host_machine]
+cpu = 'riscv64'
+cpu_family = 'riscv64'
+system = 'linux'
+endian = 'little'

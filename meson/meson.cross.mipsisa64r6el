@@ -1,0 +1,22 @@
+[binaries]
+ar = 'mipsisa64r6el-linux-musl-gcc-ar'
+as = 'mipsisa64r6el-linux-musl-as'
+c = 'mipsisa64r6el-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'mipsisa64r6el-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'mipsisa64r6el-linux-musl-ld.bfd'
+nm = 'mipsisa64r6el-linux-musl-gcc-nm'
+objcopy = 'mipsisa64r6el-linux-musl-objcopy'
+objdump = 'mipsisa64r6el-linux-musl-objdump'
+ranlib = 'mipsisa64r6el-linux-musl-gcc-ranlib'
+readelf = 'mipsisa64r6el-linux-musl-readelf'
+size = 'mipsisa64r6el-linux-musl-size'
+strings = 'mipsisa64r6el-linux-musl-strings'
+strip = 'mipsisa64r6el-linux-musl-strip'
+
+[host_machine]
+cpu = 'mips64r6el'
+cpu_family = 'mips64'
+system = 'linux'
+endian = 'little'
