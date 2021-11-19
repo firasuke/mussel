@@ -125,8 +125,8 @@ The last two I believe are `pkgconf` specific but setting them won't do any harm
 
 ### Using `mussel` With Host's `meson`
 `mussel` now provides cross-compilation configuration files for `meson` that
-support all listed architectures, in an effort to make dealing with `meson` a
-bit easier.
+support all listed architectures, and a wrapper around host's `meson`
+(`mussel-meson`) in an effort to make dealing with `meson` a bit easier.
 
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
