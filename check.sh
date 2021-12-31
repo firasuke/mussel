@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-# Copyright (c) 2018-2021, Firas Khalil Khana
+# Copyright (c) 2018-2022, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
 #
