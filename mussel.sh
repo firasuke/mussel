@@ -29,7 +29,7 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.37
+binutils_ver=2.38
 gcc_ver=11.2.0
 gmp_ver=6.2.1
 isl_ver=0.24
@@ -51,7 +51,7 @@ musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
 # ----- Package Checksums (sha512sum) ----- #
-binutils_sum=eca2422fcb1a33bf05f66194faebd235b74872aa39a1865fc0b1a98d00c1061449380d51753e8312134aed885f06631f2917e164e239a5c52861d60ca730d64d
+binutils_sum=99f879815e58994d2ca0fd9635ca613348828b4810787789ada70e79da2687f5418d92e26b7ebfa2c6f0304b6450181164c416b1cfd909ad039138edbf6060bf
 gcc_sum=d53a0a966230895c54f01aea38696f818817b505f1e2bfa65e508753fcd01b2aedb4a61434f41f3a2ddbbd9f41384b96153c684ded3f0fa97c82758d9de5c7cf
 gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
 isl_sum=ff6bdcff839e1cd473f2a0c1e4dd4a3612ec6fee4544ccbc62b530a7248db2cf93b4b99bf493a86ddf2aba00e768927265d5d411f92061ea85fd7929073428e8
