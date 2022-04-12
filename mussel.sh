@@ -636,11 +636,6 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
     ARCH=$LARCH \
     mrproper >> $MLOG 2>&1
 
-  $MAKE \
-    O=$BLDDIR/linux \
-    ARCH=$LARCH \
-    headers_check >> $MLOG 2>&1
-
   printf -- "${BLUEC}..${NORMALC} Installing linux headers...\n"
   $MAKE \
     O=$BLDDIR/linux \
