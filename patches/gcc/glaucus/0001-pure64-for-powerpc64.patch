@@ -31,7 +31,7 @@
 +MULTILIB_OSDIRNAMES := m64=../lib
 +MULTILIB_OSDIRNAMES += m32=../lib32
  
- rs6000-linux.o: $(srcdir)/config/rs6000/rs6000-linux.c
+ rs6000-linux.o: $(srcdir)/config/rs6000/rs6000-linux.cc
  	$(COMPILE) $<
 --- gcc/config/rs6000/t-linux64bele
 +++ gcc/config/rs6000/t-linux64bele

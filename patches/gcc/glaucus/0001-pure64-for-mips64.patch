@@ -1,6 +1,6 @@
 --- gcc/config/mips/mips.h
 +++ gcc/config/mips/mips.h
-@@ -3427,8 +3427,8 @@
+@@ -3450,8 +3450,8 @@
  #define STANDARD_STARTFILE_PREFIX_1 "/lib32/"
  #define STANDARD_STARTFILE_PREFIX_2 "/usr/lib32/"
  #elif MIPS_ABI_DEFAULT == ABI_64
@@ -22,14 +22,6 @@
  
  #undef DRIVER_SELF_SPECS
  #define DRIVER_SELF_SPECS						\
----gcc/config/mips/st.h
-+++gcc/config/mips/st.h
-@@ -27,4 +27,4 @@
- #define STARTFILE_PREFIX_SPEC				\
-   "%{mabi=32: /usr/local/lib/ /lib/ /usr/lib/}		\
-    %{mabi=n32: /usr/local/lib32/ /lib32/ /usr/lib32/}	\
--   %{mabi=64: /usr/local/lib64/ /lib64/ /usr/lib64/}"
-+   %{mabi=64: /usr/local/lib/ /lib/ /usr/lib/}"
 --- gcc/config/mips/t-img-linux
 +++ gcc/config/mips/t-img-linux
 @@ -28,11 +28,11 @@
