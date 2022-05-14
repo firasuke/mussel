@@ -30,13 +30,13 @@ NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
 binutils_ver=2.38
-gcc_ver=11.2.0
+gcc_ver=12.1.0
 gmp_ver=6.2.1
 isl_ver=0.24
-linux_ver=5.14.15
+linux_ver=5.17.7
 mpc_ver=1.2.1
 mpfr_ver=4.1.0
-musl_ver=1.2.2
+musl_ver=1.2.3
 pkgconf_ver=1.8.0
 
 # ----- Package URLs ----- #
@@ -52,13 +52,13 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 # ----- Package Checksums (sha512sum) ----- #
 binutils_sum=99f879815e58994d2ca0fd9635ca613348828b4810787789ada70e79da2687f5418d92e26b7ebfa2c6f0304b6450181164c416b1cfd909ad039138edbf6060bf
-gcc_sum=d53a0a966230895c54f01aea38696f818817b505f1e2bfa65e508753fcd01b2aedb4a61434f41f3a2ddbbd9f41384b96153c684ded3f0fa97c82758d9de5c7cf
+gcc_sum=2121d295292814a6761edf1fba08c5f633ebe16f52b80e7b73a91050e71e1d2ed98bf17eebad263e191879561c02b48906c53faa4c4670c486a26fc75df23900
 gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
 isl_sum=ff6bdcff839e1cd473f2a0c1e4dd4a3612ec6fee4544ccbc62b530a7248db2cf93b4b99bf493a86ddf2aba00e768927265d5d411f92061ea85fd7929073428e8
-linux_sum=f2549b5494ce2e8174b70d29282a60e072ca31d4a83e1e1f4b3f0acb150e1849fe4f2eaf6b6cb18ac758e723c3d53aa8686e4e6d9d7cb9696983ffe64f6a9b59
+linux_sum=c70ce704b65bba14237e1ca042add6ca075b08d65e9b90d5441962ee2e6a70a58da72ee847a17917e5d170021933eea6b681a5774454f2228b2153e76b440c97
 mpc_sum=3279f813ab37f47fdcc800e4ac5f306417d07f539593ca715876e43e04896e1d5bceccfb288ef2908a3f24b760747d0dbd0392a24b9b341bc3e12082e5c836ee
 mpfr_sum=1bd1c349741a6529dfa53af4f0da8d49254b164ece8a46928cdb13a99460285622d57fe6f68cef19c6727b3f9daa25ddb3d7d65c201c8f387e421c7f7bee6273
-musl_sum=5344b581bd6463d71af8c13e91792fa51f25a96a1ecbea81e42664b63d90b325aeb421dfbc8c22e187397ca08e84d9296a0c0c299ba04fa2b751d6864914bd82
+musl_sum=9332f713d3eb7de4369bc0327d99252275ee52abf523ee34b894b24a387f67579787f7c72a46cf652e090cffdb0bc3719a4e7b84dca66890b6a37f12e8ad089c
 pkgconf_sum=58204006408ad5ce91222ed3c93c2e0b61c04fa83c0a8ad337b747b583744578dbebd4ad5ccbc577689637caa1c5dc246b7795ac46e39c6666b1aa78199b7c28
 
 # ----- Development Directories ----- #
@@ -635,11 +635,6 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   $MAKE \
     ARCH=$LARCH \
     mrproper >> $MLOG 2>&1
-
-  $MAKE \
-    O=$BLDDIR/linux \
-    ARCH=$LARCH \
-    headers_check >> $MLOG 2>&1
 
   printf -- "${BLUEC}..${NORMALC} Installing linux headers...\n"
   $MAKE \
