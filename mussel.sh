@@ -29,15 +29,15 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.38
-gcc_ver=12.1.0
+binutils_ver=2.39
+gcc_ver=12.2.0
 gmp_ver=6.2.1
-isl_ver=0.24
-linux_ver=5.17.7
+isl_ver=0.25
+linux_ver=5.19.4
 mpc_ver=1.2.1
 mpfr_ver=4.1.0
 musl_ver=1.2.3
-pkgconf_ver=1.8.0
+pkgconf_ver=1.9.3
 
 # ----- Package URLs ----- #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
@@ -51,15 +51,15 @@ musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
 # ----- Package Checksums (sha512sum) ----- #
-binutils_sum=99f879815e58994d2ca0fd9635ca613348828b4810787789ada70e79da2687f5418d92e26b7ebfa2c6f0304b6450181164c416b1cfd909ad039138edbf6060bf
-gcc_sum=2121d295292814a6761edf1fba08c5f633ebe16f52b80e7b73a91050e71e1d2ed98bf17eebad263e191879561c02b48906c53faa4c4670c486a26fc75df23900
+binutils_sum=ec4206ca366796d012cabba0f1b0851fd3e1afd428346751f8bbe1da5e79ece6006a2e692be7324f902e0a18c1fb10ac067220076300a85f79e25a146dde17a2
+gcc_sum=e9e857bd81bf7a370307d6848c81b2f5403db8c7b5207f54bce3f3faac3bde63445684092c2bc1a2427cddb6f7746496d9fbbef05fbbd77f2810b2998f1f9173
 gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
-isl_sum=ff6bdcff839e1cd473f2a0c1e4dd4a3612ec6fee4544ccbc62b530a7248db2cf93b4b99bf493a86ddf2aba00e768927265d5d411f92061ea85fd7929073428e8
-linux_sum=c70ce704b65bba14237e1ca042add6ca075b08d65e9b90d5441962ee2e6a70a58da72ee847a17917e5d170021933eea6b681a5774454f2228b2153e76b440c97
+isl_sum=81ac6b404a71e146bb705efe647ecf3bee19c3254f534cb44228cec13ffc7a33d7d58b980106dbb120ffdc557403d966619e219328edd0a4b3cbc4ac66acb255
+linux_sum=1d03f5b1ecb61adb52fcb2222b4d21548ca65e9fc0dc768d7b63c984644c9998bebab78cff4ec37af0fa15e4add84bb3fbd6c1e69d4aeac39dd0c59afa9f5e62
 mpc_sum=3279f813ab37f47fdcc800e4ac5f306417d07f539593ca715876e43e04896e1d5bceccfb288ef2908a3f24b760747d0dbd0392a24b9b341bc3e12082e5c836ee
 mpfr_sum=1bd1c349741a6529dfa53af4f0da8d49254b164ece8a46928cdb13a99460285622d57fe6f68cef19c6727b3f9daa25ddb3d7d65c201c8f387e421c7f7bee6273
 musl_sum=9332f713d3eb7de4369bc0327d99252275ee52abf523ee34b894b24a387f67579787f7c72a46cf652e090cffdb0bc3719a4e7b84dca66890b6a37f12e8ad089c
-pkgconf_sum=58204006408ad5ce91222ed3c93c2e0b61c04fa83c0a8ad337b747b583744578dbebd4ad5ccbc577689637caa1c5dc246b7795ac46e39c6666b1aa78199b7c28
+pkgconf_sum=f65583f78571e4da161201d6387091562b38893adc31df421b0e6d560a060deb306a0b7ad8b28266253244c935d0a8169f35e04825a7857f21a09527d36f921e
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
