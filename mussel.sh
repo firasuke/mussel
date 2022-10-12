@@ -96,7 +96,7 @@ while [ $# -gt 0 ]; do
       XARCH=armv6zk
       LARCH=arm
       MARCH=$LARCH
-      XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfp --with-float=hard"
+      XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfpv2 --with-float=hard"
       XPURE64=""
       XTARGET=$XARCH-linux-musleabihf
       ;;
@@ -204,11 +204,11 @@ while [ $# -gt 0 ]; do
       XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    riscv | riscv64 | rv64imafdc)
+    riscv | riscv64 | rv64gc | sifive)
       XARCH=riscv64
       LARCH=riscv
       MARCH=$XARCH
-      XGCCARGS="--with-arch=rv64imafdc --with-tune=rocket --with-abi=lp64d"
+      XGCCARGS="--with-cpu=sifive-u74 --with-arch=rv64gc --with-tune=sifive-7-series --with-abi=lp64"
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
