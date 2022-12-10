@@ -208,7 +208,7 @@ while [ $# -gt 0 ]; do
       XARCH=riscv64
       LARCH=riscv
       MARCH=$XARCH
-      XGCCARGS="--with-cpu=sifive-u74 --with-arch=rv64gc --with-tune=sifive-7-series --with-abi=lp64"
+      XGCCARGS="--with-cpu=sifive-u74 --with-arch=rv64gc --with-tune=sifive-7-series --with-abi=lp64d"
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
