@@ -16,7 +16,7 @@ strings = 'aarch64-linux-musl-strings'
 strip = 'aarch64-linux-musl-strip'
 
 [host_machine]
-cpu = 'aarch64'
+cpu = 'armv8-a'
 cpu_family = 'aarch64'
 system = 'linux'
 endian = 'little'

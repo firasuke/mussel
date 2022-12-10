@@ -16,7 +16,7 @@ strings = 'riscv64-linux-musl-strings'
 strip = 'riscv64-linux-musl-strip'
 
 [host_machine]
-cpu = 'riscv64'
+cpu = 'rv64gc'
 cpu_family = 'riscv64'
 system = 'linux'
 endian = 'little'
