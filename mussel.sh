@@ -74,7 +74,6 @@ MSYSROOT="$CURDIR/sysroot"
 MLOG="$CURDIR/log.txt"
 
 # ----- PATH ----- #
-#
 PATH=$MPREFIX/bin:/usr/bin:/bin
 
 # ----- Compiler Flags ----- #
@@ -530,8 +529,8 @@ $MAKE \
   install-strip-gcc >> $MLOG 2>&1
 
 printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgcc-static)...\n"
-CFLAGS='-g0 -O0' \
-CXXFLAGS='-g0 -O0' \
+CFLAGS='-pipe -g0 -O0' \
+CXXFLAGS='-pipe -g0 -O0' \
 $MAKE \
   enable_shared=no \
   all-target-libgcc >> $MLOG 2>&1
