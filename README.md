@@ -128,6 +128,11 @@ The last two I believe are `pkgconf` specific but setting them won't do any harm
 support all listed architectures, and a wrapper around host's `meson`
 (`mussel-meson`) in an effort to make dealing with `meson` a bit easier.
 
+## Projects Using `mussel`
+* [glaucus](https://www.glaucuslinux.org/)
+* [qLinux](https://qlinux.qware.org/doku.php)
+* [Raptix](https://github.com/dslm4515/Raptix)
+
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
 [qword](https://github.com/qword-os), [The Managram Project](
@@ -151,7 +156,6 @@ mailto:firasuke@glaucuslinux.org)>
 targeting musl libc is a complicated process.
 
 ## Community
-* [Discord](https://discord.gg/b6r2p3z)
 * [Reddit](https://www.reddit.com/r/distrodev/)
 
 ## Mirrors
