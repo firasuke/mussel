@@ -7,14 +7,14 @@ compilers that target `musl` libc.
 2. **Fast**: probably the fastest script around to build a cross compiler
    targeting `musl` libc, and runs fully under `dash`
 3. **Short**: has the least amount of steps ([see
-   below](https://github.com/firasuke/mussel#how-is-mussel-doing-it)) required
+   below](#how-is-mussel-doing-it)) required
    to build a cross compiler targeting musl libc (even less than
    [musl-cross-make](https://github.com/richfelker/musl-cross-make))
 4. **Small**: all installation steps use `install-strip` where applicable
 5. **Simple**: easy to read, modify and extend
 6. **POSIX Compliant**: the entire script is POSIX compliant
 7. **Well Documented**: the script comes with a
-   [`DOCUMENTATION.md`](https://github.com/firasuke/mussel/blob/master/DOCUMENTATION.md)
+   [`DOCUMENTATION.md`](DOCUMENTATION.md)
    file that includes state of the art information explaining what is being done
    and why
 
@@ -32,7 +32,7 @@ sudo dnf install bash bc binutils bison bison-devel bzip2 ccache coreutils diffu
 ```
 
 **(arch)**: See [**Supported
-Architectures**](https://github.com/firasuke/mussel#supported-architectures)
+Architectures**](#supported-architectures)
 below
 
 **(flags)**:
