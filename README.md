@@ -131,7 +131,7 @@ support all listed architectures, and a wrapper around host's `meson`
 
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
-[qword](https://github.com/qword-os), [The Managram Project](
+[qword](https://github.com/qword-os), [The Managarm Project](
 https://github.com/managarm), [glaucus](https://www.glaucuslinux.org/) (where
 it's actually implemented) and [musl-cross-make](
 https://github.com/richfelker/musl-cross-make).
