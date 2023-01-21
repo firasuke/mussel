@@ -29,13 +29,13 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.39
+binutils_ver=2.40
 gcc_ver=12.2.0
 gmp_ver=6.2.1
 isl_ver=0.25
-linux_ver=5.19.4
-mpc_ver=1.3.0
-mpfr_ver=4.1.1
+linux_ver=6.1.7
+mpc_ver=1.3.1
+mpfr_ver=4.2.0
 musl_ver=1.2.3
 pkgconf_ver=1.9.3
 
@@ -44,20 +44,20 @@ binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
 gcc_url=https://ftpmirror.gnu.org/gcc/gcc-$gcc_ver/gcc-$gcc_ver.tar.xz
 gmp_url=https://ftpmirror.gnu.org/gmp/gmp-$gmp_ver.tar.zst
 isl_url=https://libisl.sourceforge.io/isl-$isl_ver.tar.xz
-linux_url=https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$linux_ver.tar.xz
+linux_url=https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$linux_ver.tar.xz
 mpc_url=https://ftpmirror.gnu.org/mpc/mpc-$mpc_ver.tar.gz
 mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
 # ----- Package Checksums (sha512sum) ----- #
-binutils_sum=ec4206ca366796d012cabba0f1b0851fd3e1afd428346751f8bbe1da5e79ece6006a2e692be7324f902e0a18c1fb10ac067220076300a85f79e25a146dde17a2
+binutils_sum=182c189285733adcc9bdcf9eaf047a558c025354db395f450ce346075a42eb8c05d7ebc6ffe84a439f094be27216f020812c2754507199e481922f0bc041b194
 gcc_sum=e9e857bd81bf7a370307d6848c81b2f5403db8c7b5207f54bce3f3faac3bde63445684092c2bc1a2427cddb6f7746496d9fbbef05fbbd77f2810b2998f1f9173
 gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
 isl_sum=81ac6b404a71e146bb705efe647ecf3bee19c3254f534cb44228cec13ffc7a33d7d58b980106dbb120ffdc557403d966619e219328edd0a4b3cbc4ac66acb255
-linux_sum=1d03f5b1ecb61adb52fcb2222b4d21548ca65e9fc0dc768d7b63c984644c9998bebab78cff4ec37af0fa15e4add84bb3fbd6c1e69d4aeac39dd0c59afa9f5e62
-mpc_sum=9c18b24f7542dc1dc5e10cf58fd242e73d79a9dc3619c3f08d52aed75ad0e7d9e2ba2c46857717c8b921b084af2efc8c0d2d7173081af764b81c24a8971ddd9a
-mpfr_sum=be468749bd88870dec37be35e544983a8fb7bda638eb9414c37334b9d553099ea2aa067045f51ae2c8ab86d852ef833e18161d173e414af0928e9a438c9b91f1
+linux_sum=8b9bb3fbbea2d61314145cf6e4e1140372821a1e9ff79c4da363039c54fe73481106a5a85df0141dd449f4a21e946093a7430b14896b601c5a8b1f776107b35c
+mpc_sum=4bab4ef6076f8c5dfdc99d810b51108ced61ea2942ba0c1c932d624360a5473df20d32b300fc76f2ba4aa2a97e1f275c9fd494a1ba9f07c4cb2ad7ceaeb1ae97
+mpfr_sum=58e843125884ca58837ae5159cd4092af09e8f21931a2efd19c15de057c9d1dc0753ae95c592e2ce59a727fbc491af776db8b00a055320413cdcf2033b90505c
 musl_sum=9332f713d3eb7de4369bc0327d99252275ee52abf523ee34b894b24a387f67579787f7c72a46cf652e090cffdb0bc3719a4e7b84dca66890b6a37f12e8ad089c
 pkgconf_sum=f65583f78571e4da161201d6387091562b38893adc31df421b0e6d560a060deb306a0b7ad8b28266253244c935d0a8169f35e04825a7857f21a09527d36f921e
 

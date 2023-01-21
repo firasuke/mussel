@@ -8,10 +8,10 @@ exec meson setup \
   --libexecdir lib \
   --sbindir bin \
   --buildtype release \
-  --optimization 3 \
   --stdsplit \
   --strip \
   --wrap-mode nodownload \
   -Db_lto=true \
+  -Db_lto_mode=thin \
   --cross-file meson.cross.$XARCH \
   $@

@@ -75,13 +75,13 @@ Pi Zero)
 * x86-64
 
 ## Packages
-1. `binutils`: 2.39
+1. `binutils`: 2.40
 2. `gcc`: 12.2.0
 3. `gmp`: 6.2.1
 4. `isl`: 0.25
-5. `linux`: 5.19.4 (**Optional** Linux Headers Support) (**Disabled** by default)
-6. `mpc`: 1.3.0
-7. `mpfr`: 4.1.1
+5. `linux`: 6.1.7 (**Optional** Linux Headers Support) (**Disabled** by default)
+6. `mpc`: 1.3.1
+7. `mpfr`: 4.2.0
 8. `musl`: 1.2.3
 9. `pkgconf`: 1.9.3 (**Optional** `pkg-config` Support) (**Disabled** by default)
 
