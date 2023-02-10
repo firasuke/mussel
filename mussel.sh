@@ -37,7 +37,7 @@ linux_ver=6.1.7
 mpc_ver=1.3.1
 mpfr_ver=4.2.0
 musl_ver=1.2.3
-pkgconf_ver=1.9.3
+pkgconf_ver=1.9.4
 
 # ----- Package URLs ----- #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
@@ -59,7 +59,7 @@ linux_sum=8b9bb3fbbea2d61314145cf6e4e1140372821a1e9ff79c4da363039c54fe73481106a5
 mpc_sum=4bab4ef6076f8c5dfdc99d810b51108ced61ea2942ba0c1c932d624360a5473df20d32b300fc76f2ba4aa2a97e1f275c9fd494a1ba9f07c4cb2ad7ceaeb1ae97
 mpfr_sum=58e843125884ca58837ae5159cd4092af09e8f21931a2efd19c15de057c9d1dc0753ae95c592e2ce59a727fbc491af776db8b00a055320413cdcf2033b90505c
 musl_sum=9332f713d3eb7de4369bc0327d99252275ee52abf523ee34b894b24a387f67579787f7c72a46cf652e090cffdb0bc3719a4e7b84dca66890b6a37f12e8ad089c
-pkgconf_sum=f65583f78571e4da161201d6387091562b38893adc31df421b0e6d560a060deb306a0b7ad8b28266253244c935d0a8169f35e04825a7857f21a09527d36f921e
+pkgconf_sum=079436244f3942161f91c961c96d382a85082079c9843fec5ddd7fb245ba7500a9f7a201b5ef2c70a7a079fe1aacf3a52b73de5402a6f061df87bcdcf0a90755
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
