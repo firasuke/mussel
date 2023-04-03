@@ -126,8 +126,10 @@ support all listed architectures, and a wrapper around host's `meson`
 
 ## Projects Using `mussel`
 * [glaucus](https://www.glaucuslinux.org/)
+* [Hanh Linux](https://hanh-linux.github.io/)
 * [qLinux](https://qlinux.qware.org/doku.php)
 * [Raptix](https://github.com/dslm4515/Raptix)
+* [Spider Linux](https://github.com/spider-linux/spiderlinux)
 
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
