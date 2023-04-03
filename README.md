@@ -79,7 +79,7 @@ Pi Zero)
 2. `gcc`: 12.2.0
 3. `gmp`: 6.2.1
 4. `isl`: 0.25
-5. `linux`: 6.1.7 (**Optional** Linux Headers Support) (**Disabled** by default)
+5. `linux`: 6.2.9 (**Optional** Linux Headers Support) (**Disabled** by default)
 6. `mpc`: 1.3.1
 7. `mpfr`: 4.2.0
 8. `musl`: 1.2.3
