@@ -50,16 +50,16 @@ mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
-# ----- Package Checksums (sha512sum) ----- #
-binutils_sum=182c189285733adcc9bdcf9eaf047a558c025354db395f450ce346075a42eb8c05d7ebc6ffe84a439f094be27216f020812c2754507199e481922f0bc041b194
-gcc_sum=e9e857bd81bf7a370307d6848c81b2f5403db8c7b5207f54bce3f3faac3bde63445684092c2bc1a2427cddb6f7746496d9fbbef05fbbd77f2810b2998f1f9173
-gmp_sum=1dfd3a5cd9afa2db2f2e491b0df045e3c15863e61f4efc7b93c5b32bdfefe572b25bb7621df4075bf8427274d438df194629f5169250a058dadaeaaec599291b
-isl_sum=81ac6b404a71e146bb705efe647ecf3bee19c3254f534cb44228cec13ffc7a33d7d58b980106dbb120ffdc557403d966619e219328edd0a4b3cbc4ac66acb255
-linux_sum=1ea62ac96dec4a11c18b2a2e8bd5ac42b10c63a861f515b8441550fe93702122d73020fec84c5538656e6aea2fbed7966bbb07055f489f4b865ff4c3be806c9f
-mpc_sum=4bab4ef6076f8c5dfdc99d810b51108ced61ea2942ba0c1c932d624360a5473df20d32b300fc76f2ba4aa2a97e1f275c9fd494a1ba9f07c4cb2ad7ceaeb1ae97
-mpfr_sum=58e843125884ca58837ae5159cd4092af09e8f21931a2efd19c15de057c9d1dc0753ae95c592e2ce59a727fbc491af776db8b00a055320413cdcf2033b90505c
-musl_sum=9332f713d3eb7de4369bc0327d99252275ee52abf523ee34b894b24a387f67579787f7c72a46cf652e090cffdb0bc3719a4e7b84dca66890b6a37f12e8ad089c
-pkgconf_sum=079436244f3942161f91c961c96d382a85082079c9843fec5ddd7fb245ba7500a9f7a201b5ef2c70a7a079fe1aacf3a52b73de5402a6f061df87bcdcf0a90755
+# ----- Package Checksums (b3sum) ----- #
+binutils_sum=415a38450dc64006702ac67d83ed94b37aa195dd5fd57b51303aca00fd621685
+gcc_sum=8d9298d5678dff96f77438dd4766341f9c81c5daf95b9efcaaffa462ff83b67e
+gmp_sum=aea327cc749220d4d6069b6bb88e34eec84ff73e0eaa10b0176e8c330772d931
+isl_sum=46f892b3a484666dcef9bc8694bca7b0753cb6841da914315e17f401c97eefc1
+linux_sum=b74b87a4df9a3b033dfd67a2d4735effe8676caa8a8ed33cf10551db3e2b8841
+mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
+mpfr_sum=4e95c8d9eda9a18d01dd3ac5879437c51aa0357b6feb997aa4aeb30762a903e1
+musl_sum=dd4d86b7f568ec1650d473d79697ea5df7a7b1a7fb71859a33f6e3161e62aecc
+pkgconf_sum=f0f705bd7eca8e59b7bb047126424e73317add629b65930c1b02175820c0ed35
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
@@ -350,7 +350,7 @@ mpackage() {
   fi
 
   printf -- "${BLUEC}..${NORMALC} Verifying "$HOLDER"...\n"
-  printf -- "$3 $HOLDER" | sha512sum -c || {
+  printf -- "$3 $HOLDER" | b3sum -c || {
     printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
     rm "$HOLDER" &&
     wget -q --show-progress "$2";
