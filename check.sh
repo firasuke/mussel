@@ -3,83 +3,86 @@
 # Copyright (c) 2018-2023, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
-printf 'bash:      '
+printf 'b3sum      :: '
+b3sum --version | cut -d' ' -f2
+
+printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
 
-printf 'bc:        '
+printf 'bc         :: '
 bc --version | sed 1q | cut -d' ' -f2
 
-printf 'binutils:  '
-ld --version | sed 1q | cut -d' ' -f4-
+printf 'binutils   :: '
+ld --version | sed 1q | cut -d' ' -f5
 
-printf 'bison:     '
+printf 'bison      :: '
 bison --version | sed 1q | cut -d' ' -f4
 
-printf 'bzip2:     '
-bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8 | sed s/,//
+printf 'bzip2      :: '
+bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8-
 
-printf 'ccache:    '
+printf 'ccache     :: '
 ccache --version | sed 1q | cut -d' ' -f3
 
-printf 'coreutils: '
+printf 'coreutils  :: '
 ls --version | sed 1q | cut -d' ' -f4
 
-printf 'diffutils: '
+printf 'diffutils  :: '
 diff --version | sed 1q | cut -d' ' -f4
 
-printf 'findutils: '
+printf 'findutils  :: '
 find --version | sed 1q | cut -d' ' -f4
 
-printf 'g++:       '
-g++ --version | sed 1q | cut -d' ' -f3
+printf 'g++        :: '
+g++ --version | sed 1q | cut -d' ' -f3-
 
-printf 'gawk:      '
-gawk --version | sed 1q | cut -d' ' -f3 | sed s/,//
+printf 'gawk       :: '
+gawk --version | sed 1q | cut -d' ' -f3
 
-printf 'gcc:       '
-gcc --version | sed 1q | cut -d' ' -f3
+printf 'gcc        :: '
+gcc --version | sed 1q | cut -d' ' -f3-
 
-printf 'git:       '
+printf 'git        :: '
 git --version | cut -d' ' -f3
 
-printf 'glibc:     '
-/lib/libc.so.6 | sed 1q | cut -d' ' -f9 | sed s/\.$//
+printf 'glibc      :: '
+/lib/libc.so.6 | sed 1q | cut -d' ' -f9
 
-printf 'grep:      '
+printf 'grep       :: '
 grep --version | sed 1q | cut -d' ' -f4
 
-printf 'gzip:      '
+printf 'gzip       :: '
 gzip --version | sed 1q | cut -d' ' -f2
 
-printf 'linux:     '
+printf 'linux      :: '
 uname -r
 
-printf 'lzip:      '
+printf 'lzip       :: '
 lzip --version | sed 1q | cut -d' ' -f2
 
-printf 'm4:        '
+printf 'm4         :: '
 m4 --version | sed 1q | cut -d' ' -f4
 
-printf 'make:      '
+printf 'make       :: '
 make --version | sed 1q | cut -d' ' -f3
 
-printf 'perl:      '
+printf 'perl       :: '
 perl -V:version | cut -d"'" -f2
 
-printf 'rsync:     '
+printf 'rsync      :: '
 rsync --version | sed 1q | cut -d' ' -f4
 
-printf 'sed:       '
+printf 'sed        :: '
 sed --version | sed 1q | cut -d' ' -f4
 
-printf 'tar:       '
+printf 'tar        :: '
 tar --version | sed 1q | cut -d' ' -f4
 
-printf 'texinfo:   '
+printf 'texinfo    :: '
 makeinfo --version | sed 1q | cut -d' ' -f4
 
-printf 'xz:        '
+printf 'xz         :: '
 xz --version | sed 1q | cut -d' ' -f4
 
-printf 'zstd:      '
-zstd --version | cut -d' ' -f7 | sed 's/,$//'
+printf 'zstd       :: '
+zstd --version | cut -d' ' -f5
