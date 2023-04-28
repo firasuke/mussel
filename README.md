@@ -125,6 +125,7 @@ support all listed architectures, and a wrapper around host's `meson`
 (`mussel-meson`) in an effort to make dealing with `meson` a bit easier.
 
 ## Projects Using `mussel`
+* [CMLFS](https://github.com/dslm4515/CMLFS)
 * [glaucus](https://www.glaucuslinux.org/)
 * [Hanh Linux](https://hanh-linux.github.io/)
 * [qLinux](https://qlinux.qware.org/doku.php)
