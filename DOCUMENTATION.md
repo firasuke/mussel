@@ -217,9 +217,6 @@ support for Linux kernel headers as several packages require them.
 
 * We first perform a `mrproper` to ensure that our kernel source tree is clean.
 
-* It's always a good idea to perform a sanity check (`headers_check`) on the
-headers before installing them.
-
 * We won't be polluting our kernel source tree which is why we're specifying
 `O=$BLDDIR/linux` (which I believe may or may not be used since we're
 only installing the kernel header files and not actually building anything, but
