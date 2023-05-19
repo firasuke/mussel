@@ -55,7 +55,7 @@ Sources will be preserved.
 
 ## Supported Architectures
 * aarch64
-* armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry
+* armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry
 Pi Zero)
 * armv7
 * i586

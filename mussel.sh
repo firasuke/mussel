@@ -91,8 +91,8 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    arm | armv6zk | bcm2835)
-      XARCH=armv6zk
+    arm | armv6kz | armv6zk | bcm2835)
+      XARCH=armv6kz
       LARCH=arm
       MARCH=$LARCH
       XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfpv2 --with-float=hard"
@@ -247,7 +247,7 @@ while [ $# -gt 0 ]; do
       printf -- '\n'
       printf -- 'Supported Architectures:\n'
       printf -- '\t+ aarch64\n'
-      printf -- '\t+ armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module,'
+      printf -- '\t+ armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module,'
       printf -- '\n\t          and the Raspberry Pi Zero)\n'
       printf -- '\t+ armv7\n'
       printf -- '\t+ i586\n'

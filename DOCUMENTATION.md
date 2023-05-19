@@ -49,7 +49,7 @@ build `musl` for these architectures.
 * All listed archs were tested and are fully working!
 
     * aarch64
-    * armv6zk (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the
+    * armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the
     Raspberry Pi Zero)
     * armv7
     * i586
