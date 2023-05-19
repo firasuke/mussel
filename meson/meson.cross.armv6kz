@@ -1,0 +1,22 @@
+[binaries]
+ar = 'armv6kz-linux-musleabihf-gcc-ar'
+as = 'armv6kz-linux-musleabihf-as'
+c = 'armv6kz-linux-musleabihf-gcc'
+c_ld = 'bfd'
+cpp = 'armv6kz-linux-musleabihf-g++'
+cpp_ld = 'bfd'
+ld = 'armv6kz-linux-musleabihf-ld.bfd'
+nm = 'armv6kz-linux-musleabihf-gcc-nm'
+objcopy = 'armv6kz-linux-musleabihf-objcopy'
+objdump = 'armv6kz-linux-musleabihf-objdump'
+ranlib = 'armv6kz-linux-musleabihf-gcc-ranlib'
+readelf = 'armv6kz-linux-musleabihf-readelf'
+size = 'armv6kz-linux-musleabihf-size'
+strings = 'armv6kz-linux-musleabihf-strings'
+strip = 'armv6kz-linux-musleabihf-strip'
+
+[host_machine]
+cpu = 'armv6kz'
+cpu_family = 'arm'
+system = 'linux'
+endian = 'little'
