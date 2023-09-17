@@ -75,15 +75,15 @@ Pi Zero)
 * x86-64
 
 ## Packages
-1. `binutils`: 2.40
-2. `gcc`: 12.2.0
-3. `gmp`: 6.2.1
-4. `isl`: 0.25
-5. `linux`: 6.2.9 (**Optional** Linux Headers Support) (**Disabled** by default)
+1. `binutils`: 2.41
+2. `gcc`: 13.2.0
+3. `gmp`: 6.3.0
+4. `isl`: 0.26
+5. `linux`: 6.5.3 (**Optional** Linux Headers Support) (**Disabled** by default)
 6. `mpc`: 1.3.1
-7. `mpfr`: 4.2.0
-8. `musl`: 1.2.3
-9. `pkgconf`: 1.9.4 (**Optional** `pkg-config` Support) (**Disabled** by default)
+7. `mpfr`: 4.2.1
+8. `musl`: 1.2.4
+9. `pkgconf`: 2.0.3 (**Optional** `pkg-config` Support) (**Disabled** by default)
 
 ## How Is `mussel` Doing It?
 1. Install `musl` headers
