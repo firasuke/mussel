@@ -98,7 +98,7 @@ checksum(){
 		printf("%s %s\n", digest[2], digest[1]); }')"
 	actual_fname="${actual_hash_line#* }"
 	actual_hash="${actual_hash_line%% *}"
-	if [ "$alleged_hash" != "$actual_hash" ]; then
+	if [ "x$alleged_hash" != "x$actual_hash" ]; then
 		# "They said I came back Google Go-nized..."
 		err=1
 	fi
@@ -108,6 +108,64 @@ checksum(){
 }
 elif command -v sha256sum 2>&1 > /dev/null; then
 checksum(){ sha256sum -c "$@"; }
+fi
+
+# ----- URL transfer utility alias ----- #
+if command -v aria2c 2>&1 > /dev/null; then
+nettransfer(){
+	url="$1"
+	fname="${url##*/}"
+	# Stone-portable way to get the processor number of cores on
+	# UNIX-compatible systems, although we may only be using this on Linux.
+	nproc=$( (getconf _NPROCESSORS_ONLN \
+		|| ( [ "$(uname -s)" = 'Linux' ] \
+			&& printf -- '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
+		|| nproc \
+		|| printf -- '%d' 1) 2>/dev/null )
+	aria2c -o "$fname" -j $nproc -s $nproc --download-result=hide "$url"
+	unset fname nproc url
+}
+elif command -v curl 2>&1 > /dev/null; then
+nettransfer(){
+	# cURL, but with a progress bar and the file name.
+	# Order and progress.
+	url="$1"
+	col=28
+	fname="${url##*/}"
+	printf ' %-*s%s' $col "" "$fname" 1>&2
+	COLUMNS=$col curl -o "$fname" -L -# "$url"
+	unset col fname url	
+}
+# A tribute for slackpkg folks
+elif command -v lynx 2>&1 > /dev/null; then
+nettransfer(){
+	url="$1"
+	fname="${url##*/}"
+	printf -- '%b!.%b Using Lynx, there will be no progress bar or any indicator here.\n' \
+		"$YELLOWC" "$NORMALC"
+	(lynx -source "$url") > "$fname"
+	unset fname url
+}
+elif command -v w3m 2>&1 > /dev/null; then
+nettransfer(){
+	url="$1"
+	fname="${url##*/}"
+	printf -- '%b!.%b Using w3m, there will be no progress bar or any indicator here.\n' \
+		"$YELLOWC" "$NORMALC"
+	(w3m -dump_source "$url") > "$fname"
+	unset fname url
+}
+elif command -v wget 2>&1 > /dev/null; then
+nettransfer(){ url="$1"; wget -q --show-progress "$url"; unset url; }
+else
+printf -- '%b!!%b There'\''s no URL transfer utility installed at this system (searched at %s).\n' \
+	"$REDC" "$NORMALC" "$PATH"
+printf -- '%b!.%b Go and get one of those, it'\''s free, gratis, buckshee:\n%s\n%s\n%s\n%s\n%s\n' \
+	"$YELLOWC" "$NORMALC" \
+	'https://aria2.github.io' 'https://curl.se' \
+       	'https://lynx.invisible-island.net' 'https://w3m.sourceforge.net' \
+	'https://www.gnu.org/software/wget/ (C'\''mon, it'\''s better than nothing)'
+exit 1
 fi
 
 # ----- Development Directories ----- #
@@ -393,7 +451,7 @@ mpackage() {
 
   if [ ! -f "$HOLDER" ]; then
     printf -- "${BLUEC}..${NORMALC} Fetching "$HOLDER"...\n"
-    wget -q --show-progress "$2"
+    nettransfer "$2"
   else
     printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" already exists, skipping...\n"
   fi
@@ -402,7 +460,7 @@ mpackage() {
   printf -- "$3 $HOLDER" | checksum || {
     printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
     rm "$HOLDER" &&
-    wget -q --show-progress "$2";
+    nettransfer "$2";
   }
 
   rm -fr $1-$4
