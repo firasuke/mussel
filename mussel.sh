@@ -134,7 +134,7 @@ nettransfer(){
 	fname="${url##*/}"
 	printf ' %-*s%s' $col "" "$fname" 1>&2
 	COLUMNS=$col curl -o "$fname" -L -# "$url"
-	unset col fname url	
+	unset col fname url
 }
 # A tribute for slackpkg folks
 elif command -v lynx 2>&1 > /dev/null; then
@@ -163,7 +163,7 @@ printf -- '%b!!%b There'\''s no URL transfer utility installed at this system (s
 printf -- '%b!.%b Go and get one of those, it'\''s free, gratis, buckshee:\n%s\n%s\n%s\n%s\n%s\n' \
 	"$YELLOWC" "$NORMALC" \
 	'https://aria2.github.io' 'https://curl.se' \
-       	'https://lynx.invisible-island.net' 'https://w3m.sourceforge.net' \
+	'https://lynx.invisible-island.net' 'https://w3m.sourceforge.net' \
 	'https://www.gnu.org/software/wget/ (C'\''mon, it'\''s better than nothing)'
 exit 1
 fi
