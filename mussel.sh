@@ -6,6 +6,7 @@
 # Contributors:
 # * Alexander Barris (AwlsomeAlex) <alex@awlsome.com>
 # * ayb <ayb@3hg.fr>
+# * Luiz Antônio Rangel at Pindorama (takusuman) <luiz.antonio.rangel@outlook.com.br>
 
 set -e
 umask 022
@@ -50,6 +51,7 @@ mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
+if command -v b3sum 2>&1 > /dev/null; then
 # ----- Package Checksums (b3sum) ----- #
 binutils_sum=eb805b9793618268faec58bf70831988922c8d943b81fa2a3f804ed4fe85e90d
 gcc_sum=875af4d704560973ada577955392735ded87e6fd304bd0cbaf8ac795390501c7
@@ -60,6 +62,53 @@ mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
 mpfr_sum=f428023b8f7569fc1178faf63265ecb6cab4505fc3fce5d8c46af70db848a334
 musl_sum=fc33d5ebf5812ddc4a409b5e5abe620e216ad0378273fdafb73795d52e1722c6
 pkgconf_sum=adee9a4097bbf4dbf043e3e56fa3a044809f93106290472d468e53984cf0f840
+elif (command -v sha256sum || command -v openssl) 2>&1 > /dev/null; then
+# ----- Package Checksums (sha256sum) ----- #
+binutils_sum=eab3444055882ed5eb04e2743d03f0c0e1bc950197a4ddd31898cd5a2843d065
+gcc_sum=e275e76442a6067341a27f04c5c6b83d8613144004c0413528863dc6b5c743da
+gmp_sum=7f55d73f472c29cc14d7fa985f3654d48829415b649eaf61646b7b33f2a80e27
+isl_sum=a0b5cb06d24f9fa9e77b55fabbe9a3c94a336190345c2555f9915bb38e976504
+linux_sum=4cac13f7b17bd8dcf9032ad68f9123ab5313d698c9f59416043165150763eb4f
+mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
+mpfr_sum=277807353a6726978996945af13e52829e3abd7a9a5b7fb2793894e18f1fcbb2
+musl_sum=7a35eae33d5372a7c0da1188de798726f68825513b7ae3ebe97aaaa52114f039
+pkgconf_sum=cabdf3c474529854f7ccce8573c5ac68ad34a7e621037535cbc3981f6b23836c
+fi
+
+# ----- Checksum utility alias ----- #
+if command -v b3sum 2>&1 > /dev/null; then
+checksum(){ b3sum -c "$@"; }
+elif command -v openssl 2>&1 > /dev/null; then
+# For a simple formality, I must say this code comes from Copacabana's
+# build-system cmd/sha256sum.ksh implementation, but was heavly modified
+# for POSIX shell compliance and for fitting this script.
+checksum(){
+	err=0
+	# If it's not passed via $1, read it from standard input using cat(1).
+	hash_line="${1:-$(cat)}"
+	# Split the line in two using the good ol' POSIX "regex", then use the
+	# file name for recreating the hash using OpenSSL's shell/command line
+	# API and treating its output with [n]awk(1).
+	file_to_check="${hash_line#* }"
+	alleged_hash="${hash_line%% *}"
+	actual_hash_line="$(openssl dgst -sha256 "$file_to_check" \
+		| awk '{ split($0, digest, "= ");
+		sub(/.*[(]/, "", digest[1]);
+		sub(/[)].*/, "", digest[1]);
+		printf("%s %s\n", digest[2], digest[1]); }')"
+	actual_fname="${actual_hash_line#* }"
+	actual_hash="${actual_hash_line%% *}"
+	if [ "$alleged_hash" != "$actual_hash" ]; then
+		# "They said I came back Google Go-nized..."
+		err=1
+	fi
+	unset hash_line file_to_check alleged_hash \
+	actual_hash_line actual_fname actual_hash
+	return $err
+}
+elif command -v sha256sum 2>&1 > /dev/null; then
+checksum(){ sha256sum -c "$@"; }
+fi
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
@@ -350,7 +399,7 @@ mpackage() {
   fi
 
   printf -- "${BLUEC}..${NORMALC} Verifying "$HOLDER"...\n"
-  printf -- "$3 $HOLDER" | b3sum -c || {
+  printf -- "$3 $HOLDER" | checksum || {
     printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
     rm "$HOLDER" &&
     wget -q --show-progress "$2";
