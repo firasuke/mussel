@@ -3,8 +3,13 @@
 # Copyright (c) 2018-2023, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
+if command -v b3sum 2>&1 > /dev/null; then
 printf 'b3sum      :: '
 b3sum --version | cut -d' ' -f2
+elif (command -v sha256sum || command -v openssl) 2>&1 > /dev/null; then
+printf 'sha256sum  :: '
+openssl version  || { sha256sum --version | sed 1q | cut -d' ' -f2- ; }
+fi
 
 printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
