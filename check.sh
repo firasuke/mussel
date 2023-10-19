@@ -15,7 +15,9 @@ printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
 
 printf 'bc         :: '
-(bc --version || getconf HEIRLOOM_TOOLCHEST_VERSION || getconf _POSIX_VERSION) 2>/dev/null | sed 1q | cut -d' ' -f2
+( (bc --version \
+	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
+	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null 
 
 printf 'binutils   :: '
 ld --version | sed 1q | cut -d' ' -f5
@@ -30,7 +32,9 @@ printf 'ccache     :: '
 ccache --version | sed 1q | cut -d' ' -f3
 
 printf 'coreutils  :: '
-ls --version | sed 1q | cut -d' ' -f4
+( (ls --version \
+	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
+	|| getconf _POSIX_VERSION)  | sed 1q | cut -d' ' -f4) 2>/dev/null
 
 printf 'diffutils  :: '
 diff --version | sed 1q | cut -d' ' -f4
@@ -50,8 +54,13 @@ gcc --version | sed 1q | cut -d' ' -f3-
 printf 'git        :: '
 git --version | cut -d' ' -f3
 
+if $(ldd --version | grep 'musl' &>/dev/null); then
+printf 'musl libc  :: '
+ldd --version | sed -n 2p | cut -d' ' -f2
+elif $(ldd --version | grep 'GNU' &>/dev/null); then
 printf 'glibc      :: '
-/lib/libc.so.6 | sed 1q | cut -d' ' -f9
+ldd --version | sed 1q | cut -d' ' -f4
+fi
 
 printf 'grep       :: '
 grep --version | sed 1q | cut -d' ' -f4
