@@ -3,6 +3,9 @@
 # Copyright (c) 2018-2023, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
+# Contributors:
+# * Luiz Antônio Rangel at Pindorama (takusuman) <luiz.antonio.rangel@outlook.com.br>
+
 if command -v b3sum 2>&1 > /dev/null; then
 printf 'b3sum      :: '
 b3sum --version | cut -d' ' -f2
