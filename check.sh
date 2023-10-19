@@ -15,7 +15,7 @@ printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
 
 printf 'bc         :: '
-bc --version | sed 1q | cut -d' ' -f2
+(bc --version || getconf HEIRLOOM_TOOLCHEST_VERSION || getconf _POSIX_VERSION) 2>/dev/null | sed 1q | cut -d' ' -f2
 
 printf 'binutils   :: '
 ld --version | sed 1q | cut -d' ' -f5
