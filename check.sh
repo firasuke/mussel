@@ -20,7 +20,7 @@ printf 'bc         :: '
 	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null 
 
 printf 'binutils   :: '
-ld --version | sed 1q | cut -d' ' -f5
+ld --version | sed 1q | cut -d' ' -f4
 
 printf 'bison      :: '
 bison --version | sed 1q | cut -d' ' -f4
