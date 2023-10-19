@@ -37,10 +37,14 @@ printf 'coreutils  :: '
 	|| getconf _POSIX_VERSION)  | sed 1q | cut -d' ' -f4) 2>/dev/null
 
 printf 'diffutils  :: '
-diff --version | sed 1q | cut -d' ' -f4
+( (diff --version \
+	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
+	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
 
 printf 'findutils  :: '
-find --version | sed 1q | cut -d' ' -f4
+( (find --version \
+	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
+	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
 
 printf 'g++        :: '
 g++ --version | sed 1q | cut -d' ' -f3-
@@ -63,7 +67,9 @@ ldd --version | sed 1q | cut -d' ' -f4
 fi
 
 printf 'grep       :: '
-grep --version | sed 1q | cut -d' ' -f4
+( (grep --version \
+	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
+	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
 
 printf 'gzip       :: '
 gzip --version | sed 1q | cut -d' ' -f2
@@ -87,10 +93,14 @@ printf 'rsync      :: '
 rsync --version | sed 1q | cut -d' ' -f4
 
 printf 'sed        :: '
-sed --version | sed 1q | cut -d' ' -f4
+( (sed --version \
+	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
+	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4 ) 2>/dev/null
 
 printf 'tar        :: '
-tar --version | sed 1q | cut -d' ' -f4
+( (tar --version \
+	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
+	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
 
 printf 'texinfo    :: '
 makeinfo --version | sed 1q | cut -d' ' -f4
