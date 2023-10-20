@@ -21,9 +21,10 @@ printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
 
 printf 'bc         :: '
-( (bc --version \
+{ (command -v bc &>/dev/null) && ( (bc --version \
 	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
-	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null 
+	|| getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null; } \
+	|| printf 'Not found.\n'
 
 printf 'binutils   :: '
 ld --version | sed 1q | cut -d' ' -f4
