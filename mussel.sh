@@ -457,7 +457,7 @@ mpackage() {
   fi
 
   printf -- "${BLUEC}..${NORMALC} Verifying "$HOLDER"...\n"
-  printf -- "$3 $HOLDER" | checksum || {
+  printf -- "$3  $HOLDER" | checksum || {
     printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
     rm "$HOLDER" &&
     nettransfer "$2";
