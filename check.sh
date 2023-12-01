@@ -35,9 +35,6 @@ bison --version | sed 1q | cut -d' ' -f4
 printf 'bzip2      :: '
 bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8-
 
-printf 'ccache     :: '
-ccache --version | sed 1q | cut -d' ' -f3
-
 printf 'coreutils  :: '
 ( (ls --version \
 	|| getconf HEIRLOOM_TOOLCHEST_VERSION \
@@ -92,6 +89,9 @@ m4 --version | sed 1q | cut -d' ' -f4
 
 printf 'make       :: '
 make --version | sed 1q | cut -d' ' -f3
+
+printf 'patch      :: '
+patch --version | sed 1q | cut -d' ' -f3
 
 printf 'perl       :: '
 perl -V:version | cut -d"'" -f2
