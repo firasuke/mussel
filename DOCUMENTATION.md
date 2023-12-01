@@ -150,7 +150,7 @@ search for target headers and libraries.
 * We manually track GCC's prerequisites instead of relying on
 `contrib/download_prerequisites` in `gcc`'s source tree.
 
-* Again, mentioned said in `cross-binutils` applies here.
+* Again, what's mentioned in `cross-binutils` applies here.
 
 * C++ language support is needed to successfully build `gcc`, since `gcc` has
 big chunks of its source code written in C++.
