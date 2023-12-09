@@ -127,7 +127,7 @@ support all listed architectures, and a wrapper around host's `meson`
 ## Projects Using `mussel`
 * [CMLFS](https://github.com/dslm4515/CMLFS)
 * [Copacabana Linux](http://copacabana.pindorama.dob.jp)
-* [glaucus](https://www.glaucuslinux.org/)
+* [glaucus](https://glaucuslinux.org/)
 * [Hanh Linux](https://hanh-linux.github.io/)
 * [qLinux](https://qlinux.qware.org/doku.php)
 * [Raptix](https://github.com/dslm4515/Raptix)
@@ -136,7 +136,7 @@ support all listed architectures, and a wrapper around host's `meson`
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
 [qword](https://github.com/qword-os), [The Managarm Project](
-https://github.com/managarm), [glaucus](https://www.glaucuslinux.org/) (where
+https://github.com/managarm), [glaucus](https://glaucuslinux.org/) (where
 it's actually implemented) and [musl-cross-make](
 https://github.com/richfelker/musl-cross-make).
 
