@@ -159,10 +159,8 @@ targeting musl libc is a complicated process.
 * [Reddit](https://www.reddit.com/r/distrodev/)
 
 ## Mirrors
-* [BitBucket](https://bitbucket.org/firasuke/mussel)
 * [Codeberg](https://codeberg.org/firasuke/mussel)
 * [Framagit](https://framagit.org/firasuke/mussel)
 * [GitHub](https://github.com/firasuke/mussel)
 * [GitLab](https://gitlab.com/firasuke/mussel)
-* [NotABug](https://notabug.org/firasuke/mussel)
 * [SourceHut](https://git.sr.ht/~firasuke/mussel)
