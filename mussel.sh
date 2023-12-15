@@ -41,9 +41,9 @@ musl_ver=1.2.4
 pkgconf_ver=2.0.3
 
 # ----- Package URLs ----- #
-binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.lz
+binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.xz
 gcc_url=https://ftpmirror.gnu.org/gcc/gcc-$gcc_ver/gcc-$gcc_ver.tar.xz
-gmp_url=https://ftpmirror.gnu.org/gmp/gmp-$gmp_ver.tar.zst
+gmp_url=https://ftpmirror.gnu.org/gmp/gmp-$gmp_ver.tar.xz
 isl_url=https://libisl.sourceforge.io/isl-$isl_ver.tar.xz
 linux_url=https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$linux_ver.tar.xz
 mpc_url=https://ftpmirror.gnu.org/mpc/mpc-$mpc_ver.tar.gz
@@ -53,9 +53,9 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 if command -v b3sum 2>&1 > /dev/null; then
 # ----- Package Checksums (b3sum) ----- #
-binutils_sum=eb805b9793618268faec58bf70831988922c8d943b81fa2a3f804ed4fe85e90d
+binutils_sum=fb22cae8831f1f753677513f313683dc0334a33b056bd13866ec6377037ad8b2
 gcc_sum=875af4d704560973ada577955392735ded87e6fd304bd0cbaf8ac795390501c7
-gmp_sum=4cc9bd2542df97e8f3c31c8c4354bd5193e3c4b0f7a7a73a0bcc185d74daadb5
+gmp_sum=fffe4996713928ae19331c8ef39129e46d3bf5b7182820656fd4639435cd83a4
 isl_sum=a27da5d097f4e105d3a63c5e81d26c2b00cc35a4a3bf62dd2a49335a0f20ce7f
 linux_sum=b063c7ca0986358f22e9019617cbadb3404da6eb44133bee789f9c7565b1c121
 mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
@@ -64,9 +64,9 @@ musl_sum=fc33d5ebf5812ddc4a409b5e5abe620e216ad0378273fdafb73795d52e1722c6
 pkgconf_sum=adee9a4097bbf4dbf043e3e56fa3a044809f93106290472d468e53984cf0f840
 elif (command -v sha256sum || command -v openssl) 2>&1 > /dev/null; then
 # ----- Package Checksums (sha256sum) ----- #
-binutils_sum=eab3444055882ed5eb04e2743d03f0c0e1bc950197a4ddd31898cd5a2843d065
+binutils_sum=ae9a5789e23459e59606e6714723f2d3ffc31c03174191ef0d015bdf06007450
 gcc_sum=e275e76442a6067341a27f04c5c6b83d8613144004c0413528863dc6b5c743da
-gmp_sum=7f55d73f472c29cc14d7fa985f3654d48829415b649eaf61646b7b33f2a80e27
+gmp_sum=a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898
 isl_sum=a0b5cb06d24f9fa9e77b55fabbe9a3c94a336190345c2555f9915bb38e976504
 linux_sum=4cac13f7b17bd8dcf9032ad68f9123ab5313d698c9f59416043165150763eb4f
 mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8

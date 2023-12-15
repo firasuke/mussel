@@ -81,9 +81,6 @@ gzip --version | sed 1q | cut -d' ' -f2
 printf 'linux      :: '
 uname -r
 
-printf 'lzip       :: '
-lzip --version | sed 1q | cut -d' ' -f2
-
 printf 'm4         :: '
 m4 --version | sed 1q | cut -d' ' -f4
 
@@ -114,6 +111,3 @@ makeinfo --version | sed 1q | cut -d' ' -f4
 
 printf 'xz         :: '
 xz --version | sed 1q | cut -d' ' -f4
-
-printf 'zstd       :: '
-zstd --version | cut -d' ' -f5
