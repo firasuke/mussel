@@ -78,6 +78,10 @@ printf 'grep       :: '
 printf 'gzip       :: '
 gzip --version | sed 1q | cut -d' ' -f2
 
+printf 'libzstd    :: '
+( printf '#include <zstd.h>\nZSTD_VERSION_STRING' \
+        | gcc -E -P - | tail -n1 ) 2>/dev/null
+
 printf 'linux      :: '
 uname -r
 
