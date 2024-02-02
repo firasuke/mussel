@@ -48,12 +48,20 @@
 +MULTILIB_OSDIRNAMES=../lib32 ../lib
 --- gcc/config/mips/t-linux64
 +++ gcc/config/mips/t-linux64
-@@ -23,4 +23,4 @@
- MULTILIB_OSDIRNAMES = \
+@@ -35,11 +35,11 @@
+     MULTILIB_OSDIRNAMES = \
  	../lib32$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabin32$(MIPS_SOFT)) \
  	../lib$(call if_multiarch,:mips$(MIPS_EL)-linux-gnu$(MIPS_SOFT)) \
 -	../lib64$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))
 +	../lib$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))
+   endif
+ else
+   MULTILIB_OSDIRNAMES = \
+ 	../lib32$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabin32$(MIPS_SOFT)) \
+ 	../lib$(call if_multiarch,:mips$(MIPS_EL)-linux-gnu$(MIPS_SOFT)) \
+-	../lib64$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))
++	../lib$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))
+ endif
 --- gcc/config/mips/t-mti-linux
 +++ gcc/config/mips/t-mti-linux
 @@ -28,56 +28,56 @@

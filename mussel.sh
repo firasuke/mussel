@@ -30,7 +30,7 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.41
+binutils_ver=2.42
 gcc_ver=13.2.0
 gmp_ver=6.3.0
 isl_ver=0.26
@@ -38,7 +38,7 @@ linux_ver=6.5.3
 mpc_ver=1.3.1
 mpfr_ver=4.2.1
 musl_ver=1.2.4
-pkgconf_ver=2.0.3
+pkgconf_ver=2.1.0
 
 # ----- Package URLs ----- #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.xz
@@ -53,7 +53,7 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 if command -v b3sum 2>&1 > /dev/null; then
 # ----- Package Checksums (b3sum) ----- #
-binutils_sum=fb22cae8831f1f753677513f313683dc0334a33b056bd13866ec6377037ad8b2
+binutils_sum=41ff0592df8c1e8ec5eb086d418e792331c0c49040218462d6c1224b4fa36d04
 gcc_sum=875af4d704560973ada577955392735ded87e6fd304bd0cbaf8ac795390501c7
 gmp_sum=fffe4996713928ae19331c8ef39129e46d3bf5b7182820656fd4639435cd83a4
 isl_sum=a27da5d097f4e105d3a63c5e81d26c2b00cc35a4a3bf62dd2a49335a0f20ce7f
@@ -61,10 +61,10 @@ linux_sum=b063c7ca0986358f22e9019617cbadb3404da6eb44133bee789f9c7565b1c121
 mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
 mpfr_sum=f428023b8f7569fc1178faf63265ecb6cab4505fc3fce5d8c46af70db848a334
 musl_sum=fc33d5ebf5812ddc4a409b5e5abe620e216ad0378273fdafb73795d52e1722c6
-pkgconf_sum=adee9a4097bbf4dbf043e3e56fa3a044809f93106290472d468e53984cf0f840
+pkgconf_sum=6c462df0a2d2e1a384cea44c775ef6991be31f21b5bde515f175e6ac6fdb1164
 elif (command -v sha256sum || command -v openssl) 2>&1 > /dev/null; then
 # ----- Package Checksums (sha256sum) ----- #
-binutils_sum=ae9a5789e23459e59606e6714723f2d3ffc31c03174191ef0d015bdf06007450
+binutils_sum=f6e4d41fd5fc778b06b7891457b3620da5ecea1006c6a4a41ae998109f85a800
 gcc_sum=e275e76442a6067341a27f04c5c6b83d8613144004c0413528863dc6b5c743da
 gmp_sum=a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898
 isl_sum=a0b5cb06d24f9fa9e77b55fabbe9a3c94a336190345c2555f9915bb38e976504
@@ -72,8 +72,9 @@ linux_sum=4cac13f7b17bd8dcf9032ad68f9123ab5313d698c9f59416043165150763eb4f
 mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
 mpfr_sum=277807353a6726978996945af13e52829e3abd7a9a5b7fb2793894e18f1fcbb2
 musl_sum=7a35eae33d5372a7c0da1188de798726f68825513b7ae3ebe97aaaa52114f039
-pkgconf_sum=cabdf3c474529854f7ccce8573c5ac68ad34a7e621037535cbc3981f6b23836c
+pkgconf_sum=266d5861ee51c52bc710293a1d36622ae16d048d71ec56034a02eb9cf9677761
 fi
+
 
 # ----- Checksum utility alias ----- #
 if command -v b3sum 2>&1 > /dev/null; then
@@ -110,63 +111,69 @@ elif command -v sha256sum 2>&1 > /dev/null; then
 checksum(){ sha256sum -c "$@"; }
 fi
 
+# Decide which download command to use.
+if [ -z "$download_command" ]; then
+	for dcmd in wget w3m lynx curl aria2c; do
+		command -v $dcmd  2>&1 > /dev/null && download_command="$dcmd"
+	done
+fi
+
+# If $download_command is still unset, we can't continue.
+if [ -z "$download_command" ]; then
+	printf -- '%b!!%b There'\''s no URL transfer utility installed at this system (searched at %s).\n' \
+		"$REDC" "$NORMALC" "$PATH"
+	printf -- '%b!.%b Go and get one of those, it'\''s free, gratis, buckshee:\n%s\n%s\n%s\n%s\n%s\n' \
+		"$YELLOWC" "$NORMALC" \
+		'https://aria2.github.io' 'https://curl.se' \
+		'https://lynx.invisible-island.net' 'https://w3m.sourceforge.net' \
+		'https://www.gnu.org/software/wget/ (C'\''mon, it'\''s better than nothing)'
+	exit 1
+fi
+
+# Stone-portable way to get the processor number of cores on
+# UNIX-compatible systems, although we may only be using this on Linux.
+getnproc() {
+	(
+		getconf _NPROCESSORS_ONLN \
+		|| ( [ "$(uname -s)" = 'Linux' ] && printf -- '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
+		|| nproc \
+		|| printf -- '%d' 1
+	) 2>/dev/null
+}
+
 # ----- URL transfer utility alias ----- #
-if command -v aria2c 2>&1 > /dev/null; then
-nettransfer(){
+nettransfer() {
 	url="$1"
 	fname="${url##*/}"
-	# Stone-portable way to get the processor number of cores on
-	# UNIX-compatible systems, although we may only be using this on Linux.
-	nproc=$( (getconf _NPROCESSORS_ONLN \
-		|| ( [ "$(uname -s)" = 'Linux' ] \
-			&& printf -- '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
-		|| nproc \
-		|| printf -- '%d' 1) 2>/dev/null )
-	aria2c -o "$fname" -j $nproc -s $nproc --download-result=hide "$url"
-	unset fname nproc url
-}
-elif command -v curl 2>&1 > /dev/null; then
-nettransfer(){
+	col=28
+
+	# Moved to its own function for redundancy.
+	nproc="$(getnproc)"
+
+	[ "$download_command" = "aria2c" ] && {
+		aria2c -o "$fname" -j $nproc -s $nproc --download-result=hide "$url"
+	}
 	# cURL, but with a progress bar and the file name.
 	# Order and progress.
-	url="$1"
-	col=28
-	fname="${url##*/}"
-	printf ' %-*s%s' $col "" "$fname" 1>&2
-	COLUMNS=$col curl -o "$fname" -L -# "$url"
-	unset col fname url
+	[ "$download_command" = "curl" ] && {
+		printf ' %-*s%s' $col "" "$fname" 1>&2
+		COLUMNS=$col curl -o "$fname" -L -# "$url"
+	}
+	# A tribute for slackpkg folks
+	[ "$download_command" = "lynx" ] && {
+		printf -- '%b!.%b Using Lynx, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
+		(lynx -source "$url") > "$fname"
+	}
+	[ "$download_command" = "w3m" ] && {
+		printf -- '%b!.%b Using w3m, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
+		(w3m -dump_source "$url") > "$fname"
+	}
+	[ "$download_command" = "wget" ] && {
+		wget -q --show-progress "$url"
+	}
+
+	unset fname nproc url
 }
-# A tribute for slackpkg folks
-elif command -v lynx 2>&1 > /dev/null; then
-nettransfer(){
-	url="$1"
-	fname="${url##*/}"
-	printf -- '%b!.%b Using Lynx, there will be no progress bar or any indicator here.\n' \
-		"$YELLOWC" "$NORMALC"
-	(lynx -source "$url") > "$fname"
-	unset fname url
-}
-elif command -v w3m 2>&1 > /dev/null; then
-nettransfer(){
-	url="$1"
-	fname="${url##*/}"
-	printf -- '%b!.%b Using w3m, there will be no progress bar or any indicator here.\n' \
-		"$YELLOWC" "$NORMALC"
-	(w3m -dump_source "$url") > "$fname"
-	unset fname url
-}
-elif command -v wget 2>&1 > /dev/null; then
-nettransfer(){ url="$1"; wget -q --show-progress "$url"; unset url; }
-else
-printf -- '%b!!%b There'\''s no URL transfer utility installed at this system (searched at %s).\n' \
-	"$REDC" "$NORMALC" "$PATH"
-printf -- '%b!.%b Go and get one of those, it'\''s free, gratis, buckshee:\n%s\n%s\n%s\n%s\n%s\n' \
-	"$YELLOWC" "$NORMALC" \
-	'https://aria2.github.io' 'https://curl.se' \
-	'https://lynx.invisible-island.net' 'https://w3m.sourceforge.net' \
-	'https://www.gnu.org/software/wget/ (C'\''mon, it'\''s better than nothing)'
-exit 1
-fi
 
 # ----- Development Directories ----- #
 CURDIR="$PWD"
@@ -420,7 +427,7 @@ fi
 
 # ----- Make Flags ----- #
 if [ $PARALLEL_SUPPORT = yes ]; then
-  JOBS="$(expr 3 \* $(nproc))"
+  JOBS="$(expr 3 \* $(getnproc))"
   MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true -j$JOBS"
 else
   MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
@@ -457,7 +464,7 @@ mpackage() {
   fi
 
   printf -- "${BLUEC}..${NORMALC} Verifying "$HOLDER"...\n"
-  printf -- "$3 $HOLDER" | checksum || {
+  printf -- "$3  $HOLDER" | checksum || {
     printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
     rm "$HOLDER" &&
     nettransfer "$2";
@@ -544,7 +551,7 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 # ----- Patch Packages ----- #
 if [ ! -z $XPURE64 ]; then
   printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
-  mpatch 0 gcc "$gcc_ver" 0001-pure64-for-$XARCH glaucus
+  mpatch 0 gcc "$gcc_ver" 0001-pure64-for-$XPURE64 glaucus
 fi
 
 printf -- '\n'
