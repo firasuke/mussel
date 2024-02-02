@@ -146,6 +146,7 @@ mailto:firasuke@glaucuslinux.org)>
 
 ## Contributors
 * Alexander Barris (AwlsomeAlex) <[alex@awlsome.com](mailto:alex@awlsome.com)>
+* Andrew Blue <[andy@antareslinux.org](mailto:andy@antareslinux.org)>
 * ayb <[ayb@3hg.fr](mailto:ayb@3hg.fr)>
 * Luiz Antônio Rangel at Pindorama (takusuman) <[luiz.antonio.rangel@outlook.com.br](luiz.antonio.rangel@outlook.com.br)>
 

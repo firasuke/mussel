@@ -5,6 +5,7 @@
 
 # Contributors:
 # * Alexander Barris (AwlsomeAlex) <alex@awlsome.com>
+# * Andrew Blue <andy@antareslinux.org>
 # * ayb <ayb@3hg.fr>
 # * Luiz Antônio Rangel at Pindorama (takusuman) <luiz.antonio.rangel@outlook.com.br>
 
