@@ -551,7 +551,7 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 # ----- Patch Packages ----- #
 if [ ! -z $XPURE64 ]; then
   printf -- "\n-----\npatch\n-----\n\n" >> $MLOG
-  mpatch 0 gcc "$gcc_ver" 0001-pure64-for-$XARCH glaucus
+  mpatch 0 gcc "$gcc_ver" 0001-pure64-for-$XPURE64 glaucus
 fi
 
 printf -- '\n'
