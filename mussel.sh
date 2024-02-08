@@ -206,6 +206,30 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
+    armv4 | armv4t )
+      XARCH=armv4t
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=armv4t --with-float=soft"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabi
+      ;;
+    armv5 | armv5te )
+      XARCH=armv5te
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=armv5te --with-float=soft"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabi
+      ;;
+    armv6 )
+      XARCH=armv6
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-fpu=vfp --with-float=hard"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabihf
+      ;;
     arm | armv6kz | armv6zk | bcm2835)
       XARCH=armv6kz
       LARCH=arm
@@ -214,13 +238,21 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musleabihf
       ;;
-    armv7)
-      XARCH=$1
+    armv7 | armv7-a)
+      XARCH=armv7-a
       LARCH=arm
       MARCH=$LARCH
-      XGCCARGS="--with-arch=${LARCH}v7-a --with-fpu=vfpv3 --with-float=hard"
+      XGCCARGS="--with-arch=$XARCH --with-fpu=vfpv3 --with-float=hard"
       XPURE64=""
       XTARGET=$LARCH-linux-musleabihf
+      ;;
+    i486)
+      XARCH=$1
+      LARCH=i386
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$1 --with-tune=generic"
+      XPURE64=""
+      XTARGET=$1-linux-musl
       ;;
     i586)
       XARCH=$1
@@ -235,6 +267,14 @@ while [ $# -gt 0 ]; do
       LARCH=i386
       MARCH=$LARCH
       XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    m68k | 68000 | motorola )
+      XARCH=m68k
+      LARCH=$XARCH
+      MARCH=$XARCH
+      XGCCARGS=""
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
@@ -302,6 +342,14 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
+    powerpcle | powerpcel | ppcle | ppcel )
+      XARCH=powerpcle
+      LARCH=poweroc
+      MARCH=powerpc
+      XGCCARGS="--with-cpu=$LARCH --enable-secureplt --without-long-double-128 --with-endian=little"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
     g5 | powerpc64 | powerpc64be | powerpc64eb | ppc64 | ppc64be | ppc64eb)
       XARCH=powerpc64
       LARCH=powerpc
@@ -334,7 +382,55 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    x86-64 | x86_64)
+    sh2 | superh | sh2le | sh2el)
+      XARCH=sh2
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh2-fdpic | superh-fdpic | sh2le-fdpic | sh2el-fdpic)
+      XARCH=sh2
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64="--enable-fdpic"
+      XTARGET=$XARCH-linux-muslfdpic
+      ;;
+    sh2be | sh2eb)
+      XARCH=sh2eb
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh2be-fdpic | sh2eb-fdpic)
+      XARCH=sh2eb
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--enable-fdpic --with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-muslfdpic
+      ;;
+    sh4 | superh4 | sh4le | sh4el)
+      XARCH=sh4
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh4be-fdpic | sh4eb-fdpic)
+      XARCH=sh4eb
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-muslfdpic
+      ;;
+    amd64 | x86-64 | x86_64)
       XARCH=x86-64
       LARCH=x86_64
       MARCH=$LARCH
@@ -362,11 +458,16 @@ while [ $# -gt 0 ]; do
       printf -- '\n'
       printf -- 'Supported Architectures:\n'
       printf -- '\t+ aarch64\n'
+      printf -- '\t+ armv4t\n'
+      printf -- '\t+ armv5te\n'
+      printf -- '\t+ armv6\n'
       printf -- '\t+ armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module,'
       printf -- '\n\t          and the Raspberry Pi Zero)\n'
       printf -- '\t+ armv7\n'
+      printf -- '\t+ i486\n'
       printf -- '\t+ i586\n'
       printf -- '\t+ i686\n'
+      printf -- '\t+ m68k\n'
       printf -- '\t+ microblaze\n'
       printf -- '\t+ microblazeel\n'
       printf -- '\t+ mips64\n'
@@ -375,10 +476,17 @@ while [ $# -gt 0 ]; do
       printf -- '\t+ mipsisa64r6el\n'
       printf -- '\t+ or1k\n'
       printf -- '\t+ powerpc\n'
+      printf -- '\t+ powerpcle\n'
       printf -- '\t+ powerpc64\n'
       printf -- '\t+ powerpc64le\n'
       printf -- '\t+ riscv64\n'
       printf -- '\t+ s390x\n'
+      printf -- '\t+ sh2\n'
+      printf -- '\t+ sh2be\n'
+      printf -- '\t+ sh2-fdpic\n'
+      printf -- '\t+ sh2be-fdpic\n'
+      printf -- '\t+ sh4\n'
+      printf -- '\t+ sh4be\n'
       printf -- '\t+ x86-64\n'
       printf -- '\n'
       printf -- 'Flags:\n'
