@@ -55,11 +55,16 @@ Sources will be preserved.
 
 ## Supported Architectures
 * aarch64
+* armv4t
+* armv5te
+* armv6
 * armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry
 Pi Zero)
 * armv7
+* i486
 * i586
 * i686
+* m68k
 * microblaze
 * microblazeel
 * mips64
@@ -68,10 +73,17 @@ Pi Zero)
 * mipsisa64r6el
 * or1k
 * powerpc
+* powerpcle
 * powerpc64
 * powerpc64le
 * riscv64
 * s390x
+* sh2
+* sh2be
+* sh2-fdpic
+* sh2be-fdpic
+* sh4
+* sh4be
 * x86-64
 
 ## Packages
