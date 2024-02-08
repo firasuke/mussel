@@ -16,7 +16,7 @@ strings = 'powerpcle-linux-musl-strings'
 strip = 'powerpcle-linux-musl-strip'
 
 [host_machine]
-cpu = 'ppc'
+cpu = 'ppcle'
 cpu_family = 'ppc'
 system = 'linux'
 endian = 'little'
