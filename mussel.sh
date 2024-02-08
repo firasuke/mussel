@@ -386,7 +386,7 @@ while [ $# -gt 0 ]; do
       XARCH=powerpc64le
       LARCH=powerpc
       MARCH=${LARCH}64
-      XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+      XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128 --with-abi=elfv2"
       XPURE64=$MARCH
       XTARGET=$XARCH-linux-musl
       ;;
