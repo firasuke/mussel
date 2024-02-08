@@ -1,0 +1,22 @@
+[binaries]
+ar = 'i486-linux-musl-gcc-ar'
+as = 'i486-linux-musl-as'
+c = 'i486-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'i486-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'i486-linux-musl-ld.bfd'
+nm = 'i486-linux-musl-gcc-nm'
+objcopy = 'i486-linux-musl-objcopy'
+objdump = 'i486-linux-musl-objdump'
+ranlib = 'i486-linux-musl-gcc-ranlib'
+readelf = 'i486-linux-musl-readelf'
+size = 'i486-linux-musl-size'
+strings = 'i486-linux-musl-strings'
+strip = 'i486-linux-musl-strip'
+
+[host_machine]
+cpu = 'i486'
+cpu_family = 'x86'
+system = 'linux'
+endian = 'little'

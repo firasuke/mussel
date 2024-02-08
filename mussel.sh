@@ -415,12 +415,12 @@ while [ $# -gt 0 ]; do
       XTARGET=$XARCH-linux-musl
       ;;
     sh2-fdpic | superh-fdpic | sh2le-fdpic | sh2el-fdpic)
-      XARCH=sh2
+      XARCH=sh2-fdpic
       LARCH=sh
       MARCH=$LARCH
       XGCCARGS=""
       XPURE64="--enable-fdpic"
-      XTARGET=$XARCH-linux-muslfdpic
+      XTARGET=sh2-linux-muslfdpic
       ;;
     sh2be | sh2eb)
       XARCH=sh2eb
@@ -431,12 +431,12 @@ while [ $# -gt 0 ]; do
       XTARGET=$XARCH-linux-musl
       ;;
     sh2be-fdpic | sh2eb-fdpic)
-      XARCH=sh2eb
+      XARCH=sh2eb-fdpic
       LARCH=sh
       MARCH=$LARCH
       XGCCARGS="--enable-fdpic --with-endian=big"
       XPURE64=""
-      XTARGET=$XARCH-linux-muslfdpic
+      XTARGET=sh2eb-linux-muslfdpic
       ;;
     sh4 | superh4 | sh4le | sh4el)
       XARCH=sh4

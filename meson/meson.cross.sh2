@@ -1,0 +1,22 @@
+[binaries]
+ar = 'sh2-linux-musl-gcc-ar'
+as = 'sh2-linux-musl-as'
+c = 'sh2-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'sh2-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'sh2-linux-musl-ld.bfd'
+nm = 'sh2-linux-musl-gcc-nm'
+objcopy = 'sh2-linux-musl-objcopy'
+objdump = 'sh2-linux-musl-objdump'
+ranlib = 'sh2-linux-musl-gcc-ranlib'
+readelf = 'sh2-linux-musl-readelf'
+size = 'sh2-linux-musl-size'
+strings = 'sh2-linux-musl-strings'
+strip = 'sh2-linux-musl-strip'
+
+[host_machine]
+cpu = 'sh2'
+cpu_family = 'sh'
+system = 'linux'
+endian = 'little'

@@ -1,0 +1,22 @@
+[binaries]
+ar = 'sh2-linux-muslfdpic-gcc-ar'
+as = 'sh2-linux-muslfdpic-as'
+c = 'sh2-linux-muslfdpic-gcc'
+c_ld = 'bfd'
+cpp = 'sh2-linux-muslfdpic-g++'
+cpp_ld = 'bfd'
+ld = 'sh2-linux-muslfdpic-ld.bfd'
+nm = 'sh2-linux-muslfdpic-gcc-nm'
+objcopy = 'sh2-linux-muslfdpic-objcopy'
+objdump = 'sh2-linux-muslfdpic-objdump'
+ranlib = 'sh2-linux-muslfdpic-gcc-ranlib'
+readelf = 'sh2-linux-muslfdpic-readelf'
+size = 'sh2-linux-muslfdpic-size'
+strings = 'sh2-linux-muslfdpic-strings'
+strip = 'sh2-linux-muslfdpic-strip'
+
+[host_machine]
+cpu = 'sh2'
+cpu_family = 'sh'
+system = 'linux'
+endian = 'little'

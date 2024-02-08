@@ -1,0 +1,22 @@
+[binaries]
+ar = 'sh4-linux-musl-gcc-ar'
+as = 'sh4-linux-musl-as'
+c = 'sh4-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'sh4-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'sh4-linux-musl-ld.bfd'
+nm = 'sh4-linux-musl-gcc-nm'
+objcopy = 'sh4-linux-musl-objcopy'
+objdump = 'sh4-linux-musl-objdump'
+ranlib = 'sh4-linux-musl-gcc-ranlib'
+readelf = 'sh4-linux-musl-readelf'
+size = 'sh4-linux-musl-size'
+strings = 'sh4-linux-musl-strings'
+strip = 'sh4-linux-musl-strip'
+
+[host_machine]
+cpu = 'sh4'
+cpu_family = 'sh'
+system = 'linux'
+endian = 'little'
