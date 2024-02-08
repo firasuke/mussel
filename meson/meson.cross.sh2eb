@@ -1,0 +1,22 @@
+[binaries]
+ar = 'sh2eb-linux-musl-gcc-ar'
+as = 'sh2eb-linux-musl-as'
+c = 'sh2eb-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'sh2eb-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'sh2eb-linux-musl-ld.bfd'
+nm = 'sh2eb-linux-musl-gcc-nm'
+objcopy = 'sh2eb-linux-musl-objcopy'
+objdump = 'sh2eb-linux-musl-objdump'
+ranlib = 'sh2eb-linux-musl-gcc-ranlib'
+readelf = 'sh2eb-linux-musl-readelf'
+size = 'sh2eb-linux-musl-size'
+strings = 'sh2eb-linux-musl-strings'
+strip = 'sh2eb-linux-musl-strip'
+
+[host_machine]
+cpu = 'sh2eb'
+cpu_family = 'sh'
+system = 'linux'
+endian = 'big'

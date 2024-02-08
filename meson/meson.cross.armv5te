@@ -1,0 +1,22 @@
+[binaries]
+ar = 'armv5te-linux-musleabihf-gcc-ar'
+as = 'armv5te-linux-musleabihf-as'
+c = 'armv5te-linux-musleabihf-gcc'
+c_ld = 'bfd'
+cpp = 'armv5te-linux-musleabihf-g++'
+cpp_ld = 'bfd'
+ld = 'armv5te-linux-musleabihf-ld.bfd'
+nm = 'armv5te-linux-musleabihf-gcc-nm'
+objcopy = 'armv5te-linux-musleabihf-objcopy'
+objdump = 'armv5te-linux-musleabihf-objdump'
+ranlib = 'armv5te-linux-musleabihf-gcc-ranlib'
+readelf = 'armv5te-linux-musleabihf-readelf'
+size = 'armv5te-linux-musleabihf-size'
+strings = 'armv5te-linux-musleabihf-strings'
+strip = 'armv5te-linux-musleabihf-strip'
+
+[host_machine]
+cpu = 'armv5te'
+cpu_family = 'arm'
+system = 'linux'
+endian = 'little'

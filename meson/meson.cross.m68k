@@ -1,0 +1,22 @@
+[binaries]
+ar = 'm68k-linux-musl-gcc-ar'
+as = 'm68k-linux-musl-as'
+c = 'm68k-linux-musl-gcc'
+c_ld = 'bfd'
+cpp = 'm68k-linux-musl-g++'
+cpp_ld = 'bfd'
+ld = 'm68k-linux-musl-ld.bfd'
+nm = 'm68k-linux-musl-gcc-nm'
+objcopy = 'm68k-linux-musl-objcopy'
+objdump = 'm68k-linux-musl-objdump'
+ranlib = 'm68k-linux-musl-gcc-ranlib'
+readelf = 'm68k-linux-musl-readelf'
+size = 'm68k-linux-musl-size'
+strings = 'm68k-linux-musl-strings'
+strip = 'm68k-linux-musl-strip'
+
+[host_machine]
+cpu = 'm68k'
+cpu_family = 'm68k'
+system = 'linux'
+endian = 'big'

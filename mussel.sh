@@ -52,39 +52,44 @@ mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
-if command -v b3sum 2>&1 > /dev/null; then
-# ----- Package Checksums (b3sum) ----- #
-binutils_sum=41ff0592df8c1e8ec5eb086d418e792331c0c49040218462d6c1224b4fa36d04
-gcc_sum=875af4d704560973ada577955392735ded87e6fd304bd0cbaf8ac795390501c7
-gmp_sum=fffe4996713928ae19331c8ef39129e46d3bf5b7182820656fd4639435cd83a4
-isl_sum=a27da5d097f4e105d3a63c5e81d26c2b00cc35a4a3bf62dd2a49335a0f20ce7f
-linux_sum=b063c7ca0986358f22e9019617cbadb3404da6eb44133bee789f9c7565b1c121
-mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
-mpfr_sum=f428023b8f7569fc1178faf63265ecb6cab4505fc3fce5d8c46af70db848a334
-musl_sum=fc33d5ebf5812ddc4a409b5e5abe620e216ad0378273fdafb73795d52e1722c6
-pkgconf_sum=6c462df0a2d2e1a384cea44c775ef6991be31f21b5bde515f175e6ac6fdb1164
-elif (command -v sha256sum || command -v openssl) 2>&1 > /dev/null; then
-# ----- Package Checksums (sha256sum) ----- #
-binutils_sum=f6e4d41fd5fc778b06b7891457b3620da5ecea1006c6a4a41ae998109f85a800
-gcc_sum=e275e76442a6067341a27f04c5c6b83d8613144004c0413528863dc6b5c743da
-gmp_sum=a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898
-isl_sum=a0b5cb06d24f9fa9e77b55fabbe9a3c94a336190345c2555f9915bb38e976504
-linux_sum=4cac13f7b17bd8dcf9032ad68f9123ab5313d698c9f59416043165150763eb4f
-mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
-mpfr_sum=277807353a6726978996945af13e52829e3abd7a9a5b7fb2793894e18f1fcbb2
-musl_sum=7a35eae33d5372a7c0da1188de798726f68825513b7ae3ebe97aaaa52114f039
-pkgconf_sum=266d5861ee51c52bc710293a1d36622ae16d048d71ec56034a02eb9cf9677761
+# Decide which checksum command to use.
+if [ -z "$checksum_command" ]; then
+	for ccmd in openssl sha256sum b3sum; do
+		command -v $ccmd  2>&1 > /dev/null && checksum_command="$ccmd"
+	done
 fi
 
+# checksums
+if [ "$checksum_command" = "b3sum" ]; then
+  # ----- Package Checksums (b3sum) ----- #
+  binutils_sum=41ff0592df8c1e8ec5eb086d418e792331c0c49040218462d6c1224b4fa36d04
+  gcc_sum=875af4d704560973ada577955392735ded87e6fd304bd0cbaf8ac795390501c7
+  gmp_sum=fffe4996713928ae19331c8ef39129e46d3bf5b7182820656fd4639435cd83a4
+  isl_sum=a27da5d097f4e105d3a63c5e81d26c2b00cc35a4a3bf62dd2a49335a0f20ce7f
+  linux_sum=b063c7ca0986358f22e9019617cbadb3404da6eb44133bee789f9c7565b1c121
+  mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
+  mpfr_sum=f428023b8f7569fc1178faf63265ecb6cab4505fc3fce5d8c46af70db848a334
+  musl_sum=fc33d5ebf5812ddc4a409b5e5abe620e216ad0378273fdafb73795d52e1722c6
+  pkgconf_sum=6c462df0a2d2e1a384cea44c775ef6991be31f21b5bde515f175e6ac6fdb1164
 
-# ----- Checksum utility alias ----- #
-if command -v b3sum 2>&1 > /dev/null; then
-checksum(){ b3sum -c "$@"; }
-elif command -v openssl 2>&1 > /dev/null; then
+elif [ "$checksum_command" = "sha256sum" ] || [ "$checksum_command" = "openssl" ]; then
+  # ----- Package Checksums (sha256sum) ----- #
+  binutils_sum=f6e4d41fd5fc778b06b7891457b3620da5ecea1006c6a4a41ae998109f85a800
+  gcc_sum=e275e76442a6067341a27f04c5c6b83d8613144004c0413528863dc6b5c743da
+  gmp_sum=a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898
+  isl_sum=a0b5cb06d24f9fa9e77b55fabbe9a3c94a336190345c2555f9915bb38e976504
+  linux_sum=4cac13f7b17bd8dcf9032ad68f9123ab5313d698c9f59416043165150763eb4f
+  mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
+  mpfr_sum=277807353a6726978996945af13e52829e3abd7a9a5b7fb2793894e18f1fcbb2
+  musl_sum=7a35eae33d5372a7c0da1188de798726f68825513b7ae3ebe97aaaa52114f039
+  pkgconf_sum=266d5861ee51c52bc710293a1d36622ae16d048d71ec56034a02eb9cf9677761
+fi
+
+# ----- Check sha256 hash using openssl ----- #
 # For a simple formality, I must say this code comes from Copacabana's
 # build-system cmd/sha256sum.ksh implementation, but was heavly modified
 # for POSIX shell compliance and for fitting this script.
-checksum(){
+osslchecksum() {
 	err=0
 	# If it's not passed via $1, read it from standard input using cat(1).
 	hash_line="${1:-$(cat)}"
@@ -108,9 +113,39 @@ checksum(){
 	actual_hash_line actual_fname actual_hash
 	return $err
 }
-elif command -v sha256sum 2>&1 > /dev/null; then
-checksum(){ sha256sum -c "$@"; }
-fi
+
+# ----- Checksum utility alias ----- #
+checksum() {
+  # check the hash with b3sum
+  [ "$checksum_command" = "b3sum" ] && {
+    printf "$1  $2" | b3sum -c
+    return $?
+  }
+
+  # check the hash with sha256sum
+  [ "$checksum_command" = "sha256sum" ] && {
+    printf "$1  $2" | sha256sum -c
+    return $?
+  }
+
+
+  # check the hash with openssl
+  [ "$checksum_command" = "openssl" ] && {
+    printf "$1 $2" | osslchecksum
+    return $?
+  }
+}
+
+# Stone-portable way to get the processor number of cores on
+# UNIX-compatible systems, although we may only be using this on Linux.
+getnproc() {
+	(
+		getconf _NPROCESSORS_ONLN \
+		|| ( [ "$(uname -s)" = 'Linux' ] && printf -- '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
+		|| nproc \
+		|| printf -- '%d' 1
+	) 2>/dev/null
+}
 
 # Decide which download command to use.
 if [ -z "$download_command" ]; then
@@ -130,17 +165,6 @@ if [ -z "$download_command" ]; then
 		'https://www.gnu.org/software/wget/ (C'\''mon, it'\''s better than nothing)'
 	exit 1
 fi
-
-# Stone-portable way to get the processor number of cores on
-# UNIX-compatible systems, although we may only be using this on Linux.
-getnproc() {
-	(
-		getconf _NPROCESSORS_ONLN \
-		|| ( [ "$(uname -s)" = 'Linux' ] && printf -- '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
-		|| nproc \
-		|| printf -- '%d' 1
-	) 2>/dev/null
-}
 
 # ----- URL transfer utility alias ----- #
 nettransfer() {
@@ -206,6 +230,30 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
+    armv4 | armv4t )
+      XARCH=armv4t
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=armv4t --with-float=soft"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabi
+      ;;
+    armv5 | armv5te )
+      XARCH=armv5te
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=armv5te --with-float=soft"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabi
+      ;;
+    armv6 )
+      XARCH=armv6
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-fpu=vfp --with-float=hard"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabihf
+      ;;
     arm | armv6kz | armv6zk | bcm2835)
       XARCH=armv6kz
       LARCH=arm
@@ -214,13 +262,21 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musleabihf
       ;;
-    armv7)
-      XARCH=$1
+    armv7 | armv7-a)
+      XARCH=armv7-a
       LARCH=arm
       MARCH=$LARCH
-      XGCCARGS="--with-arch=${LARCH}v7-a --with-fpu=vfpv3 --with-float=hard"
+      XGCCARGS="--with-arch=$XARCH --with-fpu=vfpv3 --with-float=hard"
       XPURE64=""
       XTARGET=$LARCH-linux-musleabihf
+      ;;
+    i486)
+      XARCH=$1
+      LARCH=i386
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$1 --with-tune=generic"
+      XPURE64=""
+      XTARGET=$1-linux-musl
       ;;
     i586)
       XARCH=$1
@@ -235,6 +291,14 @@ while [ $# -gt 0 ]; do
       LARCH=i386
       MARCH=$LARCH
       XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    m68k | 68000 | motorola )
+      XARCH=m68k
+      LARCH=$XARCH
+      MARCH=$XARCH
+      XGCCARGS=""
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
@@ -302,6 +366,14 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
+    powerpcle | powerpcel | ppcle | ppcel )
+      XARCH=powerpcle
+      LARCH=poweroc
+      MARCH=powerpc
+      XGCCARGS="--with-cpu=$LARCH --enable-secureplt --without-long-double-128 --with-endian=little"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
     g5 | powerpc64 | powerpc64be | powerpc64eb | ppc64 | ppc64be | ppc64eb)
       XARCH=powerpc64
       LARCH=powerpc
@@ -334,7 +406,55 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    x86-64 | x86_64)
+    sh2 | superh | sh2le | sh2el)
+      XARCH=sh2
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh2-fdpic | superh-fdpic | sh2le-fdpic | sh2el-fdpic)
+      XARCH=sh2-fdpic
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64="--enable-fdpic"
+      XTARGET=sh2-linux-muslfdpic
+      ;;
+    sh2be | sh2eb)
+      XARCH=sh2eb
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh2be-fdpic | sh2eb-fdpic)
+      XARCH=sh2eb-fdpic
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--enable-fdpic --with-endian=big"
+      XPURE64=""
+      XTARGET=sh2eb-linux-muslfdpic
+      ;;
+    sh4 | superh4 | sh4le | sh4el)
+      XARCH=sh4
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh4be-fdpic | sh4eb-fdpic)
+      XARCH=sh4eb
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-muslfdpic
+      ;;
+    amd64 | x86-64 | x86_64)
       XARCH=x86-64
       LARCH=x86_64
       MARCH=$LARCH
@@ -362,11 +482,16 @@ while [ $# -gt 0 ]; do
       printf -- '\n'
       printf -- 'Supported Architectures:\n'
       printf -- '\t+ aarch64\n'
+      printf -- '\t+ armv4t\n'
+      printf -- '\t+ armv5te\n'
+      printf -- '\t+ armv6\n'
       printf -- '\t+ armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module,'
       printf -- '\n\t          and the Raspberry Pi Zero)\n'
       printf -- '\t+ armv7\n'
+      printf -- '\t+ i486\n'
       printf -- '\t+ i586\n'
       printf -- '\t+ i686\n'
+      printf -- '\t+ m68k\n'
       printf -- '\t+ microblaze\n'
       printf -- '\t+ microblazeel\n'
       printf -- '\t+ mips64\n'
@@ -375,10 +500,17 @@ while [ $# -gt 0 ]; do
       printf -- '\t+ mipsisa64r6el\n'
       printf -- '\t+ or1k\n'
       printf -- '\t+ powerpc\n'
+      printf -- '\t+ powerpcle\n'
       printf -- '\t+ powerpc64\n'
       printf -- '\t+ powerpc64le\n'
       printf -- '\t+ riscv64\n'
       printf -- '\t+ s390x\n'
+      printf -- '\t+ sh2\n'
+      printf -- '\t+ sh2be\n'
+      printf -- '\t+ sh2-fdpic\n'
+      printf -- '\t+ sh2be-fdpic\n'
+      printf -- '\t+ sh4\n'
+      printf -- '\t+ sh4be\n'
       printf -- '\t+ x86-64\n'
       printf -- '\n'
       printf -- 'Flags:\n'
@@ -465,7 +597,7 @@ mpackage() {
   fi
 
   printf -- "${BLUEC}..${NORMALC} Verifying "$HOLDER"...\n"
-  printf -- "$3  $HOLDER" | checksum || {
+  checksum "$3" "$HOLDER" || {
     printf -- "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
     rm "$HOLDER" &&
     nettransfer "$2";
