@@ -49,7 +49,7 @@ isl_url=https://libisl.sourceforge.io/isl-$isl_ver.tar.xz
 linux_url=https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$linux_ver.tar.xz
 mpc_url=https://ftpmirror.gnu.org/mpc/mpc-$mpc_ver.tar.gz
 mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
-musl_url=https://www.musl-libc.org/releases/musl-$musl_ver.tar.gz
+musl_url=https://musl.libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
 # Decide which checksum command to use.
