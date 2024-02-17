@@ -33,11 +33,13 @@ below
 
 **(flags)**:
 ```Shell
+  f | -f | --enable-fortran        Enable optional Fortran support
   h | -h | --help                  Display help message
   k | -k | --enable-pkg-config     Enable optional pkg-config support
   l | -l | --enable-linux-headers  Enable optional Linux Headers support
   o | -o | --enable-openmp         Enable optional OpenMP support
   p | -p | --parallel              Use all available cores on the host system
+  q | -q | --enable-quadmath       Enable optional libquadmath support (default for Fortran)
   x | -x | --disable-cxx           Disable optional C++ support
 ```
 
@@ -107,6 +109,8 @@ Pi Zero)
 ## **Optional** Steps
 * Build and install `libstdc++-v3` (**Optional** C++ Support) (**Enabled** by default)
 * Build and install `libgomp` (**Optional** OpenMP Support) (**Disabled** by default)
+* Build and install `libquadmath` (**Optional** Quad-precision support)
+(**Disabled** by default, **Enabled** for Fortran)
 * Install `linux-headers` (**Optional** Linux Headers Support) (**Disabled** by default)
 * Configure, build and install `pkgconf` (**Optional** `pkg-config` Support)
 (**Disabled** by default)

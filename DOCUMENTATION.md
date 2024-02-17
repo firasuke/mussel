@@ -18,9 +18,11 @@
 * [4. Step 4: `musl`](#4-step-4-musl)
 * [5. Step 5: `cross-gcc` (`libgcc-shared`)](#5-step-5-cross-gcc-libgcc-shared)
 * [6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)](#6-optional-c-support-step-6-cross-gcc-libstdc-v3)
-* [7. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)](#7-optional-openmp-support-step-8-cross-gcc-libgomp)
-* [8. [**Optional** Linux Headers Support] Step 8: `linux` headers](#8-optional-linux-headers-support-step-9-linux-headers)
-* [9. [**Optional** `pkg-config` Support] Step 9: `pkgconf`](#9-optional-pkg-config-support-step-10-pkgconf)
+* [7. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)](#7-optional-openmp-support-step-7-cross-gcc-libgomp)
+* [8. [**Optional** Quad-precision floating point Support] Step 8: `cross-gcc` (`libquadmath`)](#8-optional-quad-precision-floating-point-support-step-8-cross-gcc-libquadmath)
+* [9. [**Optional** Fortran Support] Step 9: `cross-gcc` (`libgfortran`)](#9-optional-fortran-support-step-9-cross-gcc-libgfortran)
+* [10. [**Optional** Linux Headers Support] Step 10: `linux` headers](#10-optional-linux-headers-support-step-11-linux-headers)
+* [11. [**Optional** `pkg-config` Support] Step 11: `pkgconf`](#11-optional-pkg-config-support-step-11-pkgconf)
 
 ## i. Package URLs
 * The usage of ftpmirror for GNU packages is preferred.
@@ -49,11 +51,16 @@ build `musl` for these architectures.
 * All listed archs were tested and are fully working!
 
     * aarch64
+    * armv4t
+    * armv5te
+    * armv6
     * armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the
     Raspberry Pi Zero)
     * armv7
+    * i486
     * i586
     * i686
+    * m68k
     * microblaze
     * microblazeel
     * mips64
@@ -62,10 +69,17 @@ build `musl` for these architectures.
     * mipsisa64r6el
     * or1k
     * powerpc
+    * powerpcle
     * powerpc64
     * powerpc64le
     * riscv64
     * s390x
+    * sh2
+    * sh2be
+    * sh2-fdpic
+    * sh2be-fdpic
+    * sh4
+    * sh4be
     * x86-64
 
 ## iv. PATH
@@ -206,12 +220,22 @@ recommended to ensure that this step results in a shared version of `libgcc`.
 It's a good idea to leave the support for C++ enabled as many programs require
 it (e.g. `gcc`).
 
-## 7. [**Optional** OpenMP Support] Step 8: `cross-gcc` (`libgomp`)
+## 7. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)
 If you're planning on targeting a machine with two or more cores, then it might
 be a good idea to enable support for OpenMP optimizations as well (beware as
 some packages may fail to build with OpenMP enabled e.g. `grub`).
 
-## 8. [**Optional** Linux Headers Support] Step 9: linux headers
+## 8. [**Optional** Quad-precision floating point Support] Step 8: `cross-gcc` (`libquadmath`)
+If you're building a toolchain with Fortran support (or otherwise need or want
+support for quadruple-precision floating point arithmetic), you will want to
+enable support for libquadmath. This is enabled when building for Fortran
+by default.
+
+## 9. [**Optional** Fortran Support] Step 9: `cross-gcc` (`libgfortran`)
+If you're building Fortran support, `mussel` will build gcc's implementation of
+Fortran's standard library.
+
+## 10. [**Optional** Linux Headers Support] Step 10: linux headers
 * If you're planning on targeting a Linux system then it's a good idea to include
 support for Linux kernel headers as several packages require them.
 
@@ -227,7 +251,7 @@ default as of `5.3`, it also performs additional cleaning on `*.cmd` files which
 may require manual cleaning if we're manually copying the headers (in the case
 of `rsync` not being available, which isn't recommended)).
 
-## 9. [**Optional** `pkg-config` Support] Step 10: `pkgconf`
+## 11. [**Optional** `pkg-config` Support] Step 11: `pkgconf`
 * As of `gcc` 10, the flag `-fno-common` is now enabled by default, which in
 most cases is a good thing because it helps in performance but for `pkgconf` it
 will result in breakage which is why we're passing `-fcommon` instead.
