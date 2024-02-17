@@ -18,9 +18,11 @@ umask 022
 
 # ----- Optional ----- #
 CXX_SUPPORT=yes
+FORTRAN_SUPPORT=no
 LINUX_HEADERS_SUPPORT=no
 OPENMP_SUPPORT=no
 PARALLEL_SUPPORT=no
+QUADMATH_SUPPORT=no
 PKG_CONFIG_SUPPORT=no
 
 # ----- Colors ----- #
@@ -527,6 +529,10 @@ while [ $# -gt 0 ]; do
       printf -- 'No penguins were harmed in the making of this script!\n'
       exit
       ;;
+    f | -f | --enable-fortran)
+      QUADMATH_SUPPORT=yes
+      FORTRAN_SUPPORT=yes
+      ;;
     k | -k | --enable-pkg-config)
       PKG_CONFIG_SUPPORT=yes
       ;;
@@ -538,6 +544,9 @@ while [ $# -gt 0 ]; do
       ;;
     p | -p | --parallel)
       PARALLEL_SUPPORT=yes
+      ;;
+    q | -q | --enable-quadmath)
+      QUADMATH_SUPPORT=yes
       ;;
     x | -x | --disable-cxx)
       CXX_SUPPORT=no
@@ -587,7 +596,7 @@ mpackage() {
 
   cd "$1"
 
-  HOLDER="$(basename $2)"
+  HOLDER="${2##*/}"
 
   if [ ! -f "$HOLDER" ]; then
     printf -- "${BLUEC}..${NORMALC} Fetching "$HOLDER"...\n"
@@ -869,9 +878,39 @@ if [ $OPENMP_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} cross-gcc (libgomp) finished.\n\n"
 fi
 
-# ----- [Optional Linux Headers Support] Step 8: linux headers ----- #
+# ----- [Optional Quadmath Support] Step 8: cross-gcc (libquadmath) ----- #
+if [ $QUADMATH_SUPPORT = yes ]; then
+  printf -- "\n-----\n*8) cross-gcc (libquadmath)\n-----\n\n" >> $MLOG
+  printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libquadmath)...\n"
+  cd $BLDDIR/cross-gcc
+  $MAKE \
+    all-target-libquadmath >> $MLOG 2>&1
+
+  printf -- "${BLUEC}..${NORMALC} Installing cross-gcc (libquadmath)...\n"
+  $MAKE \
+    install-strip-target-libquadmath >> $MLOG 2>&1
+
+  printf -- "${GREENC}=>${NORMALC} cross-gcc (libquadmath) finished.\n\n"
+fi
+
+# ----- [Optional Fortran Support] Step 9: cross-gcc (libgfortran) ----- #
+if [ $FORTRAN_SUPPORT = yes ]; then
+  printf -- "\n-----\n*9) cross-gcc (libgfortran)\n-----\n\n" >> $MLOG
+  printf -- "${BLUEC}..${NORMALC} Building cross-gcc (libgfortran)...\n"
+  cd $BLDDIR/cross-gcc
+  $MAKE \
+    all-target-libgfortran >> $MLOG 2>&1
+
+  printf -- "${BLUEC}..${NORMALC} Installing cross-gcc (libgfortran)...\n"
+  $MAKE \
+    install-strip-target-libgfortran >> $MLOG 2>&1
+
+  printf -- "${GREENC}=>${NORMALC} cross-gcc (libgfortran) finished.\n\n"
+fi
+
+# ----- [Optional Linux Headers Support] Step 10: linux headers ----- #
 if [ $LINUX_HEADERS_SUPPORT = yes ]; then
-  printf -- "\n-----\n*8) linux headers\n-----\n\n" >> $MLOG
+  printf -- "\n-----\n*10) linux headers\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Preparing linux headers...\n"
   cd $BLDDIR
   mkdir linux
@@ -892,9 +931,9 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
   printf -- "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
 
-# ----- [Optional pkg-config Support] Step 9: pkgconf ----- #
+# ----- [Optional pkg-config Support] Step 11: pkgconf ----- #
 if [ $PKG_CONFIG_SUPPORT = yes ]; then
-  printf -- "\n-----\n*9) pkgconf\n-----\n\n" >> $MLOG
+  printf -- "\n-----\n*11) pkgconf\n-----\n\n" >> $MLOG
   printf -- "${BLUEC}..${NORMALC} Preparing pkgconf...\n"
   cd $BLDDIR
   mkdir pkgconf
