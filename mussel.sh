@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+# vi: tw=2 sw=2 sts=2 et
+
 # Copyright (c) 2020-2024, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
