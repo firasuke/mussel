@@ -148,6 +148,7 @@ support all listed architectures, and a wrapper around host's `meson`
 * [qLinux](https://qlinux.qware.org/doku.php)
 * [Raptix](https://github.com/dslm4515/Raptix)
 * [Spider Linux](https://github.com/spider-linux/spiderlinux)
+* [Yeti OS](https://avs-origami.github.io/yeti.html)
 
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
