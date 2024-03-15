@@ -213,7 +213,7 @@ BLDDIR="$CURDIR/builds"
 PCHDIR="$CURDIR/patches"
 
 MPREFIX="$CURDIR/toolchain"
-MSYSROOT="$CURDIR/sysroot"
+MSYSROOT="$CURDIR/toolchain"
 
 # ----- mussel Log File ---- #
 MLOG="$CURDIR/log.txt"
@@ -660,10 +660,12 @@ printf '+=======================================================+\n'
 printf '\n'
 printf "Target Architecture:            $XARCH\n\n"
 printf "Optional C++ Support:           $CXX_SUPPORT\n"
+printf "Optional Fortran Support:       $FORTRAN_SUPPORT\n"
 printf "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
 printf "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
 printf "Optional Parallel Support:      $PARALLEL_SUPPORT\n"
-printf "Optional pkg-config Support:    $PKG_CONFIG_SUPPORT\n\n"
+printf "Optional pkg-config Support:    $PKG_CONFIG_SUPPORT\n"
+printf "Optional Quadmath Support:      $QUADMATH_SUPPORT\n\n"
 
 [ ! -d $SRCDIR ] && printf "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR
@@ -673,13 +675,16 @@ rm -fr $MLOG
 
 # ----- Print Variables to mussel Log File ----- #
 printf 'mussel Log File\n\n' >> $MLOG
-printf "CXX_SUPPORT: $CXX_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\n\n" >> $MLOG
+printf "CXX_SUPPORT: $CXX_SUPPORT\nFORTRAN_SUPPORT: $FORTRAN_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\nQUADMATH_SUPPORT: $QUADMATH_SUPPORT\n\n" >> $MLOG
 printf "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG
 printf "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG
 printf "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG
 printf "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >> $MLOG
 printf "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >> $MLOG
 printf "\nStart Time: $(date)\n\n" >> $MLOG
+
+# if defined, fortran lang support is built in gcc
+[ "$FORTRAN_SUPPORT" = "yes" ] && ENABLE_FORTRAN_YES="abcd"
 
 # ----- Prepare Packages ----- #
 printf "-----\nprepare\n-----\n\n" >> $MLOG
@@ -710,6 +715,23 @@ mclean builds
 mclean toolchain
 mclean sysroot
 
+# set up dir structure
+printf "-----\ndir structure\n-----\n\n" >> $MLOG
+printf "${BLUEC}..${NORMALC} Creating directory structure...\n"
+mkdir -pv $MSYSROOT >> $MLOG 2>&1
+cd $MSYSROOT
+mkdir -pv \
+  bin \
+  lib \
+  lib32 \
+  include \
+  $XTARGET/bin >> $MLOG 2>&1
+ln -sfv . usr >> $MLOG 2>&1
+cd $MSYSROOT/$XTARGET
+ln -sfv ../lib lib >> $MLOG 2>&1
+ln -sfv ../lib32 lib32 >> $MLOG 2>&1
+ln -sfv ../include include >> $MLOG 2>&1
+
 printf '\n'
 
 # ----- Step 1: musl headers ----- #
@@ -722,7 +744,7 @@ cd musl
 printf "${BLUEC}..${NORMALC} Installing musl headers...\n"
 $MAKE \
   ARCH=$MARCH \
-  prefix=/usr \
+  prefix="" \
   DESTDIR=$MSYSROOT \
   install-headers >> $MLOG 2>&1
 
@@ -737,10 +759,23 @@ cd cross-binutils
 
 printf "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
 $SRCDIR/binutils/binutils-$binutils_ver/configure \
-  --prefix=$MPREFIX \
+  --with-sysroot=/ \
+  --with-build-sysroot=$MSYSROOT \
+  --prefix="" \
+  --exec-prefix="" \
+  --sbindir=/bin \
+  --libexecdir=/lib \
+  --datarootdir=/_tmp \
   --target=$XTARGET \
-  --with-sysroot=$MSYSROOT \
+  --with-pkgversion="mussel" \
+  --enable-default-hash-style="sysv" \
+  --enable-default-pie \
+  --enable-static-pie \
+  --enable-relro \
+  --disable-bootstrap \
   --disable-multilib \
+  --disable-linker-build-id \
+  --disable-rpath \
   --disable-werror >> $MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-binutils...\n"
@@ -751,6 +786,7 @@ $MAKE \
 
 printf "${BLUEC}..${NORMALC} Installing cross-binutils...\n"
 $MAKE \
+  DESTDIR=$MSYSROOT \
   install-strip-binutils \
   install-strip-gas \
   install-strip-ld >> $MLOG 2>&1
@@ -771,15 +807,28 @@ cd cross-gcc
 
 printf "${BLUEC}..${NORMALC} Configuring cross-gcc (compiler)...\n"
 $SRCDIR/gcc/gcc-$gcc_ver/configure \
-  --prefix=$MPREFIX \
+  --with-sysroot=/ \
+  --with-build-sysroot=$MSYSROOT \
+  --prefix="" \
+  --exec-prefix="" \
+  --sbindir=/bin \
+  --libexecdir=/lib \
+  --datarootdir=/_tmp \
   --target=$XTARGET \
-  --with-sysroot=$MSYSROOT \
-  --enable-languages=c,c++ \
-  --disable-multilib \
+  --with-pkgversion="mussel" \
+  --enable-languages=c,c++${ENABLE_FORTRAN_YES:+,fortran} \
+  --enable-default-hash-style="sysv" \
+  --enable-default-pie \
+  --enable-static-pie \
+  --enable-relro \
+  --enable-initfini-array \
   --disable-bootstrap \
+  --disable-multilib \
   --disable-libsanitizer \
+  --disable-linker-build-id \
+  --disable-rpath \
   --disable-werror \
-  --enable-initfini-array $XGCCARGS >> $MLOG 2>&1
+  $XGCCARGS >> $MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-gcc (compiler)...\n"
 mkdir -p $MSYSROOT/usr/include
@@ -788,6 +837,7 @@ $MAKE \
 
 printf "${BLUEC}..${NORMALC} Installing cross-gcc (compiler)...\n\n"
 $MAKE \
+  DESTDIR=$MSYSROOT \
   install-strip-gcc >> $MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-gcc (libgcc-static)...\n"
@@ -799,6 +849,7 @@ $MAKE \
 
 printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgcc-static)...\n"
 $MAKE \
+  DESTDIR=$MSYSROOT \
   install-strip-target-libgcc >> $MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} cross-gcc (libgcc-static) finished.\n\n"
@@ -817,7 +868,7 @@ CROSS_COMPILE=$XTARGET- \
 LIBCC="$MPREFIX/lib/gcc/$XTARGET/$gcc_ver/libgcc.a" \
 ./configure \
   --host=$XTARGET \
-  --prefix=/usr >> $MLOG 2>&1
+  --prefix="" >> $MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building musl...\n"
 $MAKE \
@@ -851,6 +902,7 @@ $MAKE \
 
 printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgcc-shared)...\n"
 $MAKE \
+  DESTDIR=$MSYSROOT \
   install-strip-target-libgcc >> $MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} cross-gcc (libgcc-shared) finished.\n\n"
@@ -865,6 +917,7 @@ if [ $CXX_SUPPORT = yes ]; then
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libstdc++-v3)...\n"
   $MAKE \
+    DESTDIR=$MSYSROOT \
     install-strip-target-libstdc++-v3 >> $MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libstdc++v3) finished.\n\n"
@@ -879,6 +932,7 @@ if [ $OPENMP_SUPPORT = yes ]; then
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgomp)...\n"
   $MAKE \
+    DESTDIR=$MSYSROOT \
     install-strip-target-libgomp >> $MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libgomp) finished.\n\n"
@@ -894,6 +948,7 @@ if [ $QUADMATH_SUPPORT = yes ]; then
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libquadmath)...\n"
   $MAKE \
+    DESTDIR=$MSYSROOT \
     install-strip-target-libquadmath >> $MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libquadmath) finished.\n\n"
@@ -909,6 +964,7 @@ if [ $FORTRAN_SUPPORT = yes ]; then
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgfortran)...\n"
   $MAKE \
+    DESTDIR=$MSYSROOT \
     install-strip-target-libgfortran >> $MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libgfortran) finished.\n\n"
@@ -968,5 +1024,9 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
   printf "${GREENC}=>${NORMALC} pkgconf finished.\n\n"
 fi
 
+# remove temp dir
+rm -rf $MSYSROOT/_tmp >> $MLOG @>&1
+
+# done!
 printf "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
 printf "\nEnd Time: $(date)\n" >> $MLOG 2>&1
