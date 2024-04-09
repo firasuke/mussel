@@ -34,7 +34,6 @@ below
 **(flags)**:
 ```Shell
   f | -f | --enable-fortran        Enable optional Fortran support
-  h | -h | --help                  Display help message
   k | -k | --enable-pkg-config     Enable optional pkg-config support
   l | -l | --enable-linux-headers  Enable optional Linux Headers support
   o | -o | --enable-openmp         Enable optional OpenMP support
@@ -51,6 +50,7 @@ below
 **(command)**:
 ```Shell
   c | -c | --clean                 Clean mussel's build environment
+  h | -h | --help                  Display this help message
 ```
 
 Sources will be preserved.

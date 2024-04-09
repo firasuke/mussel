@@ -517,16 +517,16 @@ while [ $# -gt 0 ]; do
       printf '\n'
       printf 'Flags:\n'
       printf '\tf | -f | --enable-fortran      \tEnable optional Fortran support\n'
-      printf '\th | -h | --help                \tDisplay help message\n'
       printf '\tk | -k | --enable-pkg-config   \tEnable optional pkg-config support\n'
       printf '\tl | -l | --enable-linux-headers\tEnable optional Linux Headers support\n'
       printf '\to | -o | --enable-openmp       \tEnable optional OpenMP support\n'
       printf '\tp | -p | --parallel            \tUse all available cores on the host system\n'
-      printf '\tq | -q | --enable-quadmath     \tEnable optional Quad-precision math support\n'
+      printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
       printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
       printf '\n'
       printf 'Commands:\n'
       printf "\tc | -c | --clean               \tClean mussel's build environment\n"
+      printf '\th | -h | --help                \tDisplay this help message\n'
       printf '\n'
       printf 'No penguins were harmed in the making of this script!\n'
       exit
