@@ -647,12 +647,12 @@ mclean() {
 #--------------------------------------#
 
 printf '\n'
-printf '+=======================================================+\n'
-printf '| mussel.sh - The fastest musl libc Toolchain Generator |\n'
-printf '+-------------------------------------------------------+\n'
-printf '|      Copyright (c) 2020-2024, Firas Khalil Khana      |\n'
-printf '|     Distributed under the terms of the ISC License    |\n'
-printf '+=======================================================+\n'
+printf '+======================================================+\n'
+printf '|  mussel - The fastest musl libc Toolchain Generator  |\n'
+printf '+------------------------------------------------------+\n'
+printf '|     Copyright (c) 2020-2024, Firas Khalil Khana      |\n'
+printf '|    Distributed under the terms of the ISC License    |\n'
+printf '+======================================================+\n'
 printf '\n'
 printf "Target Architecture:            $XARCH\n\n"
 printf "Optional C++ Support:           $CXX_SUPPORT\n"

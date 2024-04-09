@@ -19,12 +19,12 @@ compilers that target `musl` libc.
    and why
 
 ## Requirements:
-To confirm you have all required packages, please execute `./check.sh`.
+To confirm you have all required packages, please execute `./check`.
 
 ## Usage
 ### Building a Cross Compiler
 ```Shell
-./mussel.sh (arch) (flags)
+./mussel (arch) (flags)
 ```
 
 **(arch)**: See [**Supported
@@ -45,7 +45,7 @@ below
 
 ### Other Commands
 ```Shell
-./mussel.sh (command)
+./mussel (command)
 ```
 
 **(command)**:
