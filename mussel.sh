@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-# vi: tw=2 sw=2 sts=2 et
-
 # Copyright (c) 2020-2024, Firas Khalil Khana
 # Distributed under the terms of the ISC License
 
@@ -26,8 +24,8 @@ FORTRAN_SUPPORT=no
 LINUX_HEADERS_SUPPORT=no
 OPENMP_SUPPORT=no
 PARALLEL_SUPPORT=no
-QUADMATH_SUPPORT=no
 PKG_CONFIG_SUPPORT=no
+QUADMATH_SUPPORT=no
 
 # ----- Colors ----- #
 REDC='\033[1;31m'
@@ -60,9 +58,9 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 # Decide which checksum command to use.
 if [ -z "$checksum_command" ]; then
-	for ccmd in openssl sha256sum b3sum; do
-		command -v $ccmd  2>&1 > /dev/null && checksum_command="$ccmd"
-	done
+  for ccmd in openssl sha256sum b3sum; do
+    command -v $ccmd  2>&1 > /dev/null && checksum_command="$ccmd"
+  done
 fi
 
 # checksums
@@ -77,7 +75,6 @@ if [ "$checksum_command" = "b3sum" ]; then
   mpfr_sum=f428023b8f7569fc1178faf63265ecb6cab4505fc3fce5d8c46af70db848a334
   musl_sum=63f96e526d3a73fddff8fcb9ee5c1dcbfdac8405db7d7537c3d1c8fffd5e6947
   pkgconf_sum=6c462df0a2d2e1a384cea44c775ef6991be31f21b5bde515f175e6ac6fdb1164
-
 elif [ "$checksum_command" = "sha256sum" ] || [ "$checksum_command" = "openssl" ]; then
   # ----- Package Checksums (sha256sum) ----- #
   binutils_sum=f6e4d41fd5fc778b06b7891457b3620da5ecea1006c6a4a41ae998109f85a800
@@ -96,28 +93,28 @@ fi
 # build-system cmd/sha256sum.ksh implementation, but was heavly modified
 # for POSIX shell compliance and for fitting this script.
 osslchecksum() {
-	err=0
-	# If it's not passed via $1, read it from standard input using cat(1).
-	hash_line="${1:-$(cat)}"
-	# Split the line in two using the good ol' POSIX "regex", then use the
-	# file name for recreating the hash using OpenSSL's shell/command line
-	# API and treating its output with [n]awk(1).
-	file_to_check="${hash_line#* }"
-	alleged_hash="${hash_line%% *}"
-	actual_hash_line="$(openssl dgst -sha256 "$file_to_check" \
-		| awk '{ split($0, digest, "= ");
-		sub(/.*[(]/, "", digest[1]);
-		sub(/[)].*/, "", digest[1]);
-		printf("%s %s\n", digest[2], digest[1]); }')"
-	actual_fname="${actual_hash_line#* }"
-	actual_hash="${actual_hash_line%% *}"
-	if [ "x$alleged_hash" != "x$actual_hash" ]; then
-		# "They said I came back Google Go-nized..."
-		err=1
-	fi
-	unset hash_line file_to_check alleged_hash \
-	actual_hash_line actual_fname actual_hash
-	return $err
+  err=0
+  # If it's not passed via $1, read it from standard input using cat(1).
+  hash_line="${1:-$(cat)}"
+  # Split the line in two using the good ol' POSIX "regex", then use the
+  # file name for recreating the hash using OpenSSL's shell/command line
+  # API and treating its output with [n]awk(1).
+  file_to_check="${hash_line#* }"
+  alleged_hash="${hash_line%% *}"
+  actual_hash_line="$(openssl dgst -sha256 "$file_to_check" \
+    | awk '{ split($0, digest, "= ");
+    sub(/.*[(]/, "", digest[1]);
+    sub(/[)].*/, "", digest[1]);
+    printf("%s %s\n", digest[2], digest[1]); }')"
+  actual_fname="${actual_hash_line#* }"
+  actual_hash="${actual_hash_line%% *}"
+  if [ "x$alleged_hash" != "x$actual_hash" ]; then
+    # "They said I came back Google Go-nized..."
+    err=1
+  fi
+  unset hash_line file_to_check alleged_hash \
+  actual_hash_line actual_fname actual_hash
+  return $err
 }
 
 # ----- Checksum utility alias ----- #
@@ -134,7 +131,6 @@ checksum() {
     return $?
   }
 
-
   # check the hash with openssl
   [ "$checksum_command" = "openssl" ] && {
     printf "$1 $2" | osslchecksum
@@ -145,65 +141,65 @@ checksum() {
 # Stone-portable way to get the processor number of cores on
 # UNIX-compatible systems, although we may only be using this on Linux.
 getnproc() {
-	(
-		getconf _NPROCESSORS_ONLN \
-		|| ( [ "$(uname -s)" = 'Linux' ] && printf '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
-		|| nproc \
-		|| printf '%d' 1
-	) 2>/dev/null
+  (
+    getconf _NPROCESSORS_ONLN \
+    || ( [ "$(uname -s)" = 'Linux' ] && printf '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
+    || nproc \
+    || printf '%d' 1
+  ) 2>/dev/null
 }
 
 # Decide which download command to use.
 if [ -z "$download_command" ]; then
-	for dcmd in wget w3m lynx curl aria2c; do
-		command -v $dcmd  2>&1 > /dev/null && download_command="$dcmd"
-	done
+  for dcmd in wget w3m lynx curl aria2c; do
+    command -v $dcmd  2>&1 > /dev/null && download_command="$dcmd"
+  done
 fi
 
 # If $download_command is still unset, we can't continue.
 if [ -z "$download_command" ]; then
-	printf '%b!!%b There'\''s no URL transfer utility installed at this system (searched at %s).\n' \
-		"$REDC" "$NORMALC" "$PATH"
-	printf '%b!.%b Go and get one of those, it'\''s free, gratis, buckshee:\n%s\n%s\n%s\n%s\n%s\n' \
-		"$YELLOWC" "$NORMALC" \
-		'https://aria2.github.io' 'https://curl.se' \
-		'https://lynx.invisible-island.net' 'https://w3m.sourceforge.net' \
-		'https://www.gnu.org/software/wget/ (C'\''mon, it'\''s better than nothing)'
-	exit 1
+  printf '%b!!%b There'\''s no URL transfer utility installed at this system (searched at %s).\n' \
+    "$REDC" "$NORMALC" "$PATH"
+  printf '%b!.%b Go and get one of those, it'\''s free, gratis, buckshee:\n%s\n%s\n%s\n%s\n%s\n' \
+    "$YELLOWC" "$NORMALC" \
+    'https://aria2.github.io' 'https://curl.se' \
+    'https://lynx.invisible-island.net' 'https://w3m.sourceforge.net' \
+    'https://www.gnu.org/software/wget/ (C'\''mon, it'\''s better than nothing)'
+  exit 1
 fi
 
 # ----- URL transfer utility alias ----- #
 nettransfer() {
-	url="$1"
-	fname="${url##*/}"
-	col=28
+  url="$1"
+  fname="${url##*/}"
+  col=28
 
-	# Moved to its own function for redundancy.
-	nproc="$(getnproc)"
+  # Moved to its own function for redundancy.
+  nproc="$(getnproc)"
 
-	[ "$download_command" = "aria2c" ] && {
-		aria2c -o "$fname" -j $nproc -s $nproc --download-result=hide "$url"
-	}
-	# cURL, but with a progress bar and the file name.
-	# Order and progress.
-	[ "$download_command" = "curl" ] && {
-		printf ' %-*s%s' $col "" "$fname" 1>&2
-		COLUMNS=$col curl -o "$fname" -L -# "$url"
-	}
-	# A tribute for slackpkg folks
-	[ "$download_command" = "lynx" ] && {
-		printf '%b!.%b Using Lynx, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
-		(lynx -source "$url") > "$fname"
-	}
-	[ "$download_command" = "w3m" ] && {
-		printf '%b!.%b Using w3m, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
-		(w3m -dump_source "$url") > "$fname"
-	}
-	[ "$download_command" = "wget" ] && {
-		wget -q --show-progress "$url"
-	}
+  [ "$download_command" = "aria2c" ] && {
+    aria2c -o "$fname" -j $nproc -s $nproc --download-result=hide "$url"
+  }
+  # cURL, but with a progress bar and the file name.
+  # Order and progress.
+  [ "$download_command" = "curl" ] && {
+    printf ' %-*s%s' $col "" "$fname" 1>&2
+    COLUMNS=$col curl -o "$fname" -L -# "$url"
+  }
+  # A tribute for slackpkg folks
+  [ "$download_command" = "lynx" ] && {
+    printf '%b!.%b Using Lynx, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
+    (lynx -source "$url") > "$fname"
+  }
+  [ "$download_command" = "w3m" ] && {
+    printf '%b!.%b Using w3m, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
+    (w3m -dump_source "$url") > "$fname"
+  }
+  [ "$download_command" = "wget" ] && {
+    wget -q --show-progress "$url"
+  }
 
-	unset fname nproc url
+  unset fname nproc url
 }
 
 # ----- Development Directories ----- #
@@ -660,10 +656,12 @@ printf '+=======================================================+\n'
 printf '\n'
 printf "Target Architecture:            $XARCH\n\n"
 printf "Optional C++ Support:           $CXX_SUPPORT\n"
+printf "Optional Fortran Support:       $FORTRAN_SUPPORT\n"
 printf "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
 printf "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
 printf "Optional Parallel Support:      $PARALLEL_SUPPORT\n"
-printf "Optional pkg-config Support:    $PKG_CONFIG_SUPPORT\n\n"
+printf "Optional pkg-config Support:    $PKG_CONFIG_SUPPORT\n"
+printf "Optional Quadmath Support:      $QUADMATH_SUPPORT\n\n"
 
 [ ! -d $SRCDIR ] && printf "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir $SRCDIR
 [ ! -d $BLDDIR ] && printf "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir $BLDDIR

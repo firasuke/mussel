@@ -23,7 +23,7 @@ To confirm you have all required packages, please execute `./check.sh`.
 
 ## Usage
 ### Building a Cross Compiler
-```Sh
+```Shell
 ./mussel.sh (arch) (flags)
 ```
 
@@ -44,7 +44,7 @@ below
 ```
 
 ### Other Commands
-```Sh
+```Shell
 ./mussel.sh (command)
 ```
 
@@ -109,8 +109,9 @@ Pi Zero)
 ## **Optional** Steps
 * Build and install `libstdc++-v3` (**Optional** C++ Support) (**Enabled** by default)
 * Build and install `libgomp` (**Optional** OpenMP Support) (**Disabled** by default)
-* Build and install `libquadmath` (**Optional** Quad-precision support)
+* Build and install `libquadmath` (**Optional** Quadruple-precision Support)
 (**Disabled** by default, **Enabled** for Fortran)
+* Build and install `libgfortran` (**Optional** Fortran Support) (**Disabled** by default)
 * Install `linux-headers` (**Optional** Linux Headers Support) (**Disabled** by default)
 * Configure, build and install `pkgconf` (**Optional** `pkg-config` Support)
 (**Disabled** by default)

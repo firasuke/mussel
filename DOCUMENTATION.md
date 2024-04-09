@@ -19,7 +19,7 @@
 * [5. Step 5: `cross-gcc` (`libgcc-shared`)](#5-step-5-cross-gcc-libgcc-shared)
 * [6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)](#6-optional-c-support-step-6-cross-gcc-libstdc-v3)
 * [7. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)](#7-optional-openmp-support-step-7-cross-gcc-libgomp)
-* [8. [**Optional** Quad-precision floating point Support] Step 8: `cross-gcc` (`libquadmath`)](#8-optional-quad-precision-floating-point-support-step-8-cross-gcc-libquadmath)
+* [8. [**Optional** Quadruple-precision Support] Step 8: `cross-gcc` (`libquadmath`)](#8-optional-quadruple-precision-support-step-8-cross-gcc-libquadmath)
 * [9. [**Optional** Fortran Support] Step 9: `cross-gcc` (`libgfortran`)](#9-optional-fortran-support-step-9-cross-gcc-libgfortran)
 * [10. [**Optional** Linux Headers Support] Step 10: `linux` headers](#10-optional-linux-headers-support-step-11-linux-headers)
 * [11. [**Optional** `pkg-config` Support] Step 11: `pkgconf`](#11-optional-pkg-config-support-step-11-pkgconf)
@@ -225,7 +225,7 @@ If you're planning on targeting a machine with two or more cores, then it might
 be a good idea to enable support for OpenMP optimizations as well (beware as
 some packages may fail to build with OpenMP enabled e.g. `grub`).
 
-## 8. [**Optional** Quad-precision floating point Support] Step 8: `cross-gcc` (`libquadmath`)
+## 8. [**Optional** Quadruple-precision Support] Step 8: `cross-gcc` (`libquadmath`)
 If you're building a toolchain with Fortran support (or otherwise need or want
 support for quadruple-precision floating point arithmetic), you will want to
 enable support for libquadmath. This is enabled when building for Fortran
