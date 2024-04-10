@@ -19,12 +19,12 @@ compilers that target `musl` libc.
    and why
 
 ## Requirements:
-To confirm you have all required packages, please execute `./check.sh`.
+To confirm you have all required packages, please execute `./check`.
 
 ## Usage
 ### Building a Cross Compiler
-```Sh
-./mussel.sh (arch) (flags)
+```Shell
+./mussel (arch) (flags)
 ```
 
 **(arch)**: See [**Supported
@@ -34,7 +34,6 @@ below
 **(flags)**:
 ```Shell
   f | -f | --enable-fortran        Enable optional Fortran support
-  h | -h | --help                  Display help message
   k | -k | --enable-pkg-config     Enable optional pkg-config support
   l | -l | --enable-linux-headers  Enable optional Linux Headers support
   o | -o | --enable-openmp         Enable optional OpenMP support
@@ -44,13 +43,14 @@ below
 ```
 
 ### Other Commands
-```Sh
-./mussel.sh (command)
+```Shell
+./mussel (command)
 ```
 
 **(command)**:
 ```Shell
   c | -c | --clean                 Clean mussel's build environment
+  h | -h | --help                  Display this help message
 ```
 
 Sources will be preserved.
@@ -109,8 +109,9 @@ Pi Zero)
 ## **Optional** Steps
 * Build and install `libstdc++-v3` (**Optional** C++ Support) (**Enabled** by default)
 * Build and install `libgomp` (**Optional** OpenMP Support) (**Disabled** by default)
-* Build and install `libquadmath` (**Optional** Quad-precision support)
+* Build and install `libquadmath` (**Optional** Quadruple-precision Support)
 (**Disabled** by default, **Enabled** for Fortran)
+* Build and install `libgfortran` (**Optional** Fortran Support) (**Disabled** by default)
 * Install `linux-headers` (**Optional** Linux Headers Support) (**Disabled** by default)
 * Configure, build and install `pkgconf` (**Optional** `pkg-config` Support)
 (**Disabled** by default)
