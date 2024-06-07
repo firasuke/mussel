@@ -56,37 +56,37 @@ below
 Sources will be preserved.
 
 ## Supported Architectures
-* aarch64
-* armv4t
-* armv5te
-* armv6
-* armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry
+- aarch64
+- armv4t
+- armv5te
+- armv6
+- armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module, and the Raspberry
 Pi Zero)
-* armv7
-* i486
-* i586
-* i686
-* m68k
-* microblaze
-* microblazeel
-* mips64
-* mips64el
-* mipsisa64r6
-* mipsisa64r6el
-* or1k
-* powerpc
-* powerpcle
-* powerpc64
-* powerpc64le
-* riscv64
-* s390x
-* sh2
-* sh2be
-* sh2-fdpic
-* sh2be-fdpic
-* sh4
-* sh4be
-* x86-64
+- armv7
+- i486
+- i586
+- i686
+- m68k
+- microblaze
+- microblazeel
+- mips64
+- mips64el
+- mipsisa64r6
+- mipsisa64r6el
+- or1k
+- powerpc
+- powerpcle
+- powerpc64
+- powerpc64le
+- riscv64
+- s390x
+- sh2
+- sh2be
+- sh2-fdpic
+- sh2be-fdpic
+- sh4
+- sh4be
+- x86-64
 
 ## Packages
 1. `binutils`: 2.42
@@ -107,13 +107,13 @@ Pi Zero)
 5. Build, and install `libgcc-shared`
 
 ## **Optional** Steps
-* Build and install `libstdc++-v3` (**Optional** C++ Support) (**Enabled** by default)
-* Build and install `libgomp` (**Optional** OpenMP Support) (**Disabled** by default)
-* Build and install `libquadmath` (**Optional** Quadruple-precision Support)
+- Build and install `libstdc++-v3` (**Optional** C++ Support) (**Enabled** by default)
+- Build and install `libgomp` (**Optional** OpenMP Support) (**Disabled** by default)
+- Build and install `libquadmath` (**Optional** Quadruple-precision Support)
 (**Disabled** by default, **Enabled** for Fortran)
-* Build and install `libgfortran` (**Optional** Fortran Support) (**Disabled** by default)
-* Install `linux-headers` (**Optional** Linux Headers Support) (**Disabled** by default)
-* Configure, build and install `pkgconf` (**Optional** `pkg-config` Support)
+- Build and install `libgfortran` (**Optional** Fortran Support) (**Disabled** by default)
+- Install `linux-headers` (**Optional** Linux Headers Support) (**Disabled** by default)
+- Configure, build and install `pkgconf` (**Optional** `pkg-config` Support)
 (**Disabled** by default)
 
 ### Using `mussel` With Host's `pkg-config` or `pkgconf`
@@ -142,14 +142,14 @@ support all listed architectures, and a wrapper around host's `meson`
 (`mussel-meson`) in an effort to make dealing with `meson` a bit easier.
 
 ## Projects Using `mussel`
-* [CMLFS](https://github.com/dslm4515/CMLFS)
-* [Copacabana Linux](http://copacabana.pindorama.dob.jp)
-* [glaucus](https://glaucuslinux.org/)
-* [Hanh Linux](https://hanh-linux.github.io/)
-* [qLinux](https://qlinux.qware.org/doku.php)
-* [Raptix](https://github.com/dslm4515/Raptix)
-* [Spider Linux](https://github.com/spider-linux/spiderlinux)
-* [Yeti OS](https://avs-origami.github.io/yeti.html)
+- [CMLFS](https://github.com/dslm4515/CMLFS)
+- [Copacabana Linux](http://copacabana.pindorama.dob.jp)
+- [glaucus](https://glaucuslinux.org/)
+- [Hanh Linux](https://hanh-linux.github.io/)
+- [qLinux](https://qlinux.qware.org/doku.php)
+- [Raptix](https://github.com/dslm4515/Raptix)
+- [Spider Linux](https://github.com/spider-linux/spiderlinux)
+- [Yeti OS](https://avs-origami.github.io/yeti.html)
 
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
@@ -163,10 +163,10 @@ Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
 mailto:firasuke@glaucuslinux.org)>
 
 ## Contributors
-* Alexander Barris (AwlsomeAlex) <[alex@awlsome.com](mailto:alex@awlsome.com)>
-* Andrew Blue <[andy@antareslinux.org](mailto:andy@antareslinux.org)>
-* ayb <[ayb@3hg.fr](mailto:ayb@3hg.fr)>
-* Luiz Antônio Rangel at Pindorama (takusuman) <[luiz.antonio.rangel@outlook.com.br](luiz.antonio.rangel@outlook.com.br)>
+- Alexander Barris (AwlsomeAlex) <[alex@awlsome.com](mailto:alex@awlsome.com)>
+- Andrew Blue <[andy@antareslinux.org](mailto:andy@antareslinux.org)>
+- ayb <[ayb@3hg.fr](mailto:ayb@3hg.fr)>
+- Luiz Antônio Rangel at Pindorama (takusuman) <[luiz.antonio.rangel@outlook.com.br](luiz.antonio.rangel@outlook.com.br)>
 
 ## License
 `mussel` is licensed under the Internet Systems Consortium (ISC) license.
@@ -176,11 +176,11 @@ mailto:firasuke@glaucuslinux.org)>
 targeting musl libc is a complicated process.
 
 ## Community
-* [Reddit](https://www.reddit.com/r/distrodev/)
+- [Reddit](https://www.reddit.com/r/distrodev/)
 
 ## Mirrors
-* [Codeberg](https://codeberg.org/firasuke/mussel)
-* [Framagit](https://framagit.org/firasuke/mussel)
-* [GitHub](https://github.com/firasuke/mussel)
-* [GitLab](https://gitlab.com/firasuke/mussel)
-* [SourceHut](https://git.sr.ht/~firasuke/mussel)
+- [Codeberg](https://codeberg.org/firasuke/mussel)
+- [Framagit](https://framagit.org/firasuke/mussel)
+- [GitHub](https://github.com/firasuke/mussel)
+- [GitLab](https://gitlab.com/firasuke/mussel)
+- [SourceHut](https://git.sr.ht/~firasuke/mussel)
