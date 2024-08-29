@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 # Copyright (c) 2018-2024, Firas Khalil Khana
 # Distributed under the terms of the ISC License
@@ -6,13 +6,36 @@
 # Contributors:
 # * Luiz Antônio Rangel at Pindorama (takusuman) <luiz.antonio.rangel@outlook.com.br>
 
-if command -v b3sum 2>&1 > /dev/null; then
+# Boilerplate that checks if it's GNU, Heirloom
+# or just desist and print the current POSIX
+# standard of the system.
+GNUorNonGNU() {
+  cmd=$1
+  heirloom_ver="$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')"
+  posix_ver=$(getconf _POSIX_VERSION)
+  case "$($cmd --version 2>/dev/null || printf 'err')" in
+  err) case "$heirloom_ver" in
+    'err') printf 'POSIX version: %d\n' \
+      $posix_ver ;;
+    *)
+      if [ $heirloom_ver -gt 070715 ]; then
+        NG="(New Generation)"
+      fi
+      printf 'Heirloom Toolchest%srel. %d\n' \
+        " $NG " $heirloom_ver
+      ;;
+    esac ;;
+  *) $cmd --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
+  esac
+}
+
+if command -v b3sum 2>&1 >/dev/null; then
   printf 'b3sum      :: '
   b3sum --version | cut -d' ' -f2
-elif command -v sha256sum 2>&1 > /dev/null; then
+elif command -v sha256sum 2>&1 >/dev/null; then
   printf 'sha256sum  :: '
   sha256sum --version | sed 1q | cut -d' ' -f2-
-elif command -v openssl 2>&1 > /dev/null; then
+elif command -v openssl 2>&1 >/dev/null; then
   printf 'sha256sum (Open/LibreSSL)  :: '
   openssl version
 fi
@@ -21,10 +44,10 @@ printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
 
 printf 'bc         :: '
-{ (command -v bc 2>&1 >/dev/null) && ( (bc --version \
-  || getconf HEIRLOOM_TOOLCHEST_VERSION \
-  || getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null; } \
-  || printf 'Not found.\n'
+{ (command -v bc 2>&1 >/dev/null) && ( (bc --version ||
+  getconf HEIRLOOM_TOOLCHEST_VERSION ||
+  getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null; } ||
+  printf 'Not found.\n'
 
 printf 'binutils   :: '
 ld --version | sed 1q | cut -d' ' -f5
@@ -33,40 +56,16 @@ printf 'bison      :: '
 bison --version | sed 1q | cut -d' ' -f4
 
 printf 'bzip2      :: '
-bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8-
+bzip2 --version 2>&1 </dev/null | sed 1q | cut -d' ' -f8-
 
 printf 'coreutils  :: '
-case "$(ls --version 2>/dev/null || printf 'err')" in
-	err) case "$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')" in
-		'err') printf 'POSIX version: %d\n' \
-			$(getconf _POSIX_VERSION) ;;
-		*) printf 'Heirloom Toolchest rel. %d\n' \
-	 		$(getconf HEIRLOOM_TOOLCHEST_VERSION) ;;
-		esac ;;
-	*) ls --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
-esac
+GNUorNonGNU 'ls'
 
 printf 'diffutils  :: '
-case "$(diff --version 2>/dev/null || printf 'err')" in
-	err) case "$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')" in
-		'err') printf 'POSIX version: %d\n' \
-			$(getconf _POSIX_VERSION) ;;
-		*) printf 'Heirloom Toolchest rel. %d\n' \
-	 		$(getconf HEIRLOOM_TOOLCHEST_VERSION) ;;
-		esac ;;
-	*) diff --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
-esac
+GNUorNonGNU 'diff'
 
 printf 'findutils  :: '
-case "$(find --version 2>/dev/null || printf 'err')" in
-	err) case "$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')" in
-		'err') printf 'POSIX version: %d\n' \
-			$(getconf _POSIX_VERSION) ;;
-		*) printf 'Heirloom Toolchest rel. %d\n' \
-	 		$(getconf HEIRLOOM_TOOLCHEST_VERSION) ;;
-		esac ;;
-	*) find --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
-esac
+GNUorNonGNU 'find'
 
 printf 'g++        :: '
 g++ --version | sed 1q | cut -d' ' -f3-
@@ -89,17 +88,14 @@ elif $(ldd --version 2>&1 | grep 'GNU' 2>&1 >/dev/null); then
 fi
 
 printf 'grep       :: '
-( (grep --version \
-  || getconf HEIRLOOM_TOOLCHEST_VERSION \
-  || getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
+GNUorNonGNU 'grep'
 
 printf 'gzip       :: '
 gzip --version | sed 1q | cut -d' ' -f2
 
 printf 'libzstd    :: '
-( printf '#include <zstd.h>\nZSTD_VERSION_STRING' \
-| (gcc -E -P - 2>/dev/null || echo 'libzstd not found.') | tail -n1 ) \
-  
+(printf '#include <zstd.h>\nZSTD_VERSION_STRING' |
+  (gcc -E -P - 2>/dev/null || echo 'libzstd not found.') | tail -n1)
 
 printf 'linux      :: '
 uname -r
@@ -120,14 +116,14 @@ printf 'rsync      :: '
 rsync --version | sed 1q | cut -d' ' -f4
 
 printf 'sed        :: '
-( (sed --version \
-  || getconf HEIRLOOM_TOOLCHEST_VERSION \
-  || getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4 ) 2>/dev/null
+GNUorNonGNU 'sed'
 
 printf 'tar        :: '
-( (tar --version \
-  || getconf HEIRLOOM_TOOLCHEST_VERSION \
-  || getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
+( (tar --version ||
+  # Important: Heirloom tar(1) is broken for
+  # the modern world since its conception.
+  getconf HEIRLOOM_TOOLCHEST_VERSION ||
+  getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
 
 printf 'texinfo    :: '
 makeinfo --version | sed 1q | cut -d' ' -f4
