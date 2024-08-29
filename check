@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 # Copyright (c) 2018-2024, Firas Khalil Khana
 # Distributed under the terms of the ISC License
@@ -21,7 +21,7 @@ printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
 
 printf 'bc         :: '
-{ (command -v bc &>/dev/null) && ( (bc --version \
+{ (command -v bc 2>&1 >/dev/null) && ( (bc --version \
   || getconf HEIRLOOM_TOOLCHEST_VERSION \
   || getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null; } \
   || printf 'Not found.\n'
@@ -36,19 +36,37 @@ printf 'bzip2      :: '
 bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8-
 
 printf 'coreutils  :: '
-( (ls --version \
-  || getconf HEIRLOOM_TOOLCHEST_VERSION \
-  || getconf _POSIX_VERSION)  | sed 1q | cut -d' ' -f4) 2>/dev/null
+case "$(ls --version 2>/dev/null || printf 'err')" in
+	err) case "$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')" in
+		'err') printf 'POSIX version: %d\n' \
+			$(getconf _POSIX_VERSION) ;;
+		*) printf 'Heirloom Toolchest rel. %d\n' \
+	 		$(getconf HEIRLOOM_TOOLCHEST_VERSION) ;;
+		esac ;;
+	*) ls --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
+esac
 
 printf 'diffutils  :: '
-( (diff --version \
-  || getconf HEIRLOOM_TOOLCHEST_VERSION \
-  || getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
+case "$(diff --version 2>/dev/null || printf 'err')" in
+	err) case "$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')" in
+		'err') printf 'POSIX version: %d\n' \
+			$(getconf _POSIX_VERSION) ;;
+		*) printf 'Heirloom Toolchest rel. %d\n' \
+	 		$(getconf HEIRLOOM_TOOLCHEST_VERSION) ;;
+		esac ;;
+	*) diff --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
+esac
 
 printf 'findutils  :: '
-( (find --version \
-  || getconf HEIRLOOM_TOOLCHEST_VERSION \
-  || getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
+case "$(find --version 2>/dev/null || printf 'err')" in
+	err) case "$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')" in
+		'err') printf 'POSIX version: %d\n' \
+			$(getconf _POSIX_VERSION) ;;
+		*) printf 'Heirloom Toolchest rel. %d\n' \
+	 		$(getconf HEIRLOOM_TOOLCHEST_VERSION) ;;
+		esac ;;
+	*) find --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
+esac
 
 printf 'g++        :: '
 g++ --version | sed 1q | cut -d' ' -f3-
@@ -62,12 +80,12 @@ gcc --version | sed 1q | cut -d' ' -f3-
 printf 'git        :: '
 git --version | cut -d' ' -f3
 
-if $(ldd --version | grep 'musl' &>/dev/null); then
+if $(ldd --version 2>&1 | grep 'musl' 2>&1 >/dev/null); then
   printf 'musl libc  :: '
-  ldd --version | sed -n 2p | cut -d' ' -f2
-elif $(ldd --version | grep 'GNU' &>/dev/null); then
+  ldd --version 2>&1 | sed -n 2p | cut -d' ' -f2
+elif $(ldd --version 2>&1 | grep 'GNU' 2>&1 >/dev/null); then
   printf 'glibc      :: '
-  ldd --version | sed 1q | cut -d' ' -f4
+  ldd --version 2>&1 | sed 1q | cut -d' ' -f4
 fi
 
 printf 'grep       :: '
@@ -80,7 +98,8 @@ gzip --version | sed 1q | cut -d' ' -f2
 
 printf 'libzstd    :: '
 ( printf '#include <zstd.h>\nZSTD_VERSION_STRING' \
-  | gcc -E -P - | tail -n1 ) 2>/dev/null
+| (gcc -E -P - 2>/dev/null || echo 'libzstd not found.') | tail -n1 ) \
+  
 
 printf 'linux      :: '
 uname -r
