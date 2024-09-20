@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 # Copyright (c) 2020-2024, Firas Khalil Khana
 # Distributed under the terms of the ISC License
@@ -10,6 +10,7 @@
 # * Luiz Antônio Rangel at Pindorama (takusuman) <luiz.antonio.rangel@outlook.com.br>
 
 set -e
+trap 'fail $MLOG' ERR # $MLOG will be expanded when executed.
 umask 022
 
 alias printf="printf --"
@@ -640,6 +641,14 @@ mclean() {
     printf "${GREENC}=>${NORMALC} $1 cleaned.\n"
     printf "Cleaned $1.\n" >> $MLOG
   fi
+}
+
+# ----- fail(): To be called by trap ----- # 
+fail() {
+  logfile="$1"
+  printf '%b!!%b Build failed!\n%b!.%b Last lines of the log file (%s):\n' \
+    "$REDC" "$NORMALC" "$YELLOWC" "$NORMALC" "$logfile" 
+  tail "$logfile"
 }
 
 #--------------------------------------#
