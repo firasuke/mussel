@@ -646,10 +646,8 @@ mclean() {
 # ----- fail(): To be called by trap ----- # 
 fail() {
   logfile="$1"
-  printf '%b!!%b Build failed!\n' \
-    "$REDC" "$NORMALC"
-  printf '%b!.%b Last lines of the log file (%s):\n' \
-    "$YELLOWC" "$NORMALC" "$logfile" 
+  printf '%b!!%b Build failed!\n%b!.%b Last lines of the log file (%s):\n' \
+    "$REDC" "$NORMALC" "$YELLOWC" "$NORMALC" "$logfile" 
   tail "$logfile"
 }
 
