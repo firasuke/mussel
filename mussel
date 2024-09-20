@@ -10,6 +10,7 @@
 # * Luiz Antônio Rangel at Pindorama (takusuman) <luiz.antonio.rangel@outlook.com.br>
 
 set -e
+trap 'tail $MLOG' ERR # $MLOG will be expanded when executed.
 umask 022
 
 alias printf="printf --"
