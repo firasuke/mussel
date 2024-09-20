@@ -15,8 +15,15 @@ GNUorNonGNU() {
   posix_ver=$(getconf _POSIX_VERSION)
   case "$($cmd --version 2>/dev/null || printf 'err')" in
   err) case "$heirloom_ver" in
-    'err') printf 'POSIX version: %d\n' \
-      $posix_ver ;;
+    'err')
+      if (command -v "$cmd" 2>&1 >/dev/null); then
+        printf 'POSIX version: %d\n' \
+          $posix_ver
+      else
+        printf 'Not found.\n'
+        return 1
+      fi
+      ;;
     *)
       if [ $heirloom_ver -gt 070715 ]; then
         NG="(New Generation)"
