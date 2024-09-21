@@ -60,7 +60,7 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 # Decide which checksum command to use.
 if [ -z "$checksum_command" ]; then
   for ccmd in openssl sha256sum b3sum; do
-    command -v $ccmd  2>&1 > /dev/null && checksum_command="$ccmd"
+    command -v $ccmd 2>&1 >/dev/null && checksum_command="$ccmd"
   done
 fi
 
@@ -102,8 +102,8 @@ osslchecksum() {
   # API and treating its output with [n]awk(1).
   file_to_check="${hash_line#* }"
   alleged_hash="${hash_line%% *}"
-  actual_hash_line="$(openssl dgst -sha256 "$file_to_check" \
-    | awk '{ split($0, digest, "= ");
+  actual_hash_line="$(openssl dgst -sha256 "$file_to_check" |
+    awk '{ split($0, digest, "= ");
     sub(/.*[(]/, "", digest[1]);
     sub(/[)].*/, "", digest[1]);
     printf("%s %s\n", digest[2], digest[1]); }')"
@@ -114,7 +114,7 @@ osslchecksum() {
     err=1
   fi
   unset hash_line file_to_check alleged_hash \
-  actual_hash_line actual_fname actual_hash
+    actual_hash_line actual_fname actual_hash
   return $err
 }
 
@@ -143,17 +143,17 @@ checksum() {
 # UNIX-compatible systems, although we may only be using this on Linux.
 getnproc() {
   (
-    getconf _NPROCESSORS_ONLN \
-    || ( [ "$(uname -s)" = 'Linux' ] && printf '%d' $(grep -c 'processor' /proc/cpuinfo) ) \
-    || nproc \
-    || printf '%d' 1
+    getconf _NPROCESSORS_ONLN ||
+      ([ "$(uname -s)" = 'Linux' ] && printf '%d' $(grep -c 'processor' /proc/cpuinfo)) ||
+      nproc ||
+      printf '%d' 1
   ) 2>/dev/null
 }
 
 # Decide which download command to use.
 if [ -z "$download_command" ]; then
   for dcmd in wget w3m lynx curl aria2c; do
-    command -v $dcmd  2>&1 > /dev/null && download_command="$dcmd"
+    command -v $dcmd 2>&1 >/dev/null && download_command="$dcmd"
   done
 fi
 
@@ -190,11 +190,11 @@ nettransfer() {
   # A tribute for slackpkg folks
   [ "$download_command" = "lynx" ] && {
     printf '%b!.%b Using Lynx, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
-    (lynx -source "$url") > "$fname"
+    (lynx -source "$url") >"$fname"
   }
   [ "$download_command" = "w3m" ] && {
     printf '%b!.%b Using w3m, there will be no progress bar or any indicator here.\n' "$YELLOWC" "$NORMALC"
-    (w3m -dump_source "$url") > "$fname"
+    (w3m -dump_source "$url") >"$fname"
   }
   [ "$download_command" = "wget" ] && {
     wget -q --show-progress "$url"
@@ -233,7 +233,7 @@ while [ $# -gt 0 ]; do
       XPURE64=$XARCH
       XTARGET=$XARCH-linux-musl
       ;;
-    armv4 | armv4t )
+    armv4 | armv4t)
       XARCH=armv4t
       LARCH=arm
       MARCH=$LARCH
@@ -241,7 +241,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musleabi
       ;;
-    armv5 | armv5te )
+    armv5 | armv5te)
       XARCH=armv5te
       LARCH=arm
       MARCH=$LARCH
@@ -249,7 +249,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musleabi
       ;;
-    armv6 )
+    armv6)
       XARCH=armv6
       LARCH=arm
       MARCH=$LARCH
@@ -297,7 +297,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
-    m68k | 68000 | motorola )
+    m68k | 68000 | motorola)
       XARCH=m68k
       LARCH=$XARCH
       MARCH=$XARCH
@@ -369,7 +369,7 @@ while [ $# -gt 0 ]; do
       XPURE64=""
       XTARGET=$XARCH-linux-musl
       ;;
-    powerpcle | powerpcel | ppcle | ppcel )
+    powerpcle | powerpcel | ppcle | ppcel)
       XARCH=powerpcle
       LARCH=poweroc
       MARCH=powerpc
@@ -611,8 +611,8 @@ mpackage() {
   printf "${BLUEC}..${NORMALC} Verifying "$HOLDER"...\n"
   checksum "$3" "$HOLDER" || {
     printf "${YELLOWC}!.${NORMALC} "$HOLDER" is corrupted, redownloading...\n" &&
-    rm "$HOLDER" &&
-    nettransfer "$2";
+      rm "$HOLDER" &&
+      nettransfer "$2"
   }
 
   rm -fr $1-$4
@@ -620,7 +620,7 @@ mpackage() {
   tar xf $HOLDER -C .
 
   printf "${GREENC}=>${NORMALC} $HOLDER prepared.\n\n"
-  printf "${HOLDER}: Ok\n" >> $MLOG
+  printf "${HOLDER}: Ok\n" >>$MLOG
 }
 
 # ----- mpatch(): Patching ----- #
@@ -628,7 +628,7 @@ mpatch() {
   printf "${BLUEC}..${NORMALC} Applying ${4}.patch from $5 for ${2}...\n"
 
   cd $SRCDIR/$2/$2-$3
-  patch -p$1 -i $PCHDIR/$2/$5/${4}.patch >> $MLOG 2>&1
+  patch -p$1 -i $PCHDIR/$2/$5/${4}.patch >>$MLOG 2>&1
   printf "${GREENC}=>${NORMALC} $2 patched with ${4}!\n"
 }
 
@@ -639,7 +639,7 @@ mclean() {
     rm -fr "$CURDIR/$1"
     mkdir "$CURDIR/$1"
     printf "${GREENC}=>${NORMALC} $1 cleaned.\n"
-    printf "Cleaned $1.\n" >> $MLOG
+    printf "Cleaned $1.\n" >>$MLOG
   fi
 }
 
@@ -648,11 +648,11 @@ fail() {
   logfile="$1"
   # Check if it's properly done and if isn't a vulgar
   # error such as an flag erroneusly informed.
-  if ! (grep '^.*=>.* Done!.*$' "$logfile") \
-	  && [ -n $XARCH ]; then
-  printf '%b!!%b Build failed!\n%b!.%b Last lines of the log file (%s):\n' \
-    "$REDC" "$NORMALC" "$YELLOWC" "$NORMALC" "$logfile"
-  tail "$logfile"
+  if ! (grep '^.*=>.* Done!.*$' "$logfile") &&
+    [ -n $XARCH ]; then
+    printf '%b!!%b Build failed!\n%b!.%b Last lines of the log file (%s):\n' \
+      "$REDC" "$NORMALC" "$YELLOWC" "$NORMALC" "$logfile"
+    tail "$logfile"
   fi
 }
 trap 'fail $MLOG' EXIT
@@ -685,20 +685,20 @@ printf '\n'
 rm -fr $MLOG
 
 # ----- Print Variables to mussel Log File ----- #
-printf 'mussel Log File\n\n' >> $MLOG
-printf "CXX_SUPPORT: $CXX_SUPPORT\nFORTRAN_SUPPORT: $FORTRAN_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\nQUADMATH_SUPPORT: $QUADMATH_SUPPORT\n\n" >> $MLOG
-printf "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >> $MLOG
-printf "XGCCARGS: \"$XGCCARGS\"\n\n" >> $MLOG
-printf "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >> $MLOG
-printf "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >> $MLOG
-printf "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >> $MLOG
-printf "\nStart Time: $(date)\n\n" >> $MLOG
+printf 'mussel Log File\n\n' >>$MLOG
+printf "CXX_SUPPORT: $CXX_SUPPORT\nFORTRAN_SUPPORT: $FORTRAN_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\nQUADMATH_SUPPORT: $QUADMATH_SUPPORT\n\n" >>$MLOG
+printf "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >>$MLOG
+printf "XGCCARGS: \"$XGCCARGS\"\n\n" >>$MLOG
+printf "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >>$MLOG
+printf "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >>$MLOG
+printf "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >>$MLOG
+printf "\nStart Time: $(date)\n\n" >>$MLOG
 
 # if defined, fortran lang support is built in gcc
 [ "$FORTRAN_SUPPORT" = "yes" ] && ENABLE_FORTRAN_YES="abcd"
 
 # ----- Prepare Packages ----- #
-printf "-----\nprepare\n-----\n\n" >> $MLOG
+printf "-----\nprepare\n-----\n\n" >>$MLOG
 mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
 mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
 mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
@@ -714,39 +714,39 @@ mpackage musl "$musl_url" $musl_sum $musl_ver
 
 # ----- Patch Packages ----- #
 if [ ! -z $XPURE64 ]; then
-  printf "\n-----\npatch\n-----\n\n" >> $MLOG
+  printf "\n-----\npatch\n-----\n\n" >>$MLOG
   mpatch 0 gcc "$gcc_ver" 0001-pure64-for-$XPURE64 glaucus
 fi
 
 printf '\n'
 
 # ----- Clean Directories ----- #
-printf "\n-----\nclean\n-----\n\n" >> $MLOG
+printf "\n-----\nclean\n-----\n\n" >>$MLOG
 mclean builds
 mclean toolchain
 mclean sysroot
 
 # set up dir structure
-printf "-----\ndir structure\n-----\n\n" >> $MLOG
+printf "-----\ndir structure\n-----\n\n" >>$MLOG
 printf "${BLUEC}..${NORMALC} Creating directory structure...\n"
-mkdir -pv $MSYSROOT >> $MLOG 2>&1
+mkdir -pv $MSYSROOT >>$MLOG 2>&1
 cd $MSYSROOT
 mkdir -pv \
   bin \
   lib \
   lib32 \
   include \
-  $XTARGET/bin >> $MLOG 2>&1
-ln -sfv . usr >> $MLOG 2>&1
+  $XTARGET/bin >>$MLOG 2>&1
+ln -sfv . usr >>$MLOG 2>&1
 cd $MSYSROOT/$XTARGET
-ln -sfv ../lib lib >> $MLOG 2>&1
-ln -sfv ../lib32 lib32 >> $MLOG 2>&1
-ln -sfv ../include include >> $MLOG 2>&1
+ln -sfv ../lib lib >>$MLOG 2>&1
+ln -sfv ../lib32 lib32 >>$MLOG 2>&1
+ln -sfv ../include include >>$MLOG 2>&1
 
 printf '\n'
 
 # ----- Step 1: musl headers ----- #
-printf "\n-----\n*1) musl headers\n-----\n\n" >> $MLOG
+printf "\n-----\n*1) musl headers\n-----\n\n" >>$MLOG
 printf "${BLUEC}..${NORMALC} Preparing musl headers...\n"
 cd $BLDDIR
 cp -ar $SRCDIR/musl/musl-$musl_ver musl
@@ -757,12 +757,12 @@ $MAKE \
   ARCH=$MARCH \
   prefix="" \
   DESTDIR=$MSYSROOT \
-  install-headers >> $MLOG 2>&1
+  install-headers >>$MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} musl headers finished.\n\n"
 
 # ----- Step 2: cross-binutils ----- #
-printf "\n-----\n*2) cross-binutils\n-----\n\n" >> $MLOG
+printf "\n-----\n*2) cross-binutils\n-----\n\n" >>$MLOG
 printf "${BLUEC}..${NORMALC} Preparing cross-binutils...\n"
 cd $BLDDIR
 mkdir cross-binutils
@@ -787,25 +787,25 @@ $SRCDIR/binutils/binutils-$binutils_ver/configure \
   --disable-multilib \
   --disable-linker-build-id \
   --disable-rpath \
-  --disable-werror >> $MLOG 2>&1
+  --disable-werror >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-binutils...\n"
 $MAKE \
   all-binutils \
   all-gas \
-  all-ld >> $MLOG 2>&1
+  all-ld >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Installing cross-binutils...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
   install-strip-binutils \
   install-strip-gas \
-  install-strip-ld >> $MLOG 2>&1
+  install-strip-ld >>$MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} cross-binutils finished.\n\n"
 
 # ----- Step 3: cross-gcc (compiler) ----- #
-printf "\n-----\n*3) cross-gcc (compiler)\n-----\n\n" >> $MLOG
+printf "\n-----\n*3) cross-gcc (compiler)\n-----\n\n" >>$MLOG
 printf "${BLUEC}..${NORMALC} Preparing cross-gcc (compiler)...\n"
 cp -ar $SRCDIR/gmp/gmp-$gmp_ver $SRCDIR/gcc/gcc-$gcc_ver/gmp
 cp -ar $SRCDIR/mpfr/mpfr-$mpfr_ver $SRCDIR/gcc/gcc-$gcc_ver/mpfr
@@ -839,151 +839,151 @@ $SRCDIR/gcc/gcc-$gcc_ver/configure \
   --disable-linker-build-id \
   --disable-rpath \
   --disable-werror \
-  $XGCCARGS >> $MLOG 2>&1
+  $XGCCARGS >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-gcc (compiler)...\n"
 mkdir -p $MSYSROOT/usr/include
 $MAKE \
-  all-gcc >> $MLOG 2>&1
+  all-gcc >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Installing cross-gcc (compiler)...\n\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
-  install-strip-gcc >> $MLOG 2>&1
+  install-strip-gcc >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-gcc (libgcc-static)...\n"
 CFLAGS='-pipe -g0 -O0' \
-CXXFLAGS='-pipe -g0 -O0' \
-$MAKE \
+  CXXFLAGS='-pipe -g0 -O0' \
+  $MAKE \
   enable_shared=no \
-  all-target-libgcc >> $MLOG 2>&1
+  all-target-libgcc >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgcc-static)...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
-  install-strip-target-libgcc >> $MLOG 2>&1
+  install-strip-target-libgcc >>$MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} cross-gcc (libgcc-static) finished.\n\n"
 
 printf "${GREENC}=>${NORMALC} cross-gcc (compiler) finished.\n\n"
 
 # ----- Step 4: musl ----- #
-printf "\n-----\n*4) musl\n-----\n\n" >> $MLOG
+printf "\n-----\n*4) musl\n-----\n\n" >>$MLOG
 printf "${BLUEC}..${NORMALC} Preparing musl...\n"
 cd $BLDDIR/musl
 
 printf "${BLUEC}..${NORMALC} Configuring musl...\n"
 ARCH=$MARCH \
-CC=$XTARGET-gcc \
-CROSS_COMPILE=$XTARGET- \
-LIBCC="$MPREFIX/lib/gcc/$XTARGET/$gcc_ver/libgcc.a" \
-./configure \
+  CC=$XTARGET-gcc \
+  CROSS_COMPILE=$XTARGET- \
+  LIBCC="$MPREFIX/lib/gcc/$XTARGET/$gcc_ver/libgcc.a" \
+  ./configure \
   --host=$XTARGET \
-  --prefix="" >> $MLOG 2>&1
+  --prefix="" >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building musl...\n"
 $MAKE \
   AR=$XTARGET-ar \
-  RANLIB=$XTARGET-ranlib >> $MLOG 2>&1
+  RANLIB=$XTARGET-ranlib >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Installing musl...\n"
 $MAKE \
   AR=$XTARGET-ar \
   RANLIB=$XTARGET-ranlib \
   DESTDIR=$MSYSROOT \
-  install >> $MLOG 2>&1
+  install >>$MLOG 2>&1
 
 rm -f $MSYSROOT/lib/ld-musl-$MARCH.so.1
-cp -av $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$MARCH.so.1 >> $MLOG 2>&1
+cp -av $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$MARCH.so.1 >>$MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} musl finished.\n\n"
 
 # ----- Step 5: cross-gcc (libgcc-shared) ----- #
-printf "\n-----\n*5) cross-gcc (libgcc-shared)\n-----\n\n" >> $MLOG
+printf "\n-----\n*5) cross-gcc (libgcc-shared)\n-----\n\n" >>$MLOG
 printf "${BLUEC}..${NORMALC} Preparing cross-gcc (libgcc-shared)...\n"
 cd $BLDDIR/cross-gcc
 
 $MAKE \
-  -C $XTARGET/libgcc distclean >> $MLOG 2>&1
+  -C $XTARGET/libgcc distclean >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-gcc (libgcc-shared)...\n"
 $MAKE \
   enable_shared=yes \
-  all-target-libgcc >> $MLOG 2>&1
+  all-target-libgcc >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgcc-shared)...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
-  install-strip-target-libgcc >> $MLOG 2>&1
+  install-strip-target-libgcc >>$MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} cross-gcc (libgcc-shared) finished.\n\n"
 
 # ----- [Optional C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 if [ $CXX_SUPPORT = yes ]; then
-  printf "\n-----\n*6) cross-gcc (libstdc++-v3)\n-----\n\n" >> $MLOG
+  printf "\n-----\n*6) cross-gcc (libstdc++-v3)\n-----\n\n" >>$MLOG
   printf "${BLUEC}..${NORMALC} Building cross-gcc (libstdc++-v3)...\n"
   cd $BLDDIR/cross-gcc
   $MAKE \
-    all-target-libstdc++-v3 >> $MLOG 2>&1
+    all-target-libstdc++-v3 >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libstdc++-v3)...\n"
   $MAKE \
     DESTDIR=$MSYSROOT \
-    install-strip-target-libstdc++-v3 >> $MLOG 2>&1
+    install-strip-target-libstdc++-v3 >>$MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libstdc++v3) finished.\n\n"
 fi
 
 # ----- [Optional OpenMP Support] Step 7: cross-gcc (libgomp) ----- #
 if [ $OPENMP_SUPPORT = yes ]; then
-  printf "\n-----\n*7) cross-gcc (libgomp)\n-----\n\n" >> $MLOG
+  printf "\n-----\n*7) cross-gcc (libgomp)\n-----\n\n" >>$MLOG
   printf "${BLUEC}..${NORMALC} Building cross-gcc (libgomp)...\n"
   $MAKE \
-    all-target-libgomp >> $MLOG 2>&1
+    all-target-libgomp >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgomp)...\n"
   $MAKE \
     DESTDIR=$MSYSROOT \
-    install-strip-target-libgomp >> $MLOG 2>&1
+    install-strip-target-libgomp >>$MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libgomp) finished.\n\n"
 fi
 
 # ----- [Optional Quadmath Support] Step 8: cross-gcc (libquadmath) ----- #
 if [ $QUADMATH_SUPPORT = yes ]; then
-  printf "\n-----\n*8) cross-gcc (libquadmath)\n-----\n\n" >> $MLOG
+  printf "\n-----\n*8) cross-gcc (libquadmath)\n-----\n\n" >>$MLOG
   printf "${BLUEC}..${NORMALC} Building cross-gcc (libquadmath)...\n"
   cd $BLDDIR/cross-gcc
   $MAKE \
-    all-target-libquadmath >> $MLOG 2>&1
+    all-target-libquadmath >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libquadmath)...\n"
   $MAKE \
     DESTDIR=$MSYSROOT \
-    install-strip-target-libquadmath >> $MLOG 2>&1
+    install-strip-target-libquadmath >>$MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libquadmath) finished.\n\n"
 fi
 
 # ----- [Optional Fortran Support] Step 9: cross-gcc (libgfortran) ----- #
 if [ $FORTRAN_SUPPORT = yes ]; then
-  printf "\n-----\n*9) cross-gcc (libgfortran)\n-----\n\n" >> $MLOG
+  printf "\n-----\n*9) cross-gcc (libgfortran)\n-----\n\n" >>$MLOG
   printf "${BLUEC}..${NORMALC} Building cross-gcc (libgfortran)...\n"
   cd $BLDDIR/cross-gcc
   $MAKE \
-    all-target-libgfortran >> $MLOG 2>&1
+    all-target-libgfortran >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgfortran)...\n"
   $MAKE \
     DESTDIR=$MSYSROOT \
-    install-strip-target-libgfortran >> $MLOG 2>&1
+    install-strip-target-libgfortran >>$MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} cross-gcc (libgfortran) finished.\n\n"
 fi
 
 # ----- [Optional Linux Headers Support] Step 10: linux headers ----- #
 if [ $LINUX_HEADERS_SUPPORT = yes ]; then
-  printf "\n-----\n*10) linux headers\n-----\n\n" >> $MLOG
+  printf "\n-----\n*10) linux headers\n-----\n\n" >>$MLOG
   printf "${BLUEC}..${NORMALC} Preparing linux headers...\n"
   cd $BLDDIR
   mkdir linux
@@ -992,21 +992,21 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
 
   $MAKE \
     ARCH=$LARCH \
-    mrproper >> $MLOG 2>&1
+    mrproper >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing linux headers...\n"
   $MAKE \
     O=$BLDDIR/linux \
     ARCH=$LARCH \
     INSTALL_HDR_PATH=$MSYSROOT/usr \
-    headers_install >> $MLOG 2>&1
+    headers_install >>$MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
 
 # ----- [Optional pkg-config Support] Step 11: pkgconf ----- #
 if [ $PKG_CONFIG_SUPPORT = yes ]; then
-  printf "\n-----\n*11) pkgconf\n-----\n\n" >> $MLOG
+  printf "\n-----\n*11) pkgconf\n-----\n\n" >>$MLOG
   printf "${BLUEC}..${NORMALC} Preparing pkgconf...\n"
   cd $BLDDIR
   mkdir pkgconf
@@ -1014,30 +1014,30 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
 
   printf "${BLUEC}..${NORMALC} Configuring pkgconf...\n"
   CFLAGS="$CFLAGS -fcommon" \
-  $SRCDIR/pkgconf/pkgconf-$pkgconf_ver/configure \
+    $SRCDIR/pkgconf/pkgconf-$pkgconf_ver/configure \
     --prefix=$MPREFIX \
     --with-sysroot=$MSYSROOT \
     --with-pkg-config-dir="$MSYSROOT/usr/lib/pkgconfig:$MSYSROOT/usr/share/pkgconfig" \
     --with-system-libdir="$MSYSROOT/usr/lib" \
-    --with-system-includedir="$MSYSROOT/usr/include" >> $MLOG 2>&1
+    --with-system-includedir="$MSYSROOT/usr/include" >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Building pkgconf...\n"
-  $MAKE >> $MLOG 2>&1
+  $MAKE >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing pkgconf...\n"
   $MAKE \
-    install-strip >> $MLOG 2>&1
+    install-strip >>$MLOG 2>&1
 
-  ln -sv pkgconf $MPREFIX/bin/pkg-config >> $MLOG 2>&1
-  ln -sv pkgconf $MPREFIX/bin/$XTARGET-pkgconf >> $MLOG 2>&1
-  ln -sv pkgconf $MPREFIX/bin/$XTARGET-pkg-config >> $MLOG 2>&1
+  ln -sv pkgconf $MPREFIX/bin/pkg-config >>$MLOG 2>&1
+  ln -sv pkgconf $MPREFIX/bin/$XTARGET-pkgconf >>$MLOG 2>&1
+  ln -sv pkgconf $MPREFIX/bin/$XTARGET-pkg-config >>$MLOG 2>&1
 
   printf "${GREENC}=>${NORMALC} pkgconf finished.\n\n"
 fi
 
 # remove temp dir
-rm -rf $MSYSROOT/_tmp >> $MLOG @>&1
+rm -rf $MSYSROOT/_tmp @ >>$MLOG >&1
 
 # done!
 printf "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
-printf "\nEnd Time: $(date)\n" >> $MLOG 2>&1
+printf "\nEnd Time: $(date)\n" >>$MLOG 2>&1
