@@ -10,7 +10,7 @@
 # * Luiz Antônio Rangel at Pindorama (takusuman) <luiz.antonio.rangel@outlook.com.br>
 
 set -e
-trap 'fail $MLOG' ERR # $MLOG will be expanded when executed.
+# trap at line 658
 umask 022
 
 alias printf="printf --"
@@ -643,13 +643,19 @@ mclean() {
   fi
 }
 
-# ----- fail(): To be called by trap ----- # 
+# ----- fail(): To be called by trap ----- #
 fail() {
   logfile="$1"
+  # Check if it's properly done and if isn't a vulgar
+  # error such as an flag erroneusly informed.
+  if ! (grep '^.*=>.* Done!.*$' "$logfile") \
+	  && [ -n $XARCH ]; then
   printf '%b!!%b Build failed!\n%b!.%b Last lines of the log file (%s):\n' \
-    "$REDC" "$NORMALC" "$YELLOWC" "$NORMALC" "$logfile" 
+    "$REDC" "$NORMALC" "$YELLOWC" "$NORMALC" "$logfile"
   tail "$logfile"
+  fi
 }
+trap 'fail $MLOG' EXIT
 
 #--------------------------------------#
 # ---------- Execution Area ---------- #
