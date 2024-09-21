@@ -648,7 +648,7 @@ fail() {
   logfile="$1"
   # Check if it's properly done and if isn't a vulgar
   # error such as an flag erroneusly informed.
-  if ! (grep '^.*=>.* Done!.*$' "$logfile") &&
+  if ! (grep '^End Time: .*$' "$logfile") &&
     [ -n $XARCH ]; then
     printf '%b!!%b Build failed!\n%b!.%b Last lines of the log file (%s):\n' \
       "$REDC" "$NORMALC" "$YELLOWC" "$NORMALC" "$logfile"
