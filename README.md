@@ -143,7 +143,7 @@ support all listed architectures, and a wrapper around host's `meson`
 
 ## Projects Using `mussel`
 - [CMLFS](https://github.com/dslm4515/CMLFS)
-- [Copacabana Linux](http://copacabana.pindorama.dob.jp)
+- [Copacabana Linux](http://copacabana.pindorama.net.br)
 - [glaucus](https://glaucuslinux.org/)
 - [Hanh Linux](https://hanh-linux.github.io/)
 - [qLinux](https://qlinux.qware.org/doku.php)
