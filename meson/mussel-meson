@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 # Copyright (c) 2018-2024, Firas Khalil Khana
 # Distributed under the terms of the ISC License
@@ -14,4 +14,4 @@ exec meson setup \
   -Db_lto=true \
   -Db_lto_mode=thin \
   --cross-file meson.cross.$XARCH \
-  $@
+  "$@"
