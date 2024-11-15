@@ -36,15 +36,15 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.42
-gcc_ver=13.2.0
+binutils_ver=2.43.1
+gcc_ver=14.2.0
 gmp_ver=6.3.0
-isl_ver=0.26
-linux_ver=6.5.3
+isl_ver=0.27
+linux_ver=6.11.8
 mpc_ver=1.3.1
 mpfr_ver=4.2.1
 musl_ver=1.2.5
-pkgconf_ver=2.1.0
+pkgconf_ver=2.3.0
 
 # ----- Package URLs ----- #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.xz
@@ -59,7 +59,7 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 # Decide which checksum command to use.
 if [ -z "$checksum_command" ]; then
-  for ccmd in openssl sha256sum b3sum; do
+  for ccmd in b3sum openssl sha256sum; do
     command -v $ccmd 2>&1 >/dev/null && checksum_command="$ccmd"
   done
 fi
@@ -67,26 +67,26 @@ fi
 # checksums
 if [ "$checksum_command" = "b3sum" ]; then
   # ----- Package Checksums (b3sum) ----- #
-  binutils_sum=41ff0592df8c1e8ec5eb086d418e792331c0c49040218462d6c1224b4fa36d04
-  gcc_sum=875af4d704560973ada577955392735ded87e6fd304bd0cbaf8ac795390501c7
+  binutils_sum=f074c81313b70eabc58ce9a9411cd771c5fa2433792d0ad8abcc45f603f58ed6
+  gcc_sum=ffee29313fd417420454d985b6740be3755e6465e14173c420c02e3719a51539
   gmp_sum=fffe4996713928ae19331c8ef39129e46d3bf5b7182820656fd4639435cd83a4
-  isl_sum=a27da5d097f4e105d3a63c5e81d26c2b00cc35a4a3bf62dd2a49335a0f20ce7f
-  linux_sum=b063c7ca0986358f22e9019617cbadb3404da6eb44133bee789f9c7565b1c121
+  isl_sum=a419cf24561a34f81ec46d251b25d5aaccedbbf87ed2b96f3f0fb17a79a8c913
+  linux_sum=4082a33166c9a670036576d096bb37d499f6dd2d69d1c9da54aa4105e47791c5
   mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
   mpfr_sum=f428023b8f7569fc1178faf63265ecb6cab4505fc3fce5d8c46af70db848a334
   musl_sum=63f96e526d3a73fddff8fcb9ee5c1dcbfdac8405db7d7537c3d1c8fffd5e6947
-  pkgconf_sum=6c462df0a2d2e1a384cea44c775ef6991be31f21b5bde515f175e6ac6fdb1164
+  pkgconf_sum=edcfc85fb8ea61f9405d1f57fa644c3f2d2c581f5b14c2b3d409e19135168f08
 elif [ "$checksum_command" = "sha256sum" ] || [ "$checksum_command" = "openssl" ]; then
   # ----- Package Checksums (sha256sum) ----- #
-  binutils_sum=f6e4d41fd5fc778b06b7891457b3620da5ecea1006c6a4a41ae998109f85a800
-  gcc_sum=e275e76442a6067341a27f04c5c6b83d8613144004c0413528863dc6b5c743da
+  binutils_sum=13f74202a3c4c51118b797a39ea4200d3f6cfbe224da6d1d95bb938480132dfd
+  gcc_sum=a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9
   gmp_sum=a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898
-  isl_sum=a0b5cb06d24f9fa9e77b55fabbe9a3c94a336190345c2555f9915bb38e976504
-  linux_sum=4cac13f7b17bd8dcf9032ad68f9123ab5313d698c9f59416043165150763eb4f
+  isl_sum=6d8babb59e7b672e8cb7870e874f3f7b813b6e00e6af3f8b04f7579965643d5c
+  linux_sum=aee8a844fe152420bece70ffae8525b9b23089aa4da31fa32f30e1859bf93c3d
   mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
   mpfr_sum=277807353a6726978996945af13e52829e3abd7a9a5b7fb2793894e18f1fcbb2
   musl_sum=a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4
-  pkgconf_sum=266d5861ee51c52bc710293a1d36622ae16d048d71ec56034a02eb9cf9677761
+  pkgconf_sum=3a9080ac51d03615e7c1910a0a2a8df08424892b5f13b0628a204d3fcce0ea8b
 fi
 
 # ----- Check sha256 hash using openssl ----- #
@@ -152,7 +152,7 @@ getnproc() {
 
 # Decide which download command to use.
 if [ -z "$download_command" ]; then
-  for dcmd in wget w3m lynx curl aria2c; do
+  for dcmd in curl wget w3m lynx aria2c; do
     command -v $dcmd 2>&1 >/dev/null && download_command="$dcmd"
   done
 fi
@@ -770,24 +770,26 @@ cd cross-binutils
 
 printf "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
 $SRCDIR/binutils/binutils-$binutils_ver/configure \
-  --with-sysroot=/ \
-  --with-build-sysroot=$MSYSROOT \
   --prefix="" \
   --exec-prefix="" \
   --sbindir=/bin \
   --libexecdir=/lib \
   --datarootdir=/_tmp \
   --target=$XTARGET \
-  --with-pkgversion="mussel" \
-  --enable-default-hash-style="sysv" \
-  --enable-default-pie \
-  --enable-static-pie \
-  --enable-relro \
   --disable-bootstrap \
   --disable-multilib \
-  --disable-linker-build-id \
+  --enable-relro \
+  --disable-default-execstack \
+  --enable-default-hash-style="sysv" \
+  --disable-initfini-array \
+  --disable-werror \
+  --disable-nls \
   --disable-rpath \
-  --disable-werror >>$MLOG 2>&1
+  --with-pic \
+  --with-mmap \
+  --with-sysroot=/ \
+  --with-build-sysroot=$MSYSROOT \
+  --with-pkgversion="mussel" >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-binutils...\n"
 $MAKE \
@@ -818,27 +820,40 @@ cd cross-gcc
 
 printf "${BLUEC}..${NORMALC} Configuring cross-gcc (compiler)...\n"
 $SRCDIR/gcc/gcc-$gcc_ver/configure \
-  --with-sysroot=/ \
-  --with-build-sysroot=$MSYSROOT \
   --prefix="" \
   --exec-prefix="" \
   --sbindir=/bin \
   --libexecdir=/lib \
   --datarootdir=/_tmp \
   --target=$XTARGET \
-  --with-pkgversion="mussel" \
-  --enable-languages=c,c++${ENABLE_FORTRAN_YES:+,fortran} \
-  --enable-default-hash-style="sysv" \
-  --enable-default-pie \
-  --enable-static-pie \
-  --enable-relro \
-  --enable-initfini-array \
   --disable-bootstrap \
+  --enable-checking=release \
   --disable-multilib \
-  --disable-libsanitizer \
-  --disable-linker-build-id \
+  --disable-fixed-point \
+  --enable-languages=c,c++${ENABLE_FORTRAN_YES:+,fortran} \
   --disable-rpath \
+  --disable-nls \
+  --disable-gnu-indirect-function \
+  --disable-initfini-array \
+  --disable-gnu-unique-object \
+  --disable-linker-build-id \
+  --disable-libsanitizer \
+  --disable-libssp \
+  --enable-default-ssp \
+  --enable-link-serialization=1 \
+  --enable-host-pie \
+  --enable-host-bind-now \
+  --enable-default-pie \
+  --disable-cet \
   --disable-werror \
+  --disable-symvers \
+  --disable-libstdcxx-pch \
+  --enable-clocale=generic \
+  --with-build-sysroot=$MSYSROOT \
+  --with-sysroot=/ \
+  --with-pkgversion="mussel" \
+  --with-pic \
+  --with-linker-hash-style="sysv" \
   $XGCCARGS >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building cross-gcc (compiler)...\n"
@@ -846,26 +861,21 @@ mkdir -p $MSYSROOT/usr/include
 $MAKE \
   all-gcc >>$MLOG 2>&1
 
-printf "${BLUEC}..${NORMALC} Installing cross-gcc (compiler)...\n\n"
-$MAKE \
-  DESTDIR=$MSYSROOT \
-  install-strip-gcc >>$MLOG 2>&1
-
 printf "${BLUEC}..${NORMALC} Building cross-gcc (libgcc-static)...\n"
 CFLAGS='-pipe -g0 -O0' \
-  CXXFLAGS='-pipe -g0 -O0' \
-  $MAKE \
+CXXFLAGS='-pipe -g0 -O0' \
+LDFLAGS=-Wl,-s \
+$MAKE \
   enable_shared=no \
   all-target-libgcc >>$MLOG 2>&1
 
-printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgcc-static)...\n"
+printf "${BLUEC}..${NORMALC} Installing cross-gcc (compiler) and (libgcc-static)...\n"
 $MAKE \
   DESTDIR=$MSYSROOT \
+  install-strip-gcc \
   install-strip-target-libgcc >>$MLOG 2>&1
 
-printf "${GREENC}=>${NORMALC} cross-gcc (libgcc-static) finished.\n\n"
-
-printf "${GREENC}=>${NORMALC} cross-gcc (compiler) finished.\n\n"
+printf "${GREENC}=>${NORMALC} cross-gcc (compiler) and (libgcc-static) finished.\n\n"
 
 # ----- Step 4: musl ----- #
 printf "\n-----\n*4) musl\n-----\n\n" >>$MLOG
@@ -879,7 +889,8 @@ ARCH=$MARCH \
   LIBCC="$MPREFIX/lib/gcc/$XTARGET/$gcc_ver/libgcc.a" \
   ./configure \
   --host=$XTARGET \
-  --prefix="" >>$MLOG 2>&1
+  --prefix="" \
+  --disable-wrapper >>$MLOG 2>&1
 
 printf "${BLUEC}..${NORMALC} Building musl...\n"
 $MAKE \
@@ -891,10 +902,10 @@ $MAKE \
   AR=$XTARGET-ar \
   RANLIB=$XTARGET-ranlib \
   DESTDIR=$MSYSROOT \
-  install >>$MLOG 2>&1
+  install-libs >>$MLOG 2>&1
 
 rm -f $MSYSROOT/lib/ld-musl-$MARCH.so.1
-cp -av $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$MARCH.so.1 >>$MLOG 2>&1
+cp -af $MSYSROOT/usr/lib/libc.so $MSYSROOT/lib/ld-musl-$MARCH.so.1 >>$MLOG 2>&1
 
 printf "${GREENC}=>${NORMALC} musl finished.\n\n"
 
@@ -995,11 +1006,8 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
     mrproper >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing linux headers...\n"
-  $MAKE \
-    O=$BLDDIR/linux \
-    ARCH=$LARCH \
-    INSTALL_HDR_PATH=$MSYSROOT/usr \
-    headers_install >>$MLOG 2>&1
+  find usr/include ! -name '*.h' -type f -delete
+  cp -af usr/include $MSYSROOT/usr
 
   printf "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
@@ -1016,6 +1024,7 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
   CFLAGS="$CFLAGS -fcommon" \
     $SRCDIR/pkgconf/pkgconf-$pkgconf_ver/configure \
     --prefix=$MPREFIX \
+    --enable-pic \
     --with-sysroot=$MSYSROOT \
     --with-pkg-config-dir="$MSYSROOT/usr/lib/pkgconfig:$MSYSROOT/usr/share/pkgconfig" \
     --with-system-libdir="$MSYSROOT/usr/lib" \

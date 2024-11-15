@@ -4,14 +4,16 @@
 # Distributed under the terms of the ISC License
 
 exec meson setup \
-  --prefix /usr \
-  --libexecdir lib \
-  --sbindir bin \
-  --buildtype release \
+  --prefix=/usr \
+  --libexecdir=lib \
+  --sbindir=bin \
+  --buildtype=release \
+  --default-library=shared \
   --stdsplit \
   --strip \
-  --wrap-mode nodownload \
+  --wrap-mode=nodownload \
   -Db_lto=true \
   -Db_lto_mode=thin \
+  -Db_pie=true \
   --cross-file meson.cross.$XARCH \
   "$@"
