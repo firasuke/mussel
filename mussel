@@ -1005,6 +1005,10 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
     ARCH=$LARCH \
     mrproper >>$MLOG 2>&1
 
+  $MAKE \
+    ARCH=$LARCH \
+    headers >>$MLOG 2>&1
+
   printf "${BLUEC}..${NORMALC} Installing linux headers...\n"
   find usr/include ! -name '*.h' -type f -delete
   cp -af usr/include $MSYSROOT/usr
