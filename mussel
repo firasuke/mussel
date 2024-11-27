@@ -1006,12 +1006,13 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
     mrproper >>$MLOG 2>&1
 
   $MAKE \
+    O=$BLDDIR/linux \
     ARCH=$LARCH \
     headers >>$MLOG 2>&1
 
   printf "${BLUEC}..${NORMALC} Installing linux headers...\n"
-  find usr/include ! -name '*.h' -type f -delete
-  cp -af usr/include $MSYSROOT/usr
+  find $BLDDIR/linux/usr/include ! -name '*.h' -type f -delete
+  cp -af $BLDDIR/linux/usr/include $MSYSROOT/usr
 
   printf "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
