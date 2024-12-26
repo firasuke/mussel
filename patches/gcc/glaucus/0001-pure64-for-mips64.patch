@@ -1,6 +1,6 @@
 --- gcc/config/mips/mips.h
 +++ gcc/config/mips/mips.h
-@@ -3450,8 +3450,8 @@
+@@ -3467,8 +3467,8 @@
  #define STANDARD_STARTFILE_PREFIX_1 "/lib32/"
  #define STANDARD_STARTFILE_PREFIX_2 "/usr/lib32/"
  #elif MIPS_ABI_DEFAULT == ABI_64
@@ -9,8 +9,8 @@
 +#define STANDARD_STARTFILE_PREFIX_1 "/lib/"
 +#define STANDARD_STARTFILE_PREFIX_2 "/usr/lib/"
  #endif
+ #endif
  
- /* Load store bonding is not supported by micromips and fix_24k.  The
 --- gcc/config/mips/mti-linux.h
 +++ gcc/config/mips/mti-linux.h
 @@ -38,7 +38,7 @@

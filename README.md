@@ -1,6 +1,6 @@
 # `mussel`
 `mussel` is the shortest and fastest script available today to build working cross
-compilers that target `musl` libc.
+compilers that target `musl` libc
 
 ## Features
 1. **Up-to-date**: uses latest available upstream sources for packages
@@ -19,7 +19,7 @@ compilers that target `musl` libc.
    and why
 
 ## Requirements:
-To confirm you have all required packages, please execute `./check`.
+To confirm you have all required packages, please execute `./check`
 
 ## Usage
 ### Building a Cross Compiler
@@ -53,7 +53,7 @@ below
   h | -h | --help                  Display this help message
 ```
 
-Sources will be preserved.
+Sources will be preserved
 
 ## Supported Architectures
 - aarch64
@@ -89,15 +89,15 @@ Pi Zero)
 - x86-64
 
 ## Packages
-1. `binutils`: 2.42
-2. `gcc`: 13.2.0
+1. `binutils`: 2.43.1
+2. `gcc`: 14.2.0
 3. `gmp`: 6.3.0
-4. `isl`: 0.26
-5. `linux`: 6.5.3 (**Optional** Linux Headers Support) (**Disabled** by default)
+4. `isl`: 0.27
+5. `linux`: 6.11.8 (**Optional** Linux Headers Support) (**Disabled** by default)
 6. `mpc`: 1.3.1
 7. `mpfr`: 4.2.1
-8. `musl`: 1.2.4
-9. `pkgconf`: 2.1.0 (**Optional** `pkg-config` Support) (**Disabled** by default)
+8. `musl`: 1.2.5
+9. `pkgconf`: 2.3.0 (**Optional** `pkg-config` Support) (**Disabled** by default)
 
 ## How Is `mussel` Doing It?
 1. Install `musl` headers
@@ -149,6 +149,7 @@ support all listed architectures, and a wrapper around host's `meson`
 - [qLinux](https://qlinux.qware.org/doku.php)
 - [Raptix](https://github.com/dslm4515/Raptix)
 - [Spider Linux](https://github.com/spider-linux/spiderlinux)
+- [Tin Can Linux](https://tincan-linux.github.io/)
 - [Yeti OS](https://github.com/avs-origami/yeti)
 
 ## Credits and Inspiration
@@ -156,7 +157,7 @@ support all listed architectures, and a wrapper around host's `meson`
 [qword](https://github.com/qword-os), [The Managarm Project](
 https://github.com/managarm), [glaucus](https://glaucuslinux.org/) (where
 it's actually implemented) and [musl-cross-make](
-https://github.com/richfelker/musl-cross-make).
+https://github.com/richfelker/musl-cross-make)
 
 ## Author
 Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
@@ -169,7 +170,7 @@ mailto:firasuke@glaucuslinux.org)>
 - Luiz Antônio Rangel at Pindorama (takusuman) <[luiz.antonio.rangel@outlook.com.br](luiz.antonio.rangel@outlook.com.br)>
 
 ## License
-`mussel` is licensed under the Internet Systems Consortium (ISC) license.
+`mussel` is licensed under the Internet Systems Consortium (ISC) license
 
 ## Dedication
 `mussel` is dedicated to all those that believe setting up a cross compiler
