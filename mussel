@@ -20,6 +20,7 @@ alias printf="printf --"
 #---------------------------------------#
 
 # ----- Optional ----- #
+ISL_SUPPORT=yes
 CXX_SUPPORT=yes
 FORTRAN_SUPPORT=no
 LINUX_HEADERS_SUPPORT=no
@@ -524,6 +525,7 @@ while [ $# -gt 0 ]; do
       printf '\tp | -p | --parallel            \tUse all available cores on the host system\n'
       printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
       printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
+      printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
       printf '\n'
       printf 'Commands:\n'
       printf "\tc | -c | --clean               \tClean mussel's build environment\n"
@@ -553,6 +555,9 @@ while [ $# -gt 0 ]; do
       ;;
     x | -x | --disable-cxx)
       CXX_SUPPORT=no
+      ;;
+    g | -g | --disable-isl)
+      ISL_SUPPORT=no
       ;;
     *)
       printf "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
@@ -670,6 +675,7 @@ printf '|    Distributed under the terms of the ISC License    |\n'
 printf '+======================================================+\n'
 printf '\n'
 printf "Target Architecture:            $XARCH\n\n"
+printf "Optional isl Library Support:   $ISL_SUPPORT\n"
 printf "Optional C++ Support:           $CXX_SUPPORT\n"
 printf "Optional Fortran Support:       $FORTRAN_SUPPORT\n"
 printf "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
@@ -695,14 +701,14 @@ printf "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >>"$ML
 printf "\nStart Time: $(date)\n\n" >>"$MLOG"
 
 # if defined, fortran lang support is built in gcc
-[ "$FORTRAN_SUPPORT" = "yes" ] && ENABLE_FORTRAN_YES="abcd"
+[ $FORTRAN_SUPPORT = "yes" ] && ENABLE_FORTRAN_YES="abcd"
 
 # ----- Prepare Packages ----- #
 printf "-----\nprepare\n-----\n\n" >>"$MLOG"
 mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
 mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
 mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
-mpackage isl "$isl_url" $isl_sum $isl_ver
+[ $ISL_SUPPORT = "yes" ] && mpackage isl "$isl_url" $isl_sum $isl_ver
 
 [ $LINUX_HEADERS_SUPPORT = yes ] && mpackage linux "$linux_url" $linux_sum $linux_ver
 
@@ -812,7 +818,8 @@ printf "${BLUEC}..${NORMALC} Preparing cross-gcc (compiler)...\n"
 cp -ar "$SRCDIR/gmp/gmp-$gmp_ver" "$SRCDIR/gcc/gcc-$gcc_ver/gmp"
 cp -ar "$SRCDIR/mpfr/mpfr-$mpfr_ver" "$SRCDIR/gcc/gcc-$gcc_ver/mpfr"
 cp -ar "$SRCDIR/mpc/mpc-$mpc_ver" "$SRCDIR/gcc/gcc-$gcc_ver/mpc"
-cp -ar "$SRCDIR/isl/isl-$isl_ver" "$SRCDIR/gcc/gcc-$gcc_ver/isl"
+[ $ISL_SUPPORT = "yes" ] \
+&& cp -ar "$SRCDIR/isl/isl-$isl_ver" "$SRCDIR/gcc/gcc-$gcc_ver/isl"
 
 cd "$BLDDIR"
 mkdir cross-gcc
