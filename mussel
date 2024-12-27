@@ -101,7 +101,10 @@ osslchecksum() {
   # Split the line in two using the good ol' POSIX "regex", then use the
   # file name for recreating the hash using OpenSSL's shell/command line
   # API and treating its output with [n]awk(1).
-  file_to_check="${hash_line#* }"
+  _file_to_check="${hash_line#* }"
+  # And that's some POSIX "macumba" for getting around leading spaces
+  # before the file name. Anyway.
+  file_to_check="${_file_to_check#${_file_to_check%%[![:space:]]*}}"
   alleged_hash="${hash_line%% *}"
   actual_hash_line="$(openssl dgst -sha256 "$file_to_check" |
     awk '{ split($0, digest, "= ");
@@ -114,30 +117,30 @@ osslchecksum() {
     # "They said I came back Google Go-nized..."
     err=1
   fi
-  unset hash_line file_to_check alleged_hash \
+  unset hash_line _file_to_check file_to_check alleged_hash \
     actual_hash_line actual_fname actual_hash
   return $err
 }
 
 # ----- Checksum utility alias ----- #
-checksum() {
+# First of all, alias the command to be used with a generic
+# boilerplate function.
+# Since the shell, in any POSIX-compliant implementation, maintains
+# function declarations in a stack different from variables, we can
+# use 'checksum_command' as the identifier for both the variable
+# that contains the type of hash check mechanism and the boilerplate
+# function.
+case "$checksum_command" in
   # check the hash with b3sum
-  [ "$checksum_command" = "b3sum" ] && {
-    printf "$1  $2" | b3sum -c
-    return $?
-  }
-
+  'b3sum') checksum_command() { b3sum -c; } ;;
   # check the hash with sha256sum
-  [ "$checksum_command" = "sha256sum" ] && {
-    printf "$1  $2" | sha256sum -c
-    return $?
-  }
-
+  'sha256sum') checksum_command() { sha256sum -c; } ;;
   # check the hash with openssl
-  [ "$checksum_command" = "openssl" ] && {
-    printf "$1 $2" | osslchecksum
-    return $?
-  }
+  'openssl') checksum_command() { osslchecksum; } ;;
+esac
+checksum() {
+  printf '%s  %s' $1 "$2" | checksum_command
+  return $?
 }
 
 # Stone-portable way to get the processor number of cores on
