@@ -562,29 +562,30 @@ while [ $# -gt 0 ]; do
     ISL_SUPPORT=no
     ;;
   T | -T | --custom-vendor)
-	  # Have the user defined the default tuple first?
-	  if [ -z $XTARGET ]; then
-		printf '%b!!%b '\''%s'\'' requires that the target architecture is already specified.\n' \
-			"$REDC" "$NORMALC" $1
-		printf 'Run '\''$0 -h'\'' for help.\n' $0
-		exit 1
-	  fi
-	  # Set the vendor as the next argument to this flag.
-	  shift; CUSTOM_VENDOR="$1"
-	  if (echo "$CUSTOM_VENDOR" | grep ' ') 2>&1 >/dev/null; then
-		printf '%b!!%b Illegal vendor '\''%s'\'': spaces are not permitted.\n' \
-			"$REDC" "$NORMALC" "$VENDOR"
-	exit 1
-	  fi
-	  OLD_XTARGET=$XTARGET
-	  # Yes, we're placing the vendor before the target.
-	  # Trust me, it will make sense in the AWK script.
-      	  XTARGET="$(printf '%s-%s' $VENDOR $OLD_XTARGET | awk '{
-              split($0, tuple, "-")
-	      vendor=tuple[1]
-	      cpu=tuple[2]
-	      sub(/^[^-]*-[^-]*-/, "", $1)
-	      printf("%s-%s-%s", cpu, vendor, $1)
+    # Have the user defined the default tuple first?
+    if [ -z $XTARGET ]; then
+      printf '%b!!%b '\''%s'\'' requires that the target architecture is already specified.\n' \
+        "$REDC" "$NORMALC" $1
+      printf 'Run '\''$0 -h'\'' for help.\n' $0
+      exit 1
+    fi
+    # Set the vendor as the next argument to this flag.
+    shift
+    CUSTOM_VENDOR="$1"
+    if (echo "$CUSTOM_VENDOR" | grep ' ') 2>&1 >/dev/null; then
+      printf '%b!!%b Illegal vendor '\''%s'\'': spaces are not permitted.\n' \
+        "$REDC" "$NORMALC" "$VENDOR"
+      exit 1
+    fi
+    OLD_XTARGET=$XTARGET
+    # Yes, we're placing the vendor before the target.
+    # Trust me, it will make sense in the AWK script.
+    XTARGET="$(printf '%s-%s' $VENDOR $OLD_XTARGET | awk '{
+      split($0, tuple, "-")
+      vendor=tuple[1]
+      cpu=tuple[2]
+      sub(/^[^-]*-[^-]*-/, "", $1)
+      printf("%s-%s-%s", cpu, vendor, $1)
       }')"
     ;;
   *)
