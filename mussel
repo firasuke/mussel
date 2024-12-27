@@ -576,11 +576,12 @@ if [ -z $XARCH ]; then
 fi
 
 # ----- Make Flags ----- #
+MAKE_CMD="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
 if [ $PARALLEL_SUPPORT = yes ]; then
-  JOBS="$(expr 3 \* $(getnproc))"
-  MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true -j$JOBS"
+  JOBS="$(getnproc)"
+  MAKE="$MAKE_CMD -j$JOBS"
 else
-  MAKE="make INFO_DEPS= infodir= ac_cv_prog_lex_root=lex.yy MAKEINFO=true"
+  MAKE="$MAKE_CMD"
 fi
 
 ################################################
