@@ -580,7 +580,7 @@ while [ $# -gt 0 ]; do
     OLD_XTARGET=$XTARGET
     # Yes, we're placing the vendor before the target.
     # Trust me, it will make sense in the AWK script.
-    XTARGET="$(printf '%s-%s' $VENDOR $OLD_XTARGET | awk '{
+    XTARGET="$(printf '%s-%s' $CUSTOM_VENDOR $OLD_XTARGET | awk '{
       split($0, tuple, "-")
       vendor=tuple[1]
       cpu=tuple[2]
@@ -805,6 +805,7 @@ mkdir cross-binutils
 cd cross-binutils
 
 printf "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
+
 "$SRCDIR/binutils/binutils-$binutils_ver/configure" \
   --prefix="" \
   --exec-prefix="" \
