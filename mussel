@@ -120,24 +120,24 @@ osslchecksum() {
 }
 
 # ----- Checksum utility alias ----- #
-checksum() {
+# First of all, alias the command to be used with a generic
+# boilerplate function.
+# Since the shell, in any POSIX-compliant implementation, maintains
+# function declarations in a stack different from variables, we can
+# use 'checksum_command' as the identifier for both the variable
+# that contains the type of hash check mechanism and the boilerplate
+# function.
+case "$checksum_command" in
   # check the hash with b3sum
-  [ "$checksum_command" = "b3sum" ] && {
-    printf "$1  $2" | b3sum -c
-    return $?
-  }
-
+  'b3sum') checksum_command() { b3sum -c; } ;;
   # check the hash with sha256sum
-  [ "$checksum_command" = "sha256sum" ] && {
-    printf "$1  $2" | sha256sum -c
-    return $?
-  }
-
+  'sha256sum') checksum_command() { sha256sum -c; } ;;
   # check the hash with openssl
-  [ "$checksum_command" = "openssl" ] && {
-    printf "$1 $2" | osslchecksum
-    return $?
-  }
+  'openssl') checksum_command() { osslchecksum; } ;;
+esac
+checksum() {
+  printf '%s  %s' $1 "$2" | checksum_command
+  return $?
 }
 
 # Stone-portable way to get the processor number of cores on
