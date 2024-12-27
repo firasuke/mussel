@@ -101,7 +101,10 @@ osslchecksum() {
   # Split the line in two using the good ol' POSIX "regex", then use the
   # file name for recreating the hash using OpenSSL's shell/command line
   # API and treating its output with [n]awk(1).
-  file_to_check="${hash_line#* }"
+  _file_to_check="${hash_line#* }"
+  # And that's some POSIX "macumba" for getting around leading spaces
+  # before the file name. Anyway.
+  file_to_check="${_file_to_check#${_file_to_check%%[![:space:]]*}}"
   alleged_hash="${hash_line%% *}"
   actual_hash_line="$(openssl dgst -sha256 "$file_to_check" |
     awk '{ split($0, digest, "= ");
@@ -114,7 +117,7 @@ osslchecksum() {
     # "They said I came back Google Go-nized..."
     err=1
   fi
-  unset hash_line file_to_check alleged_hash \
+  unset hash_line _file_to_check file_to_check alleged_hash \
     actual_hash_line actual_fname actual_hash
   return $err
 }
