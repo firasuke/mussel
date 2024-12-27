@@ -805,7 +805,6 @@ mkdir cross-binutils
 cd cross-binutils
 
 printf "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
-
 "$SRCDIR/binutils/binutils-$binutils_ver/configure" \
   --prefix="" \
   --exec-prefix="" \
