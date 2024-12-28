@@ -566,7 +566,7 @@ while [ $# -gt 0 ]; do
     if [ -z $XTARGET ]; then
       printf '%b!!%b '\''%s'\'' requires that the target architecture is already specified.\n' \
         "$REDC" "$NORMALC" $1
-      printf 'Run '\''$0 -h'\'' for help.\n' $0
+      printf 'Run '\''%s -h'\'' for help.\n' $0
       exit 1
     fi
     # Set the vendor as the next argument to this flag.
@@ -574,9 +574,14 @@ while [ $# -gt 0 ]; do
     CUSTOM_VENDOR="$1"
     # This mechanism basically cuts the string whenever there is a space.
     # If it still equals the original, then it hasn't any spaces.
-    if [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR% *}" ]; then
-      printf '%b!!%b Illegal vendor '\''%s'\'': spaces are not permitted.\n' \
-        "$REDC" "$NORMALC" "$CUSTOM_VENDOR"
+    # The same happens for the '-' character.
+    if [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR% *}" ] ||
+      ([ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR#-}" ] ||
+        [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR%-}" ]); then
+      printf '%b!!%b Illegal vendor '\''%s'\'': %s.\n' \
+        "$REDC" "$NORMALC" "$CUSTOM_VENDOR" \
+        'no spaces nor strings starting and/or terminated with '\''-'\'' are permitted'
+      printf 'Run '\''%s -h'\'' for help.\n' $0
       exit 1
     fi
     OLD_XTARGET=$XTARGET
