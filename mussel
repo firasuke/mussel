@@ -580,15 +580,13 @@ while [ $# -gt 0 ]; do
       exit 1
     fi
     OLD_XTARGET=$XTARGET
-    # Yes, we're placing the vendor before the target.
-    # Trust me, it will make sense in the AWK script.
-    XTARGET="$(printf '%s-%s' $CUSTOM_VENDOR $OLD_XTARGET | awk '{
-      split($0, tuple, "-")
-      vendor=tuple[1]
-      cpu=tuple[2]
-      sub(/^[^-]*-[^-]*-/, "", $1)
-      printf("%s-%s-%s", cpu, vendor, $1)
-      }')"
+    # Cut the architecture out.
+    _XARCH=${OLD_XTARGET%%-*}
+    # And then the remainder whose name I don't know to specify.
+    _XTARGET_REMAINDER=${OLD_XTARGET#*-}
+    # So we can now build the new XTARGET.
+    XTARGET="${_XARCH}-$CUSTOM_VENDOR-$_XTARGET_REMAINDER"
+    unset OLD_XTARGET _XARCH _XTARGET_REMAINDER
     ;;
   *)
     printf "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
