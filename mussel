@@ -19,6 +19,8 @@ alias printf="printf --"
 # ------------- Variables ------------- #
 #---------------------------------------#
 
+progname=$0
+
 # ----- Optional ----- #
 ISL_SUPPORT=yes
 CXX_SUPPORT=yes
@@ -203,6 +205,12 @@ nettransfer() {
   }
 
   unset fname nproc url
+}
+
+# ----- Print help for command line arguments ----- #
+help() {
+  printf 'Run '\''%s -h'\'' for help.\n' $progname
+  exit 1
 }
 
 # ----- Development Directories ----- #
@@ -566,8 +574,7 @@ while [ $# -gt 0 ]; do
     if [ -z $XTARGET ]; then
       printf '%b!!%b '\''%s'\'' requires that the target architecture is already specified.\n' \
         "$REDC" "$NORMALC" $1
-      printf 'Run '\''%s -h'\'' for help.\n' $0
-      exit 1
+      help
     fi
     # Set the vendor as the next argument to this flag.
     shift
@@ -581,8 +588,7 @@ while [ $# -gt 0 ]; do
       printf '%b!!%b Illegal vendor '\''%s'\'': %s.\n' \
         "$REDC" "$NORMALC" "$CUSTOM_VENDOR" \
         'no spaces nor strings starting and/or terminated with '\''-'\'' are permitted'
-      printf 'Run '\''%s -h'\'' for help.\n' $0
-      exit 1
+      help
     fi
     OLD_XTARGET=$XTARGET
     # Cut the architecture out.
@@ -595,8 +601,7 @@ while [ $# -gt 0 ]; do
     ;;
   *)
     printf "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
-    printf "Run '$0 -h' for help.\n"
-    exit 1
+    help
     ;;
   esac
 
@@ -605,8 +610,7 @@ done
 
 if [ -z $XARCH ]; then
   printf "${REDC}!!${NORMALC} No Architecture Specified!\n"
-  printf "Run '$0 -h' for help.\n"
-  exit 1
+  help
 fi
 
 # ----- Make Flags ----- #
