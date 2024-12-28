@@ -572,9 +572,11 @@ while [ $# -gt 0 ]; do
     # Set the vendor as the next argument to this flag.
     shift
     CUSTOM_VENDOR="$1"
-    if (echo "$CUSTOM_VENDOR" | grep ' ') 2>&1 >/dev/null; then
+    # This mechanism basically cuts the string whenever there is a space.
+    # If it still equals the original, then it hasn't any spaces.
+    if [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR% *}" ]; then
       printf '%b!!%b Illegal vendor '\''%s'\'': spaces are not permitted.\n' \
-        "$REDC" "$NORMALC" "$VENDOR"
+        "$REDC" "$NORMALC" "$CUSTOM_VENDOR"
       exit 1
     fi
     OLD_XTARGET=$XTARGET
