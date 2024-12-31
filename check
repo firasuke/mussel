@@ -11,28 +11,29 @@
 # standard of the system.
 GNUorNonGNU() {
   cmd=$1
-  heirloom_ver="$(getconf HEIRLOOM_TOOLCHEST_VERSION || printf 'err')"
+  heirloom_ver="$(getconf HEIRLOOM_TOOLCHEST_VERSION 2>/dev/null ||
+    printf 'err')"
   posix_ver=$(getconf _POSIX_VERSION)
   case "$($cmd --version 2>/dev/null || printf 'err')" in
-  err) case "$heirloom_ver" in
-    'err')
-      if (command -v "$cmd" 2>&1 >/dev/null); then
-        printf 'POSIX version: %d\n' \
-          $posix_ver
-      else
-        printf 'Not found.\n'
-        return 1
-      fi
-      ;;
-    *)
-      if [ $heirloom_ver -gt 070715 ]; then
-        NG="(New Generation)"
-      fi
-      printf 'Heirloom Toolchest%srel. %d\n' \
-        " $NG " $heirloom_ver
-      ;;
+    err) case "$heirloom_ver" in
+      'err')
+        if (command -v "$cmd" 2>&1 >/dev/null); then
+          printf 'POSIX version: %d\n' \
+            $posix_ver
+        else
+          printf 'Not found.\n'
+          return 1
+        fi
+        ;;
+      *)
+        if [ $heirloom_ver -gt 070715 ]; then
+          NG="(New Generation)"
+        fi
+        printf 'Heirloom Toolchest%srel. %d\n' \
+          " $NG " $heirloom_ver
+        ;;
     esac ;;
-  *) $cmd --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
+    *) $cmd --version 2>&1 | sed 1q | cut -d' ' -f4 ;;
   esac
 }
 
