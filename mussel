@@ -19,6 +19,8 @@ alias printf="printf --"
 # ------------- Variables ------------- #
 #---------------------------------------#
 
+progname=$0
+
 # ----- Optional ----- #
 ISL_SUPPORT=yes
 CXX_SUPPORT=yes
@@ -28,6 +30,7 @@ OPENMP_SUPPORT=no
 PARALLEL_SUPPORT=no
 PKG_CONFIG_SUPPORT=no
 QUADMATH_SUPPORT=no
+CUSTOM_VENDOR='(none)'
 
 # ----- Colors ----- #
 REDC='\033[1;31m'
@@ -205,6 +208,12 @@ nettransfer() {
   }
 
   unset fname nproc url
+}
+
+# ----- Print help for command line arguments ----- #
+help() {
+  printf 'Run '\''%s -h'\'' for help.\n' $progname
+  exit 1
 }
 
 # ----- Development Directories ----- #
@@ -474,7 +483,7 @@ while [ $# -gt 0 ]; do
     rm -fr "$BLDDIR"
     rm -fr "$MPREFIX"
     rm -fr "$MSYSROOT"
-    rm -fr "$MLOG"
+    rm -f "$MLOG"
     printf "${GREENC}=>${NORMALC} mussel cleaned.\n"
     exit
     ;;
@@ -529,6 +538,7 @@ while [ $# -gt 0 ]; do
     printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
     printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
     printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
+    printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before.\n'
     printf '\n'
     printf 'Commands:\n'
     printf "\tc | -c | --clean               \tClean mussel's build environment\n"
@@ -562,10 +572,39 @@ while [ $# -gt 0 ]; do
   g | -g | --disable-isl)
     ISL_SUPPORT=no
     ;;
+  T | -T | --custom-vendor)
+    # Have the user defined the default tuple first?
+    if [ -z $XTARGET ]; then
+      printf '%b!!%b '\''%s'\'' requires that the target architecture is already specified.\n' \
+        "$REDC" "$NORMALC" $1
+      help
+    fi
+    # Set the vendor as the next argument to this flag.
+    shift
+    CUSTOM_VENDOR="$1"
+    # This mechanism basically cuts the string whenever there is a space.
+    # If it still equals the original, then it hasn't any spaces.
+    # The same happens for the '-' character.
+    if [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR% *}" ] ||
+      ([ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR#-}" ] ||
+        [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR%-}" ]); then
+      printf '%b!!%b Illegal vendor '\''%s'\'': %s.\n' \
+        "$REDC" "$NORMALC" "$CUSTOM_VENDOR" \
+        'no spaces nor strings starting and/or terminated with '\''-'\'' are permitted'
+      help
+    fi
+    OLD_XTARGET=$XTARGET
+    # Cut the architecture out.
+    _XARCH=${OLD_XTARGET%%-*}
+    # And then the remainder whose name I don't know to specify.
+    _XTARGET_REMAINDER=${OLD_XTARGET#*-}
+    # So we can now build the new XTARGET.
+    XTARGET="${_XARCH}-$CUSTOM_VENDOR-$_XTARGET_REMAINDER"
+    unset OLD_XTARGET _XARCH _XTARGET_REMAINDER
+    ;;
   *)
     printf "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
-    printf "Run '$0 -h' for help.\n"
-    exit 1
+    help
     ;;
   esac
 
@@ -574,8 +613,7 @@ done
 
 if [ -z $XARCH ]; then
   printf "${REDC}!!${NORMALC} No Architecture Specified!\n"
-  printf "Run '$0 -h' for help.\n"
-  exit 1
+  help
 fi
 
 # ----- Make Flags ----- #
@@ -686,18 +724,19 @@ printf "Optional Linux Headers Support: $LINUX_HEADERS_SUPPORT\n"
 printf "Optional OpenMP Support:        $OPENMP_SUPPORT\n"
 printf "Optional Parallel Support:      $PARALLEL_SUPPORT\n"
 printf "Optional pkg-config Support:    $PKG_CONFIG_SUPPORT\n"
-printf "Optional Quadmath Support:      $QUADMATH_SUPPORT\n\n"
+printf "Optional Quadmath Support:      $QUADMATH_SUPPORT\n"
+printf "Optional custom vendor:         '$CUSTOM_VENDOR'\n\n"
 
 [ ! -d "$SRCDIR" ] && printf "${BLUEC}..${NORMALC} Creating the sources directory...\n" && mkdir "$SRCDIR"
 [ ! -d "$BLDDIR" ] && printf "${BLUEC}..${NORMALC} Creating the builds directory...\n" && mkdir "$BLDDIR"
 [ ! -d "$PCHDIR" ] && printf "${BLUEC}..${NORMALC} Creating the patches directory...\n" && mkdir "$PCHDIR"
 printf '\n'
-rm -fr "$MLOG"
+rm -f "$MLOG"
 
 # ----- Print Variables to mussel Log File ----- #
 printf 'mussel Log File\n\n' >>"$MLOG"
 printf "ISL_SUPPORT: $ISL_SUPPORT\nCXX_SUPPORT: $CXX_SUPPORT\nFORTRAN_SUPPORT: $FORTRAN_SUPPORT\nLINUX_HEADERS_SUPPORT: $LINUX_HEADERS_SUPPORT\nOPENMP_SUPPORT: $OPENMP_SUPPORT\nPARALLEL_SUPPORT: $PARALLEL_SUPPORT\nPKG_CONFIG_SUPPORT: $PKG_CONFIG_SUPPORT\nQUADMATH_SUPPORT: $QUADMATH_SUPPORT\n\n" >>"$MLOG"
-printf "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\n" >>"$MLOG"
+printf "XARCH: $XARCH\nLARCH: $LARCH\nMARCH: $MARCH\nXTARGET: $XTARGET\nCUSTOM_VENDOR: $CUSTOM_VENDOR\n" >>"$MLOG"
 printf "XGCCARGS: \"$XGCCARGS\"\n\n" >>"$MLOG"
 printf "CFLAGS: \"$CFLAGS\"\nCXXFLAGS: \"$CXXFLAGS\"\n\n" >>"$MLOG"
 printf "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >>"$MLOG"
