@@ -810,13 +810,11 @@ cd "$MSYSROOT"
 mkdir -pv \
   bin \
   lib \
-  lib32 \
   include \
   "$XTARGET/bin" >>"$MLOG" 2>&1
 ln -sfv . usr >>"$MLOG" 2>&1
 cd "$MSYSROOT/$XTARGET"
 ln -sfv ../lib lib >>"$MLOG" 2>&1
-ln -sfv ../lib32 lib32 >>"$MLOG" 2>&1
 ln -sfv ../include include >>"$MLOG" 2>&1
 
 printf '\n'
