@@ -142,6 +142,7 @@ case "$checksum_command" in
   'openssl') checksum_command() { osslchecksum; } ;;
 esac
 checksum() {
+  [ -z "$1" ] && return 0
   printf '%s  %s' $1 "$2" | checksum_command
   return $?
 }
@@ -769,18 +770,18 @@ printf "\nStart Time: $(date)\n\n" >>"$MLOG"
 
 # ----- Prepare Packages ----- #
 printf "-----\nprepare\n-----\n\n" >>"$MLOG"
-mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
-mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
-mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
-[ $ISL_SUPPORT = "yes" ] && mpackage isl "$isl_url" $isl_sum $isl_ver
+mpackage binutils "$binutils_url" "$binutils_sum" $binutils_ver
+mpackage gcc "$gcc_url" "$gcc_sum" $gcc_ver
+mpackage gmp "$gmp_url" "$gmp_sum" $gmp_ver
+[ $ISL_SUPPORT = "yes" ] && mpackage isl "$isl_url" "$isl_sum" $isl_ver
 
-[ $LINUX_HEADERS_SUPPORT = yes ] && mpackage linux "$linux_url" $linux_sum $linux_ver
+[ $LINUX_HEADERS_SUPPORT = yes ] && mpackage linux "$linux_url" "$linux_sum" $linux_ver
 
-mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
-mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
-mpackage musl "$musl_url" $musl_sum $musl_ver
+mpackage mpc "$mpc_url" "$mpc_sum" $mpc_ver
+mpackage mpfr "$mpfr_url" "$mpfr_sum" $mpfr_ver
+mpackage musl "$musl_url" "$musl_sum" $musl_ver
 
-[ $PKG_CONFIG_SUPPORT = yes ] && mpackage pkgconf "$pkgconf_url" $pkgconf_sum $pkgconf_ver
+[ $PKG_CONFIG_SUPPORT = yes ] && mpackage pkgconf "$pkgconf_url" "$pkgconf_sum" $pkgconf_ver
 
 # ----- Patch Packages ----- #
 if [ ! -z $XPURE64 ]; then
