@@ -334,7 +334,23 @@ while [ $# -gt 0 ]; do
     XPURE64=""
     XTARGET=$XARCH-linux-musl
     ;;
-  mips | mips64 | mips64be | mips64eb | mips64r2)
+  mips | mips32 | mips32r2)
+    XARCH=$1
+    LARCH=mips
+    MARCH=${LARCH}
+    XGCCARGS="--with-endian=big --with-arch=mips32r2 --with-abi=32 --with-float=soft"
+    XPURE64=""
+    XTARGET=$1-linux-musl
+    ;;
+  mipsel | mips32el | mips32r2el)
+    XARCH=$1
+    LARCH=mips
+    MARCH=${LARCH}
+    XGCCARGS="--with-endian=little --with-arch=mips32r2 --with-abi=32 --with-float=soft"
+    XPURE64=""
+    XTARGET=$1-linux-musl
+    ;;
+  mips64 | mips64be | mips64eb | mips64r2)
     XARCH=mips64
     LARCH=mips
     MARCH=$XARCH
@@ -510,6 +526,8 @@ while [ $# -gt 0 ]; do
     printf '\t+ m68k\n'
     printf '\t+ microblaze\n'
     printf '\t+ microblazeel\n'
+    printf '\t+ mips\n'
+    printf '\t+ mipsel\n'
     printf '\t+ mips64\n'
     printf '\t+ mips64el\n'
     printf '\t+ mipsisa64r6\n'
