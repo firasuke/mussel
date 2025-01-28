@@ -743,6 +743,9 @@ printf "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >>"$MLOG"
 printf "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >>"$MLOG"
 printf "\nStart Time: $(date)\n\n" >>"$MLOG"
 
+# if defined, c++ lang support is built in gcc
+[ $CXX_SUPPORT = "yes" ] && ENABLE_CXX_YES="abcd"
+
 # if defined, fortran lang support is built in gcc
 [ $FORTRAN_SUPPORT = "yes" ] && ENABLE_FORTRAN_YES="abcd"
 
@@ -880,7 +883,7 @@ printf "${BLUEC}..${NORMALC} Configuring cross-gcc (compiler)...\n"
   --enable-checking=release \
   --disable-multilib \
   --disable-fixed-point \
-  --enable-languages=c,c++${ENABLE_FORTRAN_YES:+,fortran} \
+  --enable-languages=c${ENABLE_CXX_YES:+,c++}${ENABLE_FORTRAN_YES:+,fortran} \
   --disable-rpath \
   --disable-nls \
   --disable-gnu-indirect-function \
