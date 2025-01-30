@@ -555,6 +555,7 @@ while [ $# -gt 0 ]; do
     printf '\to | -o | --enable-openmp       \tEnable optional OpenMP support\n'
     printf '\tp | -p | --parallel            \tUse all available cores on the host system\n'
     printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
+    printf '\ts | -s | --min-size            \tOptimize for minimum size.\n'
     printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
     printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
     printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before.\n'
@@ -584,6 +585,10 @@ while [ $# -gt 0 ]; do
     ;;
   q | -q | --enable-quadmath)
     QUADMATH_SUPPORT=yes
+    ;;
+  s | -s | --min-size)
+    CFLAGS=-Os
+    CXXFLAGS=-Os
     ;;
   x | -x | --disable-cxx)
     CXX_SUPPORT=no
