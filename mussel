@@ -142,6 +142,7 @@ case "$checksum_command" in
   'openssl') checksum_command() { osslchecksum; } ;;
 esac
 checksum() {
+  [ -z "$1" ] && return 0
   printf '%s  %s' $1 "$2" | checksum_command
   return $?
 }
@@ -334,7 +335,23 @@ while [ $# -gt 0 ]; do
     XPURE64=""
     XTARGET=$XARCH-linux-musl
     ;;
-  mips | mips64 | mips64be | mips64eb | mips64r2)
+  mips | mips32 | mips32r2)
+    XARCH=$1
+    LARCH=mips
+    MARCH=${LARCH}
+    XGCCARGS="--with-endian=big --with-arch=mips32r2 --with-abi=32 --with-float=soft"
+    XPURE64=""
+    XTARGET=$1-linux-musl
+    ;;
+  mipsel | mips32el | mips32r2el)
+    XARCH=$1
+    LARCH=mips
+    MARCH=${LARCH}
+    XGCCARGS="--with-endian=little --with-arch=mips32r2 --with-abi=32 --with-float=soft"
+    XPURE64=""
+    XTARGET=$1-linux-musl
+    ;;
+  mips64 | mips64be | mips64eb | mips64r2)
     XARCH=mips64
     LARCH=mips
     MARCH=$XARCH
@@ -510,6 +527,8 @@ while [ $# -gt 0 ]; do
     printf '\t+ m68k\n'
     printf '\t+ microblaze\n'
     printf '\t+ microblazeel\n'
+    printf '\t+ mips\n'
+    printf '\t+ mipsel\n'
     printf '\t+ mips64\n'
     printf '\t+ mips64el\n'
     printf '\t+ mipsisa64r6\n'
@@ -536,6 +555,7 @@ while [ $# -gt 0 ]; do
     printf '\to | -o | --enable-openmp       \tEnable optional OpenMP support\n'
     printf '\tp | -p | --parallel            \tUse all available cores on the host system\n'
     printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
+    printf '\ts | -s | --min-size            \tOptimize for minimum size.\n'
     printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
     printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
     printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before.\n'
@@ -565,6 +585,10 @@ while [ $# -gt 0 ]; do
     ;;
   q | -q | --enable-quadmath)
     QUADMATH_SUPPORT=yes
+    ;;
+  s | -s | --min-size)
+    CFLAGS=-Os
+    CXXFLAGS=-Os
     ;;
   x | -x | --disable-cxx)
     CXX_SUPPORT=no
@@ -743,23 +767,26 @@ printf "PATH: \"$PATH\"\nMAKE: \"$MAKE\"\n\n" >>"$MLOG"
 printf "Host Kernel: \"$(uname -a)\"\nHost Info:\n$(cat /etc/*release)\n" >>"$MLOG"
 printf "\nStart Time: $(date)\n\n" >>"$MLOG"
 
+# if defined, c++ lang support is built in gcc
+[ $CXX_SUPPORT = "yes" ] && ENABLE_CXX_YES="abcd"
+
 # if defined, fortran lang support is built in gcc
 [ $FORTRAN_SUPPORT = "yes" ] && ENABLE_FORTRAN_YES="abcd"
 
 # ----- Prepare Packages ----- #
 printf "-----\nprepare\n-----\n\n" >>"$MLOG"
-mpackage binutils "$binutils_url" $binutils_sum $binutils_ver
-mpackage gcc "$gcc_url" $gcc_sum $gcc_ver
-mpackage gmp "$gmp_url" $gmp_sum $gmp_ver
-[ $ISL_SUPPORT = "yes" ] && mpackage isl "$isl_url" $isl_sum $isl_ver
+mpackage binutils "$binutils_url" "$binutils_sum" $binutils_ver
+mpackage gcc "$gcc_url" "$gcc_sum" $gcc_ver
+mpackage gmp "$gmp_url" "$gmp_sum" $gmp_ver
+[ $ISL_SUPPORT = "yes" ] && mpackage isl "$isl_url" "$isl_sum" $isl_ver
 
-[ $LINUX_HEADERS_SUPPORT = yes ] && mpackage linux "$linux_url" $linux_sum $linux_ver
+[ $LINUX_HEADERS_SUPPORT = yes ] && mpackage linux "$linux_url" "$linux_sum" $linux_ver
 
-mpackage mpc "$mpc_url" $mpc_sum $mpc_ver
-mpackage mpfr "$mpfr_url" $mpfr_sum $mpfr_ver
-mpackage musl "$musl_url" $musl_sum $musl_ver
+mpackage mpc "$mpc_url" "$mpc_sum" $mpc_ver
+mpackage mpfr "$mpfr_url" "$mpfr_sum" $mpfr_ver
+mpackage musl "$musl_url" "$musl_sum" $musl_ver
 
-[ $PKG_CONFIG_SUPPORT = yes ] && mpackage pkgconf "$pkgconf_url" $pkgconf_sum $pkgconf_ver
+[ $PKG_CONFIG_SUPPORT = yes ] && mpackage pkgconf "$pkgconf_url" "$pkgconf_sum" $pkgconf_ver
 
 # ----- Patch Packages ----- #
 if [ ! -z $XPURE64 ]; then
@@ -783,13 +810,11 @@ cd "$MSYSROOT"
 mkdir -pv \
   bin \
   lib \
-  lib32 \
   include \
   "$XTARGET/bin" >>"$MLOG" 2>&1
 ln -sfv . usr >>"$MLOG" 2>&1
 cd "$MSYSROOT/$XTARGET"
 ln -sfv ../lib lib >>"$MLOG" 2>&1
-ln -sfv ../lib32 lib32 >>"$MLOG" 2>&1
 ln -sfv ../include include >>"$MLOG" 2>&1
 
 printf '\n'
@@ -880,7 +905,7 @@ printf "${BLUEC}..${NORMALC} Configuring cross-gcc (compiler)...\n"
   --enable-checking=release \
   --disable-multilib \
   --disable-fixed-point \
-  --enable-languages=c,c++${ENABLE_FORTRAN_YES:+,fortran} \
+  --enable-languages=c${ENABLE_CXX_YES:+,c++}${ENABLE_FORTRAN_YES:+,fortran} \
   --disable-rpath \
   --disable-nls \
   --disable-gnu-indirect-function \

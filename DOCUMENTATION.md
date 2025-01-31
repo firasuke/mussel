@@ -63,6 +63,8 @@ Raspberry Pi Zero)
 - m68k
 - microblaze
 - microblazeel
+- mips
+- mipsel
 - mips64
 - mips64el
 - mipsisa64r6
@@ -87,9 +89,7 @@ We start by using the tools available on the host system. We then switch to ours
 when they're available.
 
 ## v. mussel Flags
-The `--parallel` flag will use all available cores on the host system (`3 *
-nproc` is being used instead of the traditional `2 * nproc + 1`, since it
-ensures parallelism).
+The `--parallel` flag will use all available cores on the host system.
 
 It's also common to see `--enable-secureplt` added to `cross-gcc` arguments
 when the target is `powerpc*`, but that's only the case to get `musl` to support
