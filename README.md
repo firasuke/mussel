@@ -39,6 +39,7 @@ below
   o | -o | --enable-openmp         Enable optional OpenMP support
   p | -p | --parallel              Use all available cores on the host system
   q | -q | --enable-quadmath       Enable optional libquadmath support (default for Fortran)
+  s | -s | --min-size              Optimize for minimum size
   x | -x | --disable-cxx           Disable optional C++ support
 ```
 
@@ -69,6 +70,8 @@ Pi Zero)
 - m68k
 - microblaze
 - microblazeel
+- mips
+- mipsel
 - mips64
 - mips64el
 - mipsisa64r6
