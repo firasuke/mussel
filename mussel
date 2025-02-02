@@ -61,11 +61,26 @@ mpfr_url=https://www.mpfr.org/mpfr-current/mpfr-$mpfr_ver.tar.xz
 musl_url=https://musl.libc.org/releases/musl-$musl_ver.tar.gz
 pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.xz
 
+# Generic function to decide a command to be used.
+decide_cmd() {
+  dcmd=''
+  for ccmd; do
+    command -v $ccmd 2>&1 >/dev/null; case $? in
+      0)
+	# Define the decided command.
+        dcmd="$ccmd"
+	break
+        ;;
+      1) continue ;;
+    esac
+    printf '%s' "$dcmd"
+    break
+  done
+}
+
 # Decide which checksum command to use.
 if [ -z "$checksum_command" ]; then
-  for ccmd in b3sum openssl sha256sum; do
-    command -v $ccmd 2>&1 >/dev/null && checksum_command="$ccmd"
-  done
+  checksum_command="$(decide_cmd b3sum openssl sha256sum)"
 fi
 
 # checksums
@@ -160,9 +175,7 @@ getnproc() {
 
 # Decide which download command to use.
 if [ -z "$download_command" ]; then
-  for dcmd in curl wget w3m lynx aria2c; do
-    command -v $dcmd 2>&1 >/dev/null && download_command="$dcmd"
-  done
+  download_command="$(decide_cmd aria2c curl lynx w3m wget)"
 fi
 
 # If $download_command is still unset, we can't continue.
@@ -239,397 +252,397 @@ CXXFLAGS=-O2
 # ----- mussel Flags ----- #
 while [ $# -gt 0 ]; do
   case $1 in
-  aarch64 | arm64 | armv8-a)
-    XARCH=aarch64
-    LARCH=arm64
-    MARCH=$XARCH
-    XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
-    XPURE64=$XARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  armv4 | armv4t)
-    XARCH=armv4t
-    LARCH=arm
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=armv4t --with-float=soft"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musleabi
-    ;;
-  armv5 | armv5te)
-    XARCH=armv5te
-    LARCH=arm
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=armv5te --with-float=soft"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musleabi
-    ;;
-  armv6)
-    XARCH=armv6
-    LARCH=arm
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=$XARCH --with-fpu=vfp --with-float=hard"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musleabihf
-    ;;
-  arm | armv6kz | armv6zk | bcm2835)
-    XARCH=armv6kz
-    LARCH=arm
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfpv2 --with-float=hard"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musleabihf
-    ;;
-  armv7 | armv7-a)
-    XARCH=armv7-a
-    LARCH=arm
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=$XARCH --with-fpu=vfpv3 --with-float=hard"
-    XPURE64=""
-    XTARGET=$LARCH-linux-musleabihf
-    ;;
-  i486)
-    XARCH=$1
-    LARCH=i386
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=$1 --with-tune=generic"
-    XPURE64=""
-    XTARGET=$1-linux-musl
-    ;;
-  i586)
-    XARCH=$1
-    LARCH=i386
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=$1 --with-tune=generic"
-    XPURE64=""
-    XTARGET=$1-linux-musl
-    ;;
-  i386 | i686 | x86)
-    XARCH=i686
-    LARCH=i386
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=$XARCH --with-tune=generic"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  m68k | 68000 | motorola)
-    XARCH=m68k
-    LARCH=$XARCH
-    MARCH=$XARCH
-    XGCCARGS=""
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  mblaze | microblaze | microblazebe | microblazeeb)
-    XARCH=microblaze
-    LARCH=$XARCH
-    MARCH=$XARCH
-    XGCCARGS="--with-endian=big"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  microblazeel | microblazele)
-    XARCH=microblazeel
-    LARCH=microblaze
-    MARCH=$LARCH
-    XGCCARGS="--with-endian=little"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  mips | mips32 | mips32r2)
-    XARCH=$1
-    LARCH=mips
-    MARCH=${LARCH}
-    XGCCARGS="--with-endian=big --with-arch=mips32r2 --with-abi=32 --with-float=soft"
-    XPURE64=""
-    XTARGET=$1-linux-musl
-    ;;
-  mipsel | mips32el | mips32r2el)
-    XARCH=$1
-    LARCH=mips
-    MARCH=${LARCH}
-    XGCCARGS="--with-endian=little --with-arch=mips32r2 --with-abi=32 --with-float=soft"
-    XPURE64=""
-    XTARGET=$1-linux-musl
-    ;;
-  mips64 | mips64be | mips64eb | mips64r2)
-    XARCH=mips64
-    LARCH=mips
-    MARCH=$XARCH
-    XGCCARGS="--with-endian=big --with-arch=${XARCH}r2 --with-abi=64 --with-float=hard"
-    XPURE64=$XARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  loongson | loongson3 | mips64el | mips64le | mips64elr2 | mips64r2el)
-    XARCH=mips64el
-    LARCH=mips
-    MARCH=${LARCH}64
-    XGCCARGS="--with-endian=little --with-arch=${MARCH}r2 --with-abi=64 --with-float=hard"
-    XPURE64=$MARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  mips64r6 | mipsisa64r6)
-    XARCH=mipsisa64r6
-    LARCH=mips
-    MARCH=${LARCH}64
-    XGCCARGS="--with-endian=big --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
-    XPURE64=$MARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  mips64r6el | mips64r6le | mipsisa64r6el)
-    XARCH=mipsisa64r6el
-    LARCH=mips
-    MARCH=${LARCH}64
-    XGCCARGS="--with-endian=little --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
-    XPURE64=$MARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  openrisc | or1k | or1ksim)
-    XARCH=or1k
-    LARCH=openrisc
-    MARCH=$XARCH
-    XGCCARGS=""
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  pmac32 | powerpc | ppc)
-    XARCH=powerpc
-    LARCH=$XARCH
-    MARCH=$XARCH
-    XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  powerpcle | powerpcel | ppcle | ppcel)
-    XARCH=powerpcle
-    LARCH=poweroc
-    MARCH=powerpc
-    XGCCARGS="--with-cpu=$LARCH --enable-secureplt --without-long-double-128 --with-endian=little"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  g5 | powerpc64 | powerpc64be | powerpc64eb | ppc64 | ppc64be | ppc64eb)
-    XARCH=powerpc64
-    LARCH=powerpc
-    MARCH=$XARCH
-    XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
-    XPURE64=$XARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  powernv | powerpc64le | ppc64le)
-    XARCH=powerpc64le
-    LARCH=powerpc
-    MARCH=${LARCH}64
-    XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128 --with-abi=elfv2"
-    XPURE64=$MARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  riscv | riscv64 | rv64gc | sifive)
-    XARCH=riscv64
-    LARCH=riscv
-    MARCH=$XARCH
-    XGCCARGS="--with-cpu=sifive-u74 --with-arch=rv64gc --with-tune=sifive-7-series --with-abi=lp64d"
-    XPURE64=$XARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  s390 | s390x | z15 | z196)
-    XARCH=s390x
-    LARCH=s390
-    MARCH=$XARCH
-    XGCCARGS="--with-arch=z196 --with-tune=z15 --with-long-double-128"
-    XPURE64=$XARCH
-    XTARGET=$XARCH-linux-musl
-    ;;
-  sh2 | superh | sh2le | sh2el)
-    XARCH=sh2
-    LARCH=sh
-    MARCH=$LARCH
-    XGCCARGS=""
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  sh2-fdpic | superh-fdpic | sh2le-fdpic | sh2el-fdpic)
-    XARCH=sh2-fdpic
-    LARCH=sh
-    MARCH=$LARCH
-    XGCCARGS=""
-    XPURE64="--enable-fdpic"
-    XTARGET=sh2-linux-muslfdpic
-    ;;
-  sh2be | sh2eb)
-    XARCH=sh2eb
-    LARCH=sh
-    MARCH=$LARCH
-    XGCCARGS="--with-endian=big"
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  sh2be-fdpic | sh2eb-fdpic)
-    XARCH=sh2eb-fdpic
-    LARCH=sh
-    MARCH=$LARCH
-    XGCCARGS="--enable-fdpic --with-endian=big"
-    XPURE64=""
-    XTARGET=sh2eb-linux-muslfdpic
-    ;;
-  sh4 | superh4 | sh4le | sh4el)
-    XARCH=sh4
-    LARCH=sh
-    MARCH=$LARCH
-    XGCCARGS=""
-    XPURE64=""
-    XTARGET=$XARCH-linux-musl
-    ;;
-  sh4be-fdpic | sh4eb-fdpic)
-    XARCH=sh4eb
-    LARCH=sh
-    MARCH=$LARCH
-    XGCCARGS="--with-endian=big"
-    XPURE64=""
-    XTARGET=$XARCH-linux-muslfdpic
-    ;;
-  amd64 | x86-64 | x86_64)
-    XARCH=x86-64
-    LARCH=x86_64
-    MARCH=$LARCH
-    XGCCARGS="--with-arch=$XARCH --with-tune=generic"
-    XPURE64=$XARCH
-    XTARGET=$LARCH-linux-musl
-    ;;
-  c | -c | --clean)
-    printf "${BLUEC}..${NORMALC} Cleaning mussel...\n"
-    rm -fr "$BLDDIR"
-    rm -fr "$MPREFIX"
-    rm -fr "$MSYSROOT"
-    rm -f "$MLOG"
-    printf "${GREENC}=>${NORMALC} mussel cleaned.\n"
-    exit
-    ;;
-  h | -h | --help)
-    printf 'Copyright (c) 2020-2025, Firas Khalil Khana\n'
-    printf 'Distributed under the terms of the ISC License\n'
-    printf '\n'
-    printf 'mussel - The fastest musl libc cross compiler generator\n'
-    printf '\n'
-    printf "Usage: $0: (architecture) (flags)\n"
-    printf "Usage: $0: (command)\n"
-    printf '\n'
-    printf 'Supported Architectures:\n'
-    printf '\t+ aarch64\n'
-    printf '\t+ armv4t\n'
-    printf '\t+ armv5te\n'
-    printf '\t+ armv6\n'
-    printf '\t+ armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module,'
-    printf '\n\t          and the Raspberry Pi Zero)\n'
-    printf '\t+ armv7\n'
-    printf '\t+ i486\n'
-    printf '\t+ i586\n'
-    printf '\t+ i686\n'
-    printf '\t+ m68k\n'
-    printf '\t+ microblaze\n'
-    printf '\t+ microblazeel\n'
-    printf '\t+ mips\n'
-    printf '\t+ mipsel\n'
-    printf '\t+ mips64\n'
-    printf '\t+ mips64el\n'
-    printf '\t+ mipsisa64r6\n'
-    printf '\t+ mipsisa64r6el\n'
-    printf '\t+ or1k\n'
-    printf '\t+ powerpc\n'
-    printf '\t+ powerpcle\n'
-    printf '\t+ powerpc64\n'
-    printf '\t+ powerpc64le\n'
-    printf '\t+ riscv64\n'
-    printf '\t+ s390x\n'
-    printf '\t+ sh2\n'
-    printf '\t+ sh2be\n'
-    printf '\t+ sh2-fdpic\n'
-    printf '\t+ sh2be-fdpic\n'
-    printf '\t+ sh4\n'
-    printf '\t+ sh4be\n'
-    printf '\t+ x86-64\n'
-    printf '\n'
-    printf 'Flags:\n'
-    printf '\tf | -f | --enable-fortran      \tEnable optional Fortran support\n'
-    printf '\tk | -k | --enable-pkg-config   \tEnable optional pkg-config support\n'
-    printf '\tl | -l | --enable-linux-headers\tEnable optional Linux Headers support\n'
-    printf '\to | -o | --enable-openmp       \tEnable optional OpenMP support\n'
-    printf '\tp | -p | --parallel            \tUse all available cores on the host system\n'
-    printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
-    printf '\ts | -s | --min-size            \tOptimize for minimum size.\n'
-    printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
-    printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
-    printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before\n'
-    printf '\n'
-    printf 'Commands:\n'
-    printf "\tc | -c | --clean               \tClean mussel's build environment\n"
-    printf '\th | -h | --help                \tDisplay this help message\n'
-    printf '\n'
-    printf 'No penguins were harmed in the making of this script!\n'
-    exit
-    ;;
-  f | -f | --enable-fortran)
-    QUADMATH_SUPPORT=yes
-    FORTRAN_SUPPORT=yes
-    ;;
-  k | -k | --enable-pkg-config)
-    PKG_CONFIG_SUPPORT=yes
-    ;;
-  l | -l | --enable-linux-headers)
-    LINUX_HEADERS_SUPPORT=yes
-    ;;
-  o | -o | --enable-openmp)
-    OPENMP_SUPPORT=yes
-    ;;
-  p | -p | --parallel)
-    PARALLEL_SUPPORT=yes
-    ;;
-  q | -q | --enable-quadmath)
-    QUADMATH_SUPPORT=yes
-    ;;
-  s | -s | --min-size)
-    CFLAGS=-Os
-    CXXFLAGS=-Os
-    ;;
-  x | -x | --disable-cxx)
-    CXX_SUPPORT=no
-    ;;
-  g | -g | --disable-isl)
-    ISL_SUPPORT=no
-    ;;
-  T | -T | --custom-vendor)
-    # Have the user defined the default tuple first?
-    if [ -z $XTARGET ]; then
-      printf '%b!!%b '\''%s'\'' requires that the target architecture is already specified.\n' \
-        "$REDC" "$NORMALC" $1
+    aarch64 | arm64 | armv8-a)
+      XARCH=aarch64
+      LARCH=arm64
+      MARCH=$XARCH
+      XGCCARGS="--with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
+      XPURE64=$XARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    armv4 | armv4t)
+      XARCH=armv4t
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=armv4t --with-float=soft"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabi
+      ;;
+    armv5 | armv5te)
+      XARCH=armv5te
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=armv5te --with-float=soft"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabi
+      ;;
+    armv6)
+      XARCH=armv6
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-fpu=vfp --with-float=hard"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabihf
+      ;;
+    arm | armv6kz | armv6zk | bcm2835)
+      XARCH=armv6kz
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-tune=arm1176jzf-s --with-abi=aapcs-linux --with-fpu=vfpv2 --with-float=hard"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musleabihf
+      ;;
+    armv7 | armv7-a)
+      XARCH=armv7-a
+      LARCH=arm
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-fpu=vfpv3 --with-float=hard"
+      XPURE64=""
+      XTARGET=$LARCH-linux-musleabihf
+      ;;
+    i486)
+      XARCH=$1
+      LARCH=i386
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$1 --with-tune=generic"
+      XPURE64=""
+      XTARGET=$1-linux-musl
+      ;;
+    i586)
+      XARCH=$1
+      LARCH=i386
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$1 --with-tune=generic"
+      XPURE64=""
+      XTARGET=$1-linux-musl
+      ;;
+    i386 | i686 | x86)
+      XARCH=i686
+      LARCH=i386
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    m68k | 68000 | motorola)
+      XARCH=m68k
+      LARCH=$XARCH
+      MARCH=$XARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    mblaze | microblaze | microblazebe | microblazeeb)
+      XARCH=microblaze
+      LARCH=$XARCH
+      MARCH=$XARCH
+      XGCCARGS="--with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    microblazeel | microblazele)
+      XARCH=microblazeel
+      LARCH=microblaze
+      MARCH=$LARCH
+      XGCCARGS="--with-endian=little"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    mips | mips32 | mips32r2)
+      XARCH=$1
+      LARCH=mips
+      MARCH=${LARCH}
+      XGCCARGS="--with-endian=big --with-arch=mips32r2 --with-abi=32 --with-float=soft"
+      XPURE64=""
+      XTARGET=$1-linux-musl
+      ;;
+    mipsel | mips32el | mips32r2el)
+      XARCH=$1
+      LARCH=mips
+      MARCH=${LARCH}
+      XGCCARGS="--with-endian=little --with-arch=mips32r2 --with-abi=32 --with-float=soft"
+      XPURE64=""
+      XTARGET=$1-linux-musl
+      ;;
+    mips64 | mips64be | mips64eb | mips64r2)
+      XARCH=mips64
+      LARCH=mips
+      MARCH=$XARCH
+      XGCCARGS="--with-endian=big --with-arch=${XARCH}r2 --with-abi=64 --with-float=hard"
+      XPURE64=$XARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    loongson | loongson3 | mips64el | mips64le | mips64elr2 | mips64r2el)
+      XARCH=mips64el
+      LARCH=mips
+      MARCH=${LARCH}64
+      XGCCARGS="--with-endian=little --with-arch=${MARCH}r2 --with-abi=64 --with-float=hard"
+      XPURE64=$MARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    mips64r6 | mipsisa64r6)
+      XARCH=mipsisa64r6
+      LARCH=mips
+      MARCH=${LARCH}64
+      XGCCARGS="--with-endian=big --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
+      XPURE64=$MARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    mips64r6el | mips64r6le | mipsisa64r6el)
+      XARCH=mipsisa64r6el
+      LARCH=mips
+      MARCH=${LARCH}64
+      XGCCARGS="--with-endian=little --with-arch=${MARCH}r6 --with-abi=64 --with-float=hard --with-nan=2008"
+      XPURE64=$MARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    openrisc | or1k | or1ksim)
+      XARCH=or1k
+      LARCH=openrisc
+      MARCH=$XARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    pmac32 | powerpc | ppc)
+      XARCH=powerpc
+      LARCH=$XARCH
+      MARCH=$XARCH
+      XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    powerpcle | powerpcel | ppcle | ppcel)
+      XARCH=powerpcle
+      LARCH=poweroc
+      MARCH=powerpc
+      XGCCARGS="--with-cpu=$LARCH --enable-secureplt --without-long-double-128 --with-endian=little"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    g5 | powerpc64 | powerpc64be | powerpc64eb | ppc64 | ppc64be | ppc64eb)
+      XARCH=powerpc64
+      LARCH=powerpc
+      MARCH=$XARCH
+      XGCCARGS="--with-cpu=$XARCH --with-abi=elfv2"
+      XPURE64=$XARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    powernv | powerpc64le | ppc64le)
+      XARCH=powerpc64le
+      LARCH=powerpc
+      MARCH=${LARCH}64
+      XGCCARGS="--with-cpu=$XARCH --enable-secureplt --without-long-double-128 --with-abi=elfv2"
+      XPURE64=$MARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    riscv | riscv64 | rv64gc | sifive)
+      XARCH=riscv64
+      LARCH=riscv
+      MARCH=$XARCH
+      XGCCARGS="--with-cpu=sifive-u74 --with-arch=rv64gc --with-tune=sifive-7-series --with-abi=lp64d"
+      XPURE64=$XARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    s390 | s390x | z15 | z196)
+      XARCH=s390x
+      LARCH=s390
+      MARCH=$XARCH
+      XGCCARGS="--with-arch=z196 --with-tune=z15 --with-long-double-128"
+      XPURE64=$XARCH
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh2 | superh | sh2le | sh2el)
+      XARCH=sh2
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh2-fdpic | superh-fdpic | sh2le-fdpic | sh2el-fdpic)
+      XARCH=sh2-fdpic
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64="--enable-fdpic"
+      XTARGET=sh2-linux-muslfdpic
+      ;;
+    sh2be | sh2eb)
+      XARCH=sh2eb
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh2be-fdpic | sh2eb-fdpic)
+      XARCH=sh2eb-fdpic
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--enable-fdpic --with-endian=big"
+      XPURE64=""
+      XTARGET=sh2eb-linux-muslfdpic
+      ;;
+    sh4 | superh4 | sh4le | sh4el)
+      XARCH=sh4
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS=""
+      XPURE64=""
+      XTARGET=$XARCH-linux-musl
+      ;;
+    sh4be-fdpic | sh4eb-fdpic)
+      XARCH=sh4eb
+      LARCH=sh
+      MARCH=$LARCH
+      XGCCARGS="--with-endian=big"
+      XPURE64=""
+      XTARGET=$XARCH-linux-muslfdpic
+      ;;
+    amd64 | x86-64 | x86_64)
+      XARCH=x86-64
+      LARCH=x86_64
+      MARCH=$LARCH
+      XGCCARGS="--with-arch=$XARCH --with-tune=generic"
+      XPURE64=$XARCH
+      XTARGET=$LARCH-linux-musl
+      ;;
+    c | -c | --clean)
+      printf "${BLUEC}..${NORMALC} Cleaning mussel...\n"
+      rm -fr "$BLDDIR"
+      rm -fr "$MPREFIX"
+      rm -fr "$MSYSROOT"
+      rm -f "$MLOG"
+      printf "${GREENC}=>${NORMALC} mussel cleaned.\n"
+      exit
+      ;;
+    h | -h | --help)
+      printf 'Copyright (c) 2020-2025, Firas Khalil Khana\n'
+      printf 'Distributed under the terms of the ISC License\n'
+      printf '\n'
+      printf 'mussel - The fastest musl libc cross compiler generator\n'
+      printf '\n'
+      printf "Usage: $0: (architecture) (flags)\n"
+      printf "Usage: $0: (command)\n"
+      printf '\n'
+      printf 'Supported Architectures:\n'
+      printf '\t+ aarch64\n'
+      printf '\t+ armv4t\n'
+      printf '\t+ armv5te\n'
+      printf '\t+ armv6\n'
+      printf '\t+ armv6kz (Raspberry Pi 1 Models A, B, B+, the Compute Module,'
+      printf '\n\t          and the Raspberry Pi Zero)\n'
+      printf '\t+ armv7\n'
+      printf '\t+ i486\n'
+      printf '\t+ i586\n'
+      printf '\t+ i686\n'
+      printf '\t+ m68k\n'
+      printf '\t+ microblaze\n'
+      printf '\t+ microblazeel\n'
+      printf '\t+ mips\n'
+      printf '\t+ mipsel\n'
+      printf '\t+ mips64\n'
+      printf '\t+ mips64el\n'
+      printf '\t+ mipsisa64r6\n'
+      printf '\t+ mipsisa64r6el\n'
+      printf '\t+ or1k\n'
+      printf '\t+ powerpc\n'
+      printf '\t+ powerpcle\n'
+      printf '\t+ powerpc64\n'
+      printf '\t+ powerpc64le\n'
+      printf '\t+ riscv64\n'
+      printf '\t+ s390x\n'
+      printf '\t+ sh2\n'
+      printf '\t+ sh2be\n'
+      printf '\t+ sh2-fdpic\n'
+      printf '\t+ sh2be-fdpic\n'
+      printf '\t+ sh4\n'
+      printf '\t+ sh4be\n'
+      printf '\t+ x86-64\n'
+      printf '\n'
+      printf 'Flags:\n'
+      printf '\tf | -f | --enable-fortran      \tEnable optional Fortran support\n'
+      printf '\tk | -k | --enable-pkg-config   \tEnable optional pkg-config support\n'
+      printf '\tl | -l | --enable-linux-headers\tEnable optional Linux Headers support\n'
+      printf '\to | -o | --enable-openmp       \tEnable optional OpenMP support\n'
+      printf '\tp | -p | --parallel            \tUse all available cores on the host system\n'
+      printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
+      printf '\ts | -s | --min-size            \tOptimize for minimum size.\n'
+      printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
+      printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
+      printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before\n'
+      printf '\n'
+      printf 'Commands:\n'
+      printf "\tc | -c | --clean               \tClean mussel's build environment\n"
+      printf '\th | -h | --help                \tDisplay this help message\n'
+      printf '\n'
+      printf 'No penguins were harmed in the making of this script!\n'
+      exit
+      ;;
+    f | -f | --enable-fortran)
+      QUADMATH_SUPPORT=yes
+      FORTRAN_SUPPORT=yes
+      ;;
+    k | -k | --enable-pkg-config)
+      PKG_CONFIG_SUPPORT=yes
+      ;;
+    l | -l | --enable-linux-headers)
+      LINUX_HEADERS_SUPPORT=yes
+      ;;
+    o | -o | --enable-openmp)
+      OPENMP_SUPPORT=yes
+      ;;
+    p | -p | --parallel)
+      PARALLEL_SUPPORT=yes
+      ;;
+    q | -q | --enable-quadmath)
+      QUADMATH_SUPPORT=yes
+      ;;
+    s | -s | --min-size)
+      CFLAGS=-Os
+      CXXFLAGS=-Os
+      ;;
+    x | -x | --disable-cxx)
+      CXX_SUPPORT=no
+      ;;
+    g | -g | --disable-isl)
+      ISL_SUPPORT=no
+      ;;
+    T | -T | --custom-vendor)
+      # Have the user defined the default tuple first?
+      if [ -z $XTARGET ]; then
+        printf '%b!!%b '\''%s'\'' requires that the target architecture is already specified.\n' \
+          "$REDC" "$NORMALC" $1
+        help
+      fi
+      # Set the vendor as the next argument to this flag.
+      shift
+      CUSTOM_VENDOR="$1"
+      # This mechanism basically cuts the string whenever there is a space.
+      # If it still equals the original, then it hasn't any spaces.
+      # The same happens for the '-' character.
+      if [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR% *}" ] ||
+        ([ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR#-}" ] ||
+          [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR%-}" ]); then
+        printf '%b!!%b Illegal vendor '\''%s'\'': %s.\n' \
+          "$REDC" "$NORMALC" "$CUSTOM_VENDOR" \
+          'no spaces nor strings starting and/or terminated with '\''-'\'' are permitted'
+        help
+      fi
+      OLD_XTARGET=$XTARGET
+      # Cut the architecture out.
+      _XARCH=${OLD_XTARGET%%-*}
+      # And then the remainder whose name I don't know to specify.
+      _XTARGET_REMAINDER=${OLD_XTARGET#*-}
+      # So we can now build the new XTARGET.
+      XTARGET="${_XARCH}-$CUSTOM_VENDOR-$_XTARGET_REMAINDER"
+      unset OLD_XTARGET _XARCH _XTARGET_REMAINDER
+      ;;
+    *)
+      printf "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
       help
-    fi
-    # Set the vendor as the next argument to this flag.
-    shift
-    CUSTOM_VENDOR="$1"
-    # This mechanism basically cuts the string whenever there is a space.
-    # If it still equals the original, then it hasn't any spaces.
-    # The same happens for the '-' character.
-    if [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR% *}" ] ||
-      ([ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR#-}" ] ||
-        [ "x$CUSTOM_VENDOR" != "x${CUSTOM_VENDOR%-}" ]); then
-      printf '%b!!%b Illegal vendor '\''%s'\'': %s.\n' \
-        "$REDC" "$NORMALC" "$CUSTOM_VENDOR" \
-        'no spaces nor strings starting and/or terminated with '\''-'\'' are permitted'
-      help
-    fi
-    OLD_XTARGET=$XTARGET
-    # Cut the architecture out.
-    _XARCH=${OLD_XTARGET%%-*}
-    # And then the remainder whose name I don't know to specify.
-    _XTARGET_REMAINDER=${OLD_XTARGET#*-}
-    # So we can now build the new XTARGET.
-    XTARGET="${_XARCH}-$CUSTOM_VENDOR-$_XTARGET_REMAINDER"
-    unset OLD_XTARGET _XARCH _XTARGET_REMAINDER
-    ;;
-  *)
-    printf "${REDC}!!${NORMALC} Unknown architecture or flag: $1\n"
-    help
-    ;;
+      ;;
   esac
 
   shift
