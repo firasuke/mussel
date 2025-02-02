@@ -63,19 +63,16 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 
 # Generic function to decide a command to be used.
 decide_cmd() {
-  dcmd=''
   for ccmd; do
-    command -v $ccmd 2>&1 >/dev/null; case $? in
-      0)
-	# Define the decided command.
-        dcmd="$ccmd"
+    if (command -v $ccmd 2>&1 >/dev/null); then
+	# Return the decided command.
+        printf '%s' "$ccmd"
 	break
-        ;;
-      1) continue ;;
-    esac
-    printf '%s' "$dcmd"
-    break
+    else
+	continue
+    fi
   done
+  return 0
 }
 
 # Decide which checksum command to use.
