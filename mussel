@@ -558,7 +558,7 @@ while [ $# -gt 0 ]; do
     printf '\ts | -s | --min-size            \tOptimize for minimum size.\n'
     printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
     printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
-    printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before.\n'
+    printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before\n'
     printf '\n'
     printf 'Commands:\n'
     printf "\tc | -c | --clean               \tClean mussel's build environment\n"

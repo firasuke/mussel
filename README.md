@@ -41,6 +41,8 @@ below
   q | -q | --enable-quadmath       Enable optional libquadmath support (default for Fortran)
   s | -s | --min-size              Optimize for minimum size
   x | -x | --disable-cxx           Disable optional C++ support
+  g | -g | --disable-isl           Disable isl Library support (Graphite loop optimisations)
+  T | -T | --custom-vendor         Sets a custom vendor for tuple, requires architecture to be set before
 ```
 
 ### Other Commands
