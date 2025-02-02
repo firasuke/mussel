@@ -64,12 +64,12 @@ pkgconf_url=https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgconf_ver.tar.
 # Generic function to decide a command to be used.
 decide_cmd() {
   for ccmd; do
-    if (command -v $ccmd 2>&1 >/dev/null); then
-	# Return the decided command.
-        printf '%s' "$ccmd"
-	break
+    if (command -v $ccmd 1>&2 2>/dev/null); then
+      # Return the decided command.
+      printf '%s' "$ccmd"
+      break
     else
-	continue
+      continue
     fi
   done
   return 0
