@@ -154,7 +154,12 @@ case "$checksum_command" in
   'openssl') checksum_command() { osslchecksum; } ;;
 esac
 checksum() {
-  [ -z "$1" ] && return 0
+  unset chksumna
+  if [ -z "$1" ]; then
+    # Is it true because we're not sure?
+    export chksumna=true
+    return 0
+  fi
   printf '%s  %s' $1 "$2" | checksum_command
   return $?
 }
@@ -690,11 +695,16 @@ mpackage() {
   fi
 
   printf "${BLUEC}..${NORMALC} Verifying ""$HOLDER""...\n"
-  checksum "$3" "$HOLDER" || {
+  checksum "$3" "$HOLDER"
+  if [ $? != 0 ]; then
     printf "${YELLOWC}!.${NORMALC} ""$HOLDER"" is corrupted, redownloading...\n" &&
       rm "$HOLDER" &&
       nettransfer "$2"
-  }
+  else
+    [ "x$chksumna" = 'xtrue' ] &&
+      printf 'mpackage: Not verifying '\''%s'\'': checksum hash not available.\n' \
+        "$HOLDER" >>"$MLOG"
+  fi
 
   rm -fr "$1-$4"
   printf "${BLUEC}..${NORMALC} Unpacking $HOLDER...\n"
