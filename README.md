@@ -32,7 +32,7 @@ Architectures**](#supported-architectures)
 below
 
 **(flags)**:
-```Shell
+```Console
   f | -f | --enable-fortran        Enable optional Fortran support
   k | -k | --enable-pkg-config     Enable optional pkg-config support
   l | -l | --enable-linux-headers  Enable optional Linux Headers support
