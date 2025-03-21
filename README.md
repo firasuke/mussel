@@ -100,7 +100,7 @@ Pi Zero)
 4. `isl`: 0.27
 5. `linux`: 6.11.8 (**Optional** Linux Headers Support) (**Disabled** by default)
 6. `mpc`: 1.3.1
-7. `mpfr`: 4.2.1
+7. `mpfr`: 4.2.2
 8. `musl`: 1.2.5
 9. `pkgconf`: 2.4.3 (**Optional** `pkg-config` Support) (**Disabled** by default)
 

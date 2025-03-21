@@ -46,7 +46,7 @@ gmp_ver=6.3.0
 isl_ver=0.27
 linux_ver=6.11.8
 mpc_ver=1.3.1
-mpfr_ver=4.2.1
+mpfr_ver=4.2.2
 musl_ver=1.2.5
 pkgconf_ver=2.4.3
 
@@ -89,7 +89,7 @@ if [ "$checksum_command" = "b3sum" ]; then
   isl_sum=a419cf24561a34f81ec46d251b25d5aaccedbbf87ed2b96f3f0fb17a79a8c913
   linux_sum=4082a33166c9a670036576d096bb37d499f6dd2d69d1c9da54aa4105e47791c5
   mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
-  mpfr_sum=f428023b8f7569fc1178faf63265ecb6cab4505fc3fce5d8c46af70db848a334
+  mpfr_sum=11d59d061ef8db588650bc7dc5172594a6e5aad013994801c6f63011a62b191d
   musl_sum=63f96e526d3a73fddff8fcb9ee5c1dcbfdac8405db7d7537c3d1c8fffd5e6947
   pkgconf_sum=88a2b13f76c636d2d836eef7db1a9e4b40773f7f5f836e1bce46fceabca09aab
 elif [ "$checksum_command" = "sha256sum" ] || [ "$checksum_command" = "openssl" ]; then
@@ -100,7 +100,7 @@ elif [ "$checksum_command" = "sha256sum" ] || [ "$checksum_command" = "openssl" 
   isl_sum=6d8babb59e7b672e8cb7870e874f3f7b813b6e00e6af3f8b04f7579965643d5c
   linux_sum=aee8a844fe152420bece70ffae8525b9b23089aa4da31fa32f30e1859bf93c3d
   mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
-  mpfr_sum=277807353a6726978996945af13e52829e3abd7a9a5b7fb2793894e18f1fcbb2
+  mpfr_sum=b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01
   musl_sum=a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4
   pkgconf_sum=51203d99ed573fa7344bf07ca626f10c7cc094e0846ac4aa0023bd0c83c25a41
 fi
