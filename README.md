@@ -102,7 +102,7 @@ Pi Zero)
 6. `mpc`: 1.3.1
 7. `mpfr`: 4.2.1
 8. `musl`: 1.2.5
-9. `pkgconf`: 2.3.0 (**Optional** `pkg-config` Support) (**Disabled** by default)
+9. `pkgconf`: 2.4.3 (**Optional** `pkg-config` Support) (**Disabled** by default)
 
 ## How Is `mussel` Doing It?
 1. Install `musl` headers
