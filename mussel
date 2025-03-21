@@ -40,7 +40,7 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.43.1
+binutils_ver=2.44
 gcc_ver=14.2.0
 gmp_ver=6.3.0
 isl_ver=0.27
@@ -83,7 +83,7 @@ fi
 # checksums
 if [ "$checksum_command" = "b3sum" ]; then
   # ----- Package Checksums (b3sum) ----- #
-  binutils_sum=f074c81313b70eabc58ce9a9411cd771c5fa2433792d0ad8abcc45f603f58ed6
+  binutils_sum=85610ffef19cc45319ad23df13b1d8aaea394c42d9870aeb6b4dddcc4526be32
   gcc_sum=ffee29313fd417420454d985b6740be3755e6465e14173c420c02e3719a51539
   gmp_sum=fffe4996713928ae19331c8ef39129e46d3bf5b7182820656fd4639435cd83a4
   isl_sum=a419cf24561a34f81ec46d251b25d5aaccedbbf87ed2b96f3f0fb17a79a8c913
@@ -94,7 +94,7 @@ if [ "$checksum_command" = "b3sum" ]; then
   pkgconf_sum=88a2b13f76c636d2d836eef7db1a9e4b40773f7f5f836e1bce46fceabca09aab
 elif [ "$checksum_command" = "sha256sum" ] || [ "$checksum_command" = "openssl" ]; then
   # ----- Package Checksums (sha256sum) ----- #
-  binutils_sum=13f74202a3c4c51118b797a39ea4200d3f6cfbe224da6d1d95bb938480132dfd
+  binutils_sum=ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237
   gcc_sum=a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9
   gmp_sum=a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898
   isl_sum=6d8babb59e7b672e8cb7870e874f3f7b813b6e00e6af3f8b04f7579965643d5c

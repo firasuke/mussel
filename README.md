@@ -94,7 +94,7 @@ Pi Zero)
 - x86-64
 
 ## Packages
-1. `binutils`: 2.43.1
+1. `binutils`: 2.44
 2. `gcc`: 14.2.0
 3. `gmp`: 6.3.0
 4. `isl`: 0.27
