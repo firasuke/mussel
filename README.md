@@ -172,6 +172,7 @@ mailto:firasuke@glaucuslinux.org)>
 - Andrew Blue <[andy@antareslinux.org](mailto:andy@antareslinux.org)>
 - ayb <[ayb@3hg.fr](mailto:ayb@3hg.fr)>
 - Luiz Antônio Rangel at Pindorama (takusuman) <[luiz.antonio.rangel@outlook.com.br](luiz.antonio.rangel@outlook.com.br)>
+- Rida Antoinette (vibrantrida) <[vibrantsmug@gmail.com](vibrantsmug@gmail.com)>
 
 ## License
 `mussel` is licensed under the Internet Systems Consortium (ISC) license
