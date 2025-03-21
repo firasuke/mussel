@@ -158,11 +158,10 @@ support all listed architectures, and a wrapper around host's `meson`
 - [Yeti OS](https://github.com/avs-origami/yeti)
 
 ## Credits and Inspiration
-`mussel` is possible thanks to the awesome work done by Aurelian, Rich Felker,
-[qword](https://github.com/qword-os), [The Managarm Project](
-https://github.com/managarm), [glaucus](https://glaucuslinux.org/) (where
-it's actually implemented) and [musl-cross-make](
-https://github.com/richfelker/musl-cross-make)
+`mussel` is possible thanks to the awesome work done by Aurelian, Rich
+Felker, [qword](https://github.com/qword-os), [The Managarm Project](
+https://github.com/managarm), [glaucus](https://glaucuslinux.org/) and
+[musl-cross-make]( https://github.com/richfelker/musl-cross-make)
 
 ## Author
 Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
