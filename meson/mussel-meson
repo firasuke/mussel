@@ -4,14 +4,14 @@
 # Distributed under the terms of the ISC License
 
 exec meson setup \
-  --prefix=/usr \
-  --libexecdir=lib \
-  --sbindir=bin \
-  --buildtype=release \
-  --default-library=shared \
-  --stdsplit \
-  --strip \
-  --wrap-mode=nodownload \
+  -Dprefix=/usr \
+  -Dlibexecdir=lib \
+  -Dsbindir=bin \
+  -Dbuildtype=release \
+  -Ddefault_library=shared \
+  -Dstdsplit=true \
+  -Dstrip=true \
+  -Dwrap_mode=nodownload \
   -Db_lto=true \
   -Db_lto_mode=thin \
   -Db_pie=true \
