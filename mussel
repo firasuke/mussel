@@ -871,12 +871,15 @@ printf "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
   --libexecdir=/lib \
   --datarootdir=/_tmp \
   --target=$XTARGET \
-  --disable-bootstrap \
   --disable-multilib \
+  --enable-install-libiberty \
+  --enable-plugins \
+  --enable-deterministic-archives \
+  --enable-new-dtags \
   --enable-relro \
   --disable-default-execstack \
   --enable-default-hash-style="sysv" \
-  --disable-initfini-array \
+  --enable-initfini-array \
   --disable-werror \
   --disable-nls \
   --disable-rpath \
@@ -926,11 +929,12 @@ printf "${BLUEC}..${NORMALC} Configuring cross-gcc (compiler)...\n"
   --enable-checking=release \
   --disable-multilib \
   --disable-fixed-point \
+  --enable-tls \
   --enable-languages=c${ENABLE_CXX_YES:+,c++}${ENABLE_FORTRAN_YES:+,fortran} \
   --disable-rpath \
   --disable-nls \
   --disable-gnu-indirect-function \
-  --disable-initfini-array \
+  --enable-initfini-array \
   --disable-gnu-unique-object \
   --disable-linker-build-id \
   --disable-libsanitizer \
