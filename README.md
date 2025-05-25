@@ -164,7 +164,7 @@ https://github.com/managarm), [glaucus](https://glaucuslinux.org/) and
 [musl-cross-make]( https://github.com/richfelker/musl-cross-make)
 
 ## Author
-Firas Khalil Khana (firasuke) <[firasuke@glaucuslinux.org](
+Firas Khana (firasuke) <[firasuke@glaucuslinux.org](
 mailto:firasuke@glaucuslinux.org)>
 
 ## Contributors
