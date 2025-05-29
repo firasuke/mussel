@@ -182,7 +182,7 @@ mailto:firasuke@glaucuslinux.org)>
 targeting musl libc is a complicated process.
 
 ## Community
-- [Reddit](https://www.reddit.com/r/distrodev/)
+- [Reddit](https://reddit.com/r/distrodev)
 
 ## Mirrors
 - [Codeberg](https://codeberg.org/firasuke/mussel)
