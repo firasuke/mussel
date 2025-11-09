@@ -40,15 +40,15 @@ BLUEC='\033[1;34m'
 NORMALC='\033[0m'
 
 # ----- Package Versions ----- #
-binutils_ver=2.44
-gcc_ver=14.2.0
+binutils_ver=2.45
+gcc_ver=15.2.0
 gmp_ver=6.3.0
 isl_ver=0.27
-linux_ver=6.13.7
+linux_ver=6.17.7
 mpc_ver=1.3.1
 mpfr_ver=4.2.2
 musl_ver=1.2.5
-pkgconf_ver=2.4.3
+pkgconf_ver=2.5.1
 
 # ----- Package URLs ----- #
 binutils_url=https://ftpmirror.gnu.org/binutils/binutils-$binutils_ver.tar.xz
@@ -83,26 +83,26 @@ fi
 # checksums
 if [ "$checksum_command" = "b3sum" ]; then
   # ----- Package Checksums (b3sum) ----- #
-  binutils_sum=85610ffef19cc45319ad23df13b1d8aaea394c42d9870aeb6b4dddcc4526be32
-  gcc_sum=ffee29313fd417420454d985b6740be3755e6465e14173c420c02e3719a51539
+  binutils_sum=cc66af6556bbf9db7aa8ff674970c596d4dfa4d312b6d76da271fd9886e703d1
+  gcc_sum=84d14122ff261d480fed70112afd75277d5a050cbcc4a480d1c4aa368f186a19
   gmp_sum=fffe4996713928ae19331c8ef39129e46d3bf5b7182820656fd4639435cd83a4
   isl_sum=a419cf24561a34f81ec46d251b25d5aaccedbbf87ed2b96f3f0fb17a79a8c913
-  linux_sum=9dda6ad3b457821eaafb890a1f9bbd179b9be33cadff7a6fd62befac7f794d2f
+  linux_sum=e81c37990c26b2151386c059e90648f49b5dca1e0a6e473b6aa61d618015339f
   mpc_sum=86d083c43c08e98d4470c006a01e0df727c8ff56ddd2956b170566ba8c9a46de
   mpfr_sum=11d59d061ef8db588650bc7dc5172594a6e5aad013994801c6f63011a62b191d
   musl_sum=63f96e526d3a73fddff8fcb9ee5c1dcbfdac8405db7d7537c3d1c8fffd5e6947
-  pkgconf_sum=88a2b13f76c636d2d836eef7db1a9e4b40773f7f5f836e1bce46fceabca09aab
+  pkgconf_sum=c524d73c938e7382d3c12c9cfba16ed32ee092ab21b3e9659a095b5628ea2e88
 elif [ "$checksum_command" = "sha256sum" ] || [ "$checksum_command" = "openssl" ]; then
   # ----- Package Checksums (sha256sum) ----- #
-  binutils_sum=ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237
-  gcc_sum=a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9
+  binutils_sum=c50c0e7f9cb188980e2cc97e4537626b1672441815587f1eab69d2a1bfbef5d2
+  gcc_sum=438fd996826b0c82485a29da03a72d71d6e3541a83ec702df4271f6fe025d24e
   gmp_sum=a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898
   isl_sum=6d8babb59e7b672e8cb7870e874f3f7b813b6e00e6af3f8b04f7579965643d5c
-  linux_sum=3a39b62038b7ac2f43d26a1f84b4283e197804e1e817ad637e9a3d874c47801d
+  linux_sum=ddf2ea0d4439e1d57136be3623102af9458f601f5b1cb77e83246e88aea09d0e
   mpc_sum=ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
   mpfr_sum=b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01
   musl_sum=a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4
-  pkgconf_sum=51203d99ed573fa7344bf07ca626f10c7cc094e0846ac4aa0023bd0c83c25a41
+  pkgconf_sum=cd05c9589b9f86ecf044c10a2269822bc9eb001eced2582cfffd658b0a50c243
 fi
 
 # ----- Check sha256 hash using openssl ----- #
