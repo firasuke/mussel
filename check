@@ -26,7 +26,7 @@ GNUorNonGNU() {
         fi
         ;;
       *)
-        if [ $heirloom_ver -gt 070715 ]; then
+        if [ $heirloom_ver -gt 20070715 ]; then
           NG="(New Generation)"
         fi
         printf 'Heirloom Toolchest%srel. %d\n' \
