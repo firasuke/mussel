@@ -182,6 +182,7 @@ mailto:firasuke@glaucuslinux.org)>
 targeting musl libc is a complicated process.
 
 ## Community
+- [Discord](https://discord.gg/nDKNmNc)
 - [Reddit](https://reddit.com/r/distrodev)
 
 ## Mirrors
