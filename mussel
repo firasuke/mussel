@@ -22,7 +22,7 @@ alias printf="printf --"
 progname=$0
 
 # ----- Optional ----- #
-ISL_SUPPORT=yes
+ISL_SUPPORT=no
 CXX_SUPPORT=yes
 FORTRAN_SUPPORT=no
 LINUX_HEADERS_SUPPORT=no
@@ -512,9 +512,9 @@ while [ $# -gt 0 ]; do
       ;;
     c | -c | --clean)
       printf "${BLUEC}..${NORMALC} Cleaning mussel...\n"
-      rm -fr "$BLDDIR"
-      rm -fr "$MPREFIX"
-      rm -fr "$MSYSROOT"
+      rm -fR "$BLDDIR"
+      rm -fR "$MPREFIX"
+      rm -fR "$MSYSROOT"
       rm -f "$MLOG"
       printf "${GREENC}=>${NORMALC} mussel cleaned.\n"
       exit
@@ -572,7 +572,7 @@ while [ $# -gt 0 ]; do
       printf '\tq | -q | --enable-quadmath     \tEnable optional Quadruple-precision support\n'
       printf '\ts | -s | --min-size            \tOptimize for minimum size.\n'
       printf '\tx | -x | --disable-cxx         \tDisable optional C++ support\n'
-      printf '\tg | -g | --disable-isl         \tDisable isl Library support (Graphite loop optimisations)\n'
+      printf '\tg | -g | --enable-isl          \tEnable isl Library support (Graphite loop optimisations)\n'
       printf '\tT | -T | --custom-vendor       \tSets a custom vendor for tuple, requires architecture to be set before\n'
       printf '\n'
       printf 'Commands:\n'
@@ -608,8 +608,8 @@ while [ $# -gt 0 ]; do
     x | -x | --disable-cxx)
       CXX_SUPPORT=no
       ;;
-    g | -g | --disable-isl)
-      ISL_SUPPORT=no
+    g | -g | --enable-isl)
+      ISL_SUPPORT=yes
       ;;
     T | -T | --custom-vendor)
       # Have the user defined the default tuple first?
@@ -706,7 +706,7 @@ mpackage() {
         "$HOLDER" >>"$MLOG"
   fi
 
-  rm -fr "$1-$4"
+  rm -fR "$1-$4"
   printf "${BLUEC}..${NORMALC} Unpacking $HOLDER...\n"
   tar xf "$HOLDER" -C .
 
@@ -727,7 +727,7 @@ mpatch() {
 mclean() {
   if [ -d "$CURDIR/$1" ]; then
     printf "${BLUEC}..${NORMALC} Cleaning $1 directory...\n"
-    rm -fr "$CURDIR/$1"
+    rm -fR "$CURDIR/$1"
     mkdir "$CURDIR/$1"
     printf "${GREENC}=>${NORMALC} $1 cleaned.\n"
     printf "Cleaned $1.\n" >>"$MLOG"
@@ -844,7 +844,7 @@ printf '\n'
 printf "\n-----\n*1) musl headers\n-----\n\n" >>"$MLOG"
 printf "${BLUEC}..${NORMALC} Preparing musl headers...\n"
 cd "$BLDDIR"
-cp -ar "$SRCDIR/musl/musl-$musl_ver" musl
+cp -fpPR "$SRCDIR/musl/musl-$musl_ver" musl
 cd musl
 
 printf "${BLUEC}..${NORMALC} Installing musl headers...\n"
@@ -907,11 +907,11 @@ printf "${GREENC}=>${NORMALC} cross-binutils finished.\n\n"
 # ----- Step 3: cross-gcc (compiler) ----- #
 printf "\n-----\n*3) cross-gcc (compiler)\n-----\n\n" >>"$MLOG"
 printf "${BLUEC}..${NORMALC} Preparing cross-gcc (compiler)...\n"
-cp -ar "$SRCDIR/gmp/gmp-$gmp_ver" "$SRCDIR/gcc/gcc-$gcc_ver/gmp"
-cp -ar "$SRCDIR/mpfr/mpfr-$mpfr_ver" "$SRCDIR/gcc/gcc-$gcc_ver/mpfr"
-cp -ar "$SRCDIR/mpc/mpc-$mpc_ver" "$SRCDIR/gcc/gcc-$gcc_ver/mpc"
+cp -fPpR "$SRCDIR/gmp/gmp-$gmp_ver" "$SRCDIR/gcc/gcc-$gcc_ver/gmp"
+cp -fPpR "$SRCDIR/mpfr/mpfr-$mpfr_ver" "$SRCDIR/gcc/gcc-$gcc_ver/mpfr"
+cp -fPpR "$SRCDIR/mpc/mpc-$mpc_ver" "$SRCDIR/gcc/gcc-$gcc_ver/mpc"
 [ $ISL_SUPPORT = "yes" ] &&
-  cp -ar "$SRCDIR/isl/isl-$isl_ver" "$SRCDIR/gcc/gcc-$gcc_ver/isl"
+  cp -fPpR "$SRCDIR/isl/isl-$isl_ver" "$SRCDIR/gcc/gcc-$gcc_ver/isl"
 
 cd "$BLDDIR"
 mkdir cross-gcc
@@ -1005,7 +1005,7 @@ $MAKE \
   install-libs >>"$MLOG" 2>&1
 
 rm -f "$MSYSROOT/lib/ld-musl-$MARCH.so.1"
-cp -af "$MSYSROOT/usr/lib/libc.so" "$MSYSROOT/lib/ld-musl-$MARCH.so.1" >>"$MLOG" 2>&1
+cp -fPp "$MSYSROOT/usr/lib/libc.so" "$MSYSROOT/lib/ld-musl-$MARCH.so.1" >>"$MLOG" 2>&1
 
 printf "${GREENC}=>${NORMALC} musl finished.\n\n"
 
@@ -1112,7 +1112,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
 
   printf "${BLUEC}..${NORMALC} Installing linux headers...\n"
   find $BLDDIR/linux/usr/include ! -name '*.h' -type f -delete
-  cp -af $BLDDIR/linux/usr/include $MSYSROOT/usr
+  cp -fPp $BLDDIR/linux/usr/include $MSYSROOT/usr
 
   printf "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
@@ -1150,7 +1150,7 @@ if [ $PKG_CONFIG_SUPPORT = yes ]; then
 fi
 
 # remove temp dir
-rm -rf "$MSYSROOT/_tmp" @ >>"$MLOG" >&1
+rm -fR "$MSYSROOT/_tmp" @ >>"$MLOG" >&1
 
 # done!
 printf "${GREENC}=>${NORMALC} Done! Enjoy your new ${XARCH} cross compiler targeting musl libc!\n"
