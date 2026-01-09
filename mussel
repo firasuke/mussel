@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright © 2020-2025 Firas Khana
+# Copyright © 2020-2026 Firas Khana
 # Distributed under the terms of the ISC License
 
 # Contributors:
@@ -520,7 +520,7 @@ while [ $# -gt 0 ]; do
       exit
       ;;
     h | -h | --help)
-      printf 'Copyright © 2020-2025 Firas Khana\n'
+      printf 'Copyright © 2020-2026 Firas Khana\n'
       printf 'Distributed under the terms of the ISC License\n'
       printf '\n'
       printf 'mussel - The fastest musl libc cross compiler generator\n'
@@ -756,7 +756,7 @@ printf '\n'
 printf '+======================================================+\n'
 printf '|  mussel - The fastest musl libc Toolchain Generator  |\n'
 printf '+------------------------------------------------------+\n'
-printf '|          Copyright © 2018-2025 Firas Khana           |\n'
+printf '|          Copyright © 2020-2026 Firas Khana           |\n'
 printf '|    Distributed under the terms of the ISC License    |\n'
 printf '+======================================================+\n'
 printf '\n'
