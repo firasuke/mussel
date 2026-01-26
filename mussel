@@ -813,7 +813,10 @@ printf "\n-----\npatch\n-----\n\n" >>"$MLOG"
 if [ ! -z $XPURE64 ]; then
   mpatch 0 gcc $gcc_ver "0001-pure64-for-$XPURE64" glaucus
 fi
-mpatch 1 musl $musl_ver "CVE-2025-26519" upstream
+mpatch 1 musl $musl_ver "0001-isatty-do-not-collapse-all-non-EBADF-errors-to-ENOTTY" upstream
+mpatch 1 musl $musl_ver "0002-iconv-fix-erroneous-input-validation-in-EUC-KR-decoder" upstream
+mpatch 1 musl $musl_ver "0003-iconv-harden-UTF-8-output-code-path-against-input-decoder-bugs" upstream
+mpatch 1 musl $musl_ver "0004-stdio-skip-empty-iovec-when-buffering-is-disabled" upstream
 
 printf '\n'
 
