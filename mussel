@@ -880,12 +880,14 @@ printf "${BLUEC}..${NORMALC} Configuring cross-binutils...\n"
   --enable-deterministic-archives \
   --enable-new-dtags \
   --enable-relro \
+  --enable-separate-code \
   --disable-default-execstack \
   --enable-default-hash-style="sysv" \
   --enable-initfini-array \
   --disable-werror \
   --disable-nls \
   --disable-rpath \
+  --enable-host-pie \
   --with-pic \
   --with-mmap \
   --with-sysroot=/ \
