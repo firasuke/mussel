@@ -150,6 +150,7 @@ support all listed architectures, and a wrapper around host's `meson`
 - [CMLFS](https://github.com/dslm4515/CMLFS)
 - [Copacabana Linux](http://copacabana.pindorama.net.br)
 - [glaucus](https://glaucuslinux.org/)
+- [Hadron](https://hadron-linux.io/)
 - [Hanh Linux](https://hanh-linux.github.io/)
 - [qLinux](https://qlinux.qware.org/doku.php)
 - [Raptix](https://github.com/dslm4515/Raptix)
