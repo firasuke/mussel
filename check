@@ -11,13 +11,13 @@
 # standard of the system.
 GNUorNonGNU() {
   cmd=$1
-  heirloom_ver="$(getconf HEIRLOOM_TOOLCHEST_VERSION 2>/dev/null ||
+  heirloom_ver="$(getconf HEIRLOOM_TOOLCHEST_VERSION 2> /dev/null ||
     printf 'err')"
   posix_ver=$(getconf _POSIX_VERSION)
-  case "$($cmd --version 2>/dev/null || printf 'err')" in
+  case "$($cmd --version 2> /dev/null || printf 'err')" in
     err) case "$heirloom_ver" in
       'err')
-        if (command -v "$cmd" 2>&1 >/dev/null); then
+        if (command -v "$cmd" 2>&1 > /dev/null); then
           printf 'POSIX version: %d\n' \
             $posix_ver
         else
@@ -37,13 +37,13 @@ GNUorNonGNU() {
   esac
 }
 
-if command -v b3sum 2>&1 >/dev/null; then
+if command -v b3sum 2>&1 > /dev/null; then
   printf 'b3sum      :: '
   b3sum --version | cut -d' ' -f2
-elif command -v sha256sum 2>&1 >/dev/null; then
+elif command -v sha256sum 2>&1 > /dev/null; then
   printf 'sha256sum  :: '
   sha256sum --version | sed 1q | cut -d' ' -f2-
-elif command -v openssl 2>&1 >/dev/null; then
+elif command -v openssl 2>&1 > /dev/null; then
   printf 'sha256sum (Open/LibreSSL)  :: '
   openssl version
 fi
@@ -52,9 +52,9 @@ printf 'bash       :: '
 bash --version | sed 1q | cut -d' ' -f4
 
 printf 'bc         :: '
-{ (command -v bc 2>&1 >/dev/null) && ( (bc --version ||
+{ (command -v bc 2>&1 > /dev/null) && ( (bc --version ||
   getconf HEIRLOOM_TOOLCHEST_VERSION ||
-  getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2>/dev/null; } ||
+  getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f2) 2> /dev/null; } ||
   printf 'Not found.\n'
 
 printf 'binutils   :: '
@@ -64,7 +64,7 @@ printf 'bison      :: '
 bison --version | sed 1q | cut -d' ' -f4
 
 printf 'bzip2      :: '
-bzip2 --version 2>&1 </dev/null | sed 1q | cut -d' ' -f8-
+bzip2 --version 2>&1 < /dev/null | sed 1q | cut -d' ' -f8-
 
 printf 'coreutils  :: '
 GNUorNonGNU 'ls'
@@ -87,10 +87,10 @@ gcc --version | sed 1q | cut -d' ' -f3-
 printf 'git        :: '
 git --version | cut -d' ' -f3
 
-if $(ldd --version 2>&1 | grep 'musl' 2>&1 >/dev/null); then
+if $(ldd --version 2>&1 | grep 'musl' 2>&1 > /dev/null); then
   printf 'musl libc  :: '
   ldd --version 2>&1 | sed -n 2p | cut -d' ' -f2
-elif $(ldd --version 2>&1 | grep 'GNU' 2>&1 >/dev/null); then
+elif $(ldd --version 2>&1 | grep 'GNU' 2>&1 > /dev/null); then
   printf 'glibc      :: '
   ldd --version 2>&1 | sed 1q | cut -d' ' -f4
 fi
@@ -103,7 +103,7 @@ gzip --version | sed 1q | cut -d' ' -f2
 
 printf 'libzstd    :: '
 (printf '#include <zstd.h>\nZSTD_VERSION_STRING' |
-  (gcc -E -P - 2>/dev/null || echo 'libzstd not found.') | tail -n1)
+  (gcc -E -P - 2> /dev/null || echo 'libzstd not found.') | tail -n1)
 
 printf 'linux      :: '
 uname -r
@@ -128,7 +128,7 @@ printf 'tar        :: '
   # Important: Heirloom tar(1) is broken for
   # the modern world since its conception.
   getconf HEIRLOOM_TOOLCHEST_VERSION ||
-  getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2>/dev/null
+  getconf _POSIX_VERSION) | sed 1q | cut -d' ' -f4) 2> /dev/null
 
 printf 'texinfo    :: '
 makeinfo --version | sed 1q | cut -d' ' -f4
