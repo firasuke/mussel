@@ -933,6 +933,7 @@ printf "${BLUEC}..${NORMALC} Configuring cross-gcc (compiler)...\n"
   --disable-bootstrap \
   --enable-checking=release \
   --disable-multilib \
+  --enable-__cxa_atexit \
   --disable-fixed-point \
   --enable-tls \
   --enable-languages=c${ENABLE_CXX_YES:+,c++}${ENABLE_FORTRAN_YES:+,fortran} \
@@ -946,6 +947,7 @@ printf "${BLUEC}..${NORMALC} Configuring cross-gcc (compiler)...\n"
   --disable-libssp \
   --enable-default-ssp \
   --enable-link-serialization=1 \
+  --enable-plugin \
   --enable-host-pie \
   --enable-host-bind-now \
   --enable-default-pie \
