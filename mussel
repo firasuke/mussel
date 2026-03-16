@@ -1119,7 +1119,7 @@ if [ $LINUX_HEADERS_SUPPORT = yes ]; then
 
   printf "${BLUEC}..${NORMALC} Installing linux headers...\n"
   find $BLDDIR/linux/usr/include ! -name '*.h' -type f -delete
-  cp -fPp $BLDDIR/linux/usr/include $MSYSROOT/usr
+  cp -fPpR $BLDDIR/linux/usr/include $MSYSROOT/usr
 
   printf "${GREENC}=>${NORMALC} linux headers finished.\n\n"
 fi
