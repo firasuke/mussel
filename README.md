@@ -182,9 +182,6 @@ mailto:firasuke@glaucuslinux.org)>
 `mussel` is dedicated to all those that believe setting up a cross compiler
 targeting musl libc is a complicated process.
 
-## Community
-- [Reddit](https://reddit.com/r/distrodev)
-
 ## Mirrors
 - [Codeberg](https://codeberg.org/firasuke/mussel)
 - [GitHub](https://github.com/firasuke/mussel)
