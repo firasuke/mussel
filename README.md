@@ -172,6 +172,7 @@ mailto:firasuke@glaucuslinux.org)>
 - Alexander Barris (AwlsomeAlex) <[alex@awlsome.com](mailto:alex@awlsome.com)>
 - Andrew Blue <[andy@antareslinux.org](mailto:andy@antareslinux.org)>
 - ayb <[ayb@3hg.fr](mailto:ayb@3hg.fr)>
+- Itxaka Serrano <[itxaka@kairos.io](mailto:itxaka@kairos.io)>
 - Luiz Antônio Rangel at Pindorama (takusuman) <[luiz.antonio.rangel@outlook.com.br](luiz.antonio.rangel@outlook.com.br)>
 - Rida Antoinette (vibrantrida) <[vibrantsmug@gmail.com](vibrantsmug@gmail.com)>
 
