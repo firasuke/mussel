@@ -94,14 +94,14 @@ Pi Zero)
 - x86-64
 
 ## Packages
-1. `binutils`: 2.45
-2. `gcc`: 15.2.0
+1. `binutils`: 2.46.1
+2. `gcc`: 16.1.0
 3. `gmp`: 6.3.0
 4. `isl`: 0.27
-5. `linux`: 6.17.7 (**Optional** Linux Headers Support) (**Disabled** by default)
+5. `linux`: 6.19.14 (**Optional** Linux Headers Support) (**Disabled** by default)
 6. `mpc`: 1.3.1
 7. `mpfr`: 4.2.2
-8. `musl`: 1.2.5
+8. `musl`: 1.2.6
 9. `pkgconf`: 2.5.1 (**Optional** `pkg-config` Support) (**Disabled** by default)
 
 ## How Is `mussel` Doing It?
