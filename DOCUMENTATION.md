@@ -16,7 +16,7 @@
 - [2. Step 2: `cross-binutils`](#2-step-2-cross-binutils)
 - [3. Step 3: `cross-gcc` (compiler)](#3-step-3-cross-gcc-compiler)
 - [4. Step 4: `musl`](#4-step-4-musl)
-- [5. Step 5: `cross-gcc` (`libgcc-shared`)](#5-step-5-cross-gcc-libgcc-shared)
+- [5. Step 5: `cross-gcc` (`libgcc-shared` and `libatomic`)](#5-step-5-cross-gcc-libgcc-shared-and-libatomic)
 - [6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)](#6-optional-c-support-step-6-cross-gcc-libstdc-v3)
 - [7. [**Optional** OpenMP Support] Step 7: `cross-gcc` (`libgomp`)](#7-optional-openmp-support-step-7-cross-gcc-libgomp)
 - [8. [**Optional** Quadruple-precision Support] Step 8: `cross-gcc` (`libquadmath`)](#8-optional-quadruple-precision-support-step-8-cross-gcc-libquadmath)
@@ -202,7 +202,7 @@ already installed.
 Almost all implementations of `musl` based toolchains change the symlink
 between LDSO and the libc.so because it'll be wrong almost always...
 
-## 5. Step 5: `cross-gcc` (`libgcc-shared`)
+## 5. Step 5: `cross-gcc` (`libgcc-shared` and `libatomic`)
 After building `musl`, we need to rebuild `libgcc` but this time as
 `libgcc-shared` to be able to build the following `gcc` libs (`libstdc++-v3` and
 `libgomp` which would complain about a missing `-lgcc_s` and would error out
@@ -215,6 +215,13 @@ leftovers from the building of `libgcc-static` are gone so we can build
 
 We specify `enable_shared=yes` here which may not be needed but is highly
 recommended to ensure that this step results in a shared version of `libgcc`.
+
+We also build and install `libatomic` in this same step, alongside
+`libgcc-shared`. `gcc >= 16` changed its default link spec to inject
+`-latomic_asneeded` into every program (unless `-fno-link-libatomic` is passed),
+so `libatomic` must always be present in the sysroot or all linking fails.
+`libatomic` only needs the static `libgcc.a`, so it builds cleanly here, and
+since `libgcc-shared` is always installed it is the natural home for it.
 
 ## 6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)
 It's a good idea to leave the support for C++ enabled as many programs require
