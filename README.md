@@ -109,7 +109,7 @@ Pi Zero)
 2. Configure, build and install cross `binutils`
 3. Configure, build and install cross `gcc` (with `libgcc-static`)
 4. Configure, build and install `musl`
-5. Build, and install `libgcc-shared`
+5. Build, and install `libgcc-shared` and `libatomic`
 
 ## **Optional** Steps
 - Build and install `libstdc++-v3` (**Optional** C++ Support) (**Enabled** by default)

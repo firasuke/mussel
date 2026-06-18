@@ -1012,41 +1012,31 @@ cp -fPp "$MSYSROOT/usr/lib/libc.so" "$MSYSROOT/lib/ld-musl-$MARCH.so.1" >> "$MLO
 
 printf "${GREENC}=>${NORMALC} musl finished.\n\n"
 
-# ----- Step 5: cross-gcc (libgcc-shared) ----- #
-printf "\n-----\n*5) cross-gcc (libgcc-shared)\n-----\n\n" >> "$MLOG"
-printf "${BLUEC}..${NORMALC} Preparing cross-gcc (libgcc-shared)...\n"
+# ----- Step 5: cross-gcc (libgcc-shared and libatomic) ----- #
+# libatomic is always installed alongside libgcc-shared: gcc >= 16 links
+# '-latomic_asneeded' into every program by default (unless
+# -fno-link-libatomic), so libatomic must be present in the sysroot. It only
+# requires the static libgcc.a, so it is safe to build here in the same step.
+printf "\n-----\n*5) cross-gcc (libgcc-shared and libatomic)\n-----\n\n" >> "$MLOG"
+printf "${BLUEC}..${NORMALC} Preparing cross-gcc (libgcc-shared and libatomic)...\n"
 cd "$BLDDIR/cross-gcc"
 
 $MAKE \
   -C "$XTARGET/libgcc" distclean >> "$MLOG" 2>&1
 
-printf "${BLUEC}..${NORMALC} Building cross-gcc (libgcc-shared)...\n"
+printf "${BLUEC}..${NORMALC} Building cross-gcc (libgcc-shared and libatomic)...\n"
 $MAKE \
   enable_shared=yes \
-  all-target-libgcc >> "$MLOG" 2>&1
-
-printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgcc-shared)...\n"
-$MAKE \
-  DESTDIR="$MSYSROOT" \
-  install-strip-target-libgcc >> "$MLOG" 2>&1
-
-printf "${GREENC}=>${NORMALC} cross-gcc (libgcc-shared) finished.\n\n"
-
-# ----- Step 5.5: cross-gcc (libatomic) ----- #
-# gcc >= 16 links '-latomic_asneeded' into every program by default
-# (unless -fno-link-libatomic), so libatomic must always be installed.
-printf "\n-----\n*5.5) cross-gcc (libatomic)\n-----\n\n" >> "$MLOG"
-printf "${BLUEC}..${NORMALC} Building cross-gcc (libatomic)...\n"
-cd "$BLDDIR/cross-gcc"
-$MAKE \
+  all-target-libgcc \
   all-target-libatomic >> "$MLOG" 2>&1
 
-printf "${BLUEC}..${NORMALC} Installing cross-gcc (libatomic)...\n"
+printf "${BLUEC}..${NORMALC} Installing cross-gcc (libgcc-shared and libatomic)...\n"
 $MAKE \
   DESTDIR="$MSYSROOT" \
+  install-strip-target-libgcc \
   install-strip-target-libatomic >> "$MLOG" 2>&1
 
-printf "${GREENC}=>${NORMALC} cross-gcc (libatomic) finished.\n\n"
+printf "${GREENC}=>${NORMALC} cross-gcc (libgcc-shared and libatomic) finished.\n\n"
 
 # ----- [Optional C++ Support] Step 6: cross-gcc (libstdc++-v3) ----- #
 if [ $CXX_SUPPORT = yes ]; then
