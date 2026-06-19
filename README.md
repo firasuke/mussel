@@ -97,7 +97,7 @@ Pi Zero)
 1. `binutils`: 2.46.1
 2. `gcc`: 16.1.0
 3. `gmp`: 6.3.0
-4. `isl`: 0.27
+4. `isl`: 0.27 (**Optional** isl Library Support) (**Disabled** by default)
 5. `linux`: 6.19.14 (**Optional** Linux Headers Support) (**Disabled** by default)
 6. `mpc`: 1.3.1
 7. `mpfr`: 4.2.2
@@ -107,7 +107,7 @@ Pi Zero)
 ## How Is `mussel` Doing It?
 1. Install `musl` headers
 2. Configure, build and install cross `binutils`
-3. Configure, build and install cross `gcc` (with `libgcc-static`)
+3. Configure, build and install cross `gcc` and `libgcc-static`
 4. Configure, build and install `musl`
 5. Build, and install `libgcc-shared` and `libatomic`
 

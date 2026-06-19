@@ -14,7 +14,7 @@
 
 - [1. Step 1: `musl` headers](#1-step-1-musl-headers)
 - [2. Step 2: `cross-binutils`](#2-step-2-cross-binutils)
-- [3. Step 3: `cross-gcc` (compiler)](#3-step-3-cross-gcc-compiler)
+- [3. Step 3: `cross-gcc` (`gcc` and `libgcc-static`)](#3-step-3-cross-gcc-compiler)
 - [4. Step 4: `musl`](#4-step-4-musl)
 - [5. Step 5: `cross-gcc` (`libgcc-shared` and `libatomic`)](#5-step-5-cross-gcc-libgcc-shared-and-libatomic)
 - [6. [**Optional** C++ Support] Step 6: `cross-gcc` (`libstdc++-v3`)](#6-optional-c-support-step-6-cross-gcc-libstdc-v3)
@@ -160,7 +160,7 @@ Notice how we specify a `--with-sysroot` here to tell `binutils` to consider
 the passed value as the root directory of our target system in which it'll
 search for target headers and libraries.
 
-## 3. Step 3: `cross-gcc` (compiler)
+## 3. Step 3: `cross-gcc` (`gcc` and `libgcc-static`)
 We manually track GCC's prerequisites instead of relying on
 `contrib/download_prerequisites` in `gcc`'s source tree.
 
@@ -177,8 +177,8 @@ and make sure you have `zstd` (or `zstd-devel` or whatever it's called)
 installed on your host.
 
 Notice how we're not optimizing `libgcc-static` by passing `-O0` to both the
-`CFLAGS` and `CXXFLAGS` as we're only using `libgcc-static` to build `musl`,
-then we rebuild it later on as a full `libgcc-shared`.
+`CFLAGS` and `CXXFLAGS` as we're only using `libgcc-static` to build `musl` and
+`libatomic`, then we rebuild it later on as a full `libgcc-shared`.
 
 ## 4. Step 4: `musl`
 We need a separate build directory for `musl` now that we have our `cross-gcc`
