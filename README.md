@@ -152,12 +152,12 @@ support all listed architectures, and a wrapper around host's `meson`
 - [glaucus](https://glaucuslinux.org/)
 - [Hadron](https://hadron-linux.io/)
 - [Hanh Linux](https://hanh-linux.github.io/)
+- [Leanix's maintainer-utils](https://codeberg.org/leanix/maintainer-utils)
 - [qLinux](https://qlinux.qware.org/doku.php)
 - [Raptix](https://github.com/dslm4515/Raptix)
 - [Spider Linux](https://github.com/spider-linux/spiderlinux)
 - [Tin Can Linux](https://tincan-linux.github.io/)
 - [Yeti OS](https://github.com/avs-origami/yeti)
-- [Leanix's maintainer-utils](https://codeberg.org/leanix/maintainer-utils)
 
 ## Credits and Inspiration
 `mussel` is possible thanks to the awesome work done by Aurelian, Rich
